@@ -47,7 +47,7 @@ const allowedOrigins = [
   process.env.NEXT_FRONTEND_URL, // Next.js production site
   process.env.ADMIN_FRONTEND_URL, // Admin production site
   process.env.REACT_NATIVE_FRONTEND_URL, // React Native local
-
+  process.env.VIPPROW_LANDING_PAGE_URL,
   "http://192.168.29.175:3000",
 ];
 
