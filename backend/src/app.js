@@ -49,6 +49,8 @@ const allowedOrigins = [
   process.env.REACT_NATIVE_FRONTEND_URL, // React Native local
   process.env.VIPPROW_LANDING_PAGE_URL,
   "http://192.168.29.175:3000",
+  "http://localhost:3000",
+  "http://localhost:5173",
 ];
 
 // ===============================================
