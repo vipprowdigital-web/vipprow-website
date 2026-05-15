@@ -34,12 +34,12 @@ export default function Footer() {
   const socialLinks = [
     {
       icon: Facebook,
-      label: "Twitter",
+      label: "Facebook",
       href: appConfig?.facebookLink,
     },
     {
       icon: Instagram,
-      label: "Twitter",
+      label: "Instagram",
       href: appConfig?.instagramLink,
     },
     {
@@ -72,8 +72,11 @@ export default function Footer() {
     })) || [];
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    const changeSetMounted = () => {
+      setMounted(true);
+    };
+    changeSetMounted();
+  });
 
   const data = () => ({
     navigation: {
