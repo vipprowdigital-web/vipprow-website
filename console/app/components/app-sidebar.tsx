@@ -61,10 +61,10 @@ type SidebarData = Record<string, NavItem[]>;
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { isLoading } = useUserProfile();
-  console.log("Inside App Bar Loading user....... ", isLoading);
+  // console.log("Inside App Bar Loading user....... ", isLoading);
 
   const user = useSelector((state: RootState) => state.user);
-  console.log("User: ", user);
+  // console.log("User: ", user);
 
   const location = useLocation();
 

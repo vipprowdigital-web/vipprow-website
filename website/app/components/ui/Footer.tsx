@@ -81,33 +81,43 @@ export default function Footer() {
   const data = () => ({
     navigation: {
       product: [
-        { name: "Features", href: "#features" },
-        { name: "Pricing", href: "#pricing" },
-        { name: "Integration", href: "#integrations" },
-        { name: "Roadmap", href: "#roadmap" },
+        // { name: "Features", href: "/services" },
+        { name: "Croissix AI", href: "https://ai.croissix.com" },
+        { name: "CRM", href: "#" },
+        { name: "Vexabill", href: "#" },
+        { name: "Inventory", href: "#" },
+        // { name: "Web", href: "#" },
       ],
       company: [
-        { name: "About", href: "/about" },
-        { name: "Blog", href: "/blog" },
+        { name: "About", href: "/company" },
+        { name: "Blog", href: "/articles" },
         { name: "Careers", href: "/careers" },
         { name: "Contact", href: "/contact" },
       ],
-      resources: [
-        { name: "Docs", href: "/docs" },
-        { name: "API", href: "/api" },
-        { name: "Community", href: "/community" },
-        { name: "Status", href: "/status" },
-      ],
-      legal: legalLinks,
+      // resources: [
+      //   { name: "Docs", href: "/docs" },
+      //   { name: "API", href: "/api" },
+      //   { name: "Community", href: "/community" },
+      //   { name: "Status", href: "/status" },
+      // ],
+      legal: legalLinks.length === 0 ? [] : legalLinks,
     },
   });
   const currentYear = new Date().getFullYear();
+
+  type NavigationSection = keyof ReturnType<typeof data>["navigation"];
+
+  const sections: NavigationSection[] = [
+    "product",
+    "company",
+    ...(legalLinks.length > 0 ? (["legal"] as NavigationSection[]) : []),
+  ];
 
   if (!mounted) return null;
 
   return (
     <footer className="mt-20 w-full">
-      <div className="animate-energy-flow via-blue-600 h-px w-full bg-gradient-to-r from-transparent to-transparent" />
+      <div className="animate-energy-flow via-blue-600 h-px w-full bg-linear-to-r from-transparent to-transparent" />
       <div className="relative w-full px-5">
         {/* Top Section */}
         <div className="container m-auto grid grid-cols-1 gap-12 py-12 md:grid-cols-2 lg:grid-cols-5">
@@ -189,28 +199,46 @@ export default function Footer() {
 
           {/* Navigation Links */}
           <div className="grid w-full grid-cols-2 items-start justify-between gap-8 px-5 lg:col-span-3">
-            {(["product", "company", "resources", "legal"] as const).map(
-              (section) => (
-                <div key={section} className="w-full">
-                  <h3 className="border-primary mb-4 -ml-5 border-l-2 pl-5 text-sm font-semibold tracking-wider uppercase">
-                    {section.charAt(0).toUpperCase() + section.slice(1)}
-                  </h3>
-                  <ul className="space-y-3">
-                    {data().navigation[section].map((item) => (
-                      <li key={item.name}>
-                        <Link
-                          href={item.href}
-                          className="group text-muted-foreground hover:text-blue-500 decoration-blue-600 -ml-5 inline-flex items-center gap-2 underline-offset-8 transition-all duration-500 hover:pl-5 hover:underline"
-                        >
-                          <ArrowDownLeft className="text-primary rotate-[225deg] opacity-30 transition-all duration-500 group-hover:scale-150 group-hover:opacity-100 sm:group-hover:rotate-[225deg] md:rotate-0" />
-                          {item.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ),
-            )}
+            {sections.map((section) => (
+              <div key={section} className="w-full">
+                <h3 className="border-primary mb-4 -ml-5 border-l-2 pl-5 text-sm font-semibold tracking-wider uppercase">
+                  {section.charAt(0).toUpperCase() + section.slice(1)}
+                </h3>
+                <ul className="space-y-3">
+                  {data().navigation[section].map((item) => (
+                    <li key={item.name}>
+                      <Link
+                        href={item.href}
+                        className="group text-muted-foreground hover:text-blue-500 decoration-blue-600 -ml-5 inline-flex items-center gap-1 underline-offset-8 transition-all duration-500 hover:pl-5 hover:underline"
+                      >
+                        <ArrowDownLeft className="text-primary rotate-225 opacity-30 transition-all duration-500 group-hover:opacity-100 sm:group-hover:rotate-225 md:rotate-0" />
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+            {/* {(["product", "company", "legal"] as const).map((section) => (
+              <div key={section} className="w-full">
+                <h3 className="border-primary mb-4 -ml-5 border-l-2 pl-5 text-sm font-semibold tracking-wider uppercase">
+                  {section.charAt(0).toUpperCase() + section.slice(1)}
+                </h3>
+                <ul className="space-y-3">
+                  {data().navigation[section].map((item) => (
+                    <li key={item.name}>
+                      <Link
+                        href={item.href}
+                        className="group text-muted-foreground hover:text-blue-500 decoration-blue-600 -ml-5 inline-flex items-center gap-2 underline-offset-8 transition-all duration-500 hover:pl-5 hover:underline"
+                      >
+                        <ArrowDownLeft className="text-primary rotate-225 opacity-30 transition-all duration-500 group-hover:scale-150 group-hover:opacity-100 sm:group-hover:rotate-225 md:rotate-0" />
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))} */}
           </div>
         </div>
 

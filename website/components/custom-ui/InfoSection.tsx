@@ -1,13 +1,16 @@
 "use client";
+import Image from "next/image";
 import PrimaryGlowButton from "../ui/buttons/primary-glow-button";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function InfoSection() {
+  const router = useRouter();
   return (
     <>
       <div className="bg-transparent">
         <section className="relative py-12 sm:py-16 lg:pb-40">
-          <div className="absolute bottom-0 right-0 overflow-hidden"> 
+          <div className="absolute bottom-0 right-0 overflow-hidden">
             <motion.div
               className="w-full cursor-pointer"
               animate={{
@@ -19,8 +22,10 @@ export default function InfoSection() {
                 repeat: Infinity,
               }}
             >
-              <img
+              <Image
                 className="w-full h-auto origin-bottom-right transform scale-150 lg:w-auto lg:mx-auto lg:object-cover lg:scale-75"
+                width={1000}
+                height={500}
                 src="https://res.cloudinary.com/dh87x8i37/image/upload/v1770021324/background-pattern_jagr4q.png"
                 alt=""
               />
@@ -30,17 +35,19 @@ export default function InfoSection() {
           <div className="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 gap-y-4 lg:items-center lg:grid-cols-2 xl:grid-cols-2">
               <div className="text-center xl:col-span-1 lg:text-left md:px-16 lg:px-0 xl:pr-20">
-                <h1
-                  className=" text-3xl font-semibold leading-tighter text-zinc-900 dark:text-white sm:text-4xl md:text-5xl font-heading"
-                >
+                <h1 className=" text-3xl font-semibold leading-tighter text-zinc-900 dark:text-white sm:text-4xl md:text-5xl font-heading">
                   A smarter way to market and scale your business..
                 </h1>
                 <p className="mt-2 text-lg text-gray-200 sm:mt-6 font-inter">
-                  Data-backed digital strategies that drive visibility, leads, and long-term growth—without guesswork..
+                  Data-backed digital strategies that drive visibility, leads,
+                  and long-term growth—without guesswork..
                 </p>
 
                 <div className="mt-10 flex flex-row gap-4">
-                  <PrimaryGlowButton heading="Get Started Now" />
+                  <PrimaryGlowButton
+                    heading="Get Started Now"
+                    onClick={() => router.push("/contact")}
+                  />
                 </div>
 
                 <div className="mt-8 sm:mt-16">
@@ -89,16 +96,20 @@ export default function InfoSection() {
 
                   <blockquote className="mt-6">
                     <p className="font-heading text-md font-bold text-gray-100 font-pj">
-                       A reliable partner for performance-driven marketing.
+                      A reliable partner for performance-driven marketing.
                     </p>
                     <p className="font-heading mt-3 text-base leading-7 text-gray-100 font-inter">
-                      We build structured campaigns that help businesses attract the right audience and grow consistently.Focused on clarity, execution, and measurable outcomes.
+                      We build structured campaigns that help businesses attract
+                      the right audience and grow consistently.Focused on
+                      clarity, execution, and measurable outcomes.
                     </p>
                   </blockquote>
 
                   <div className="flex items-center justify-center mt-3 lg:justify-start">
-                    <img
-                      className="flex-shrink-0 object-cover w-6 h-6 overflow-hidden rounded-full"
+                    <Image
+                      className="shrink-0 object-cover w-6 h-6 overflow-hidden rounded-full"
+                      width={1000}
+                      height={500}
                       src="https://cdn.rareblocks.xyz/collection/clarity/images/hero/1/avatar-female.png"
                       alt=""
                     />
@@ -109,14 +120,15 @@ export default function InfoSection() {
                 </div>
               </div>
 
-              <div className="xl:col-span-1 relative min-h-[500px] flex items-center justify-center">
-  <img
-    src="https://cdn.rareblocks.xyz/collection/clarity/images/hero/1/illustration.png"
-    alt="Illustration"
-    className="absolute right-0 bottom-0 w-[500px] h-auto object-contain"
-  />
-</div>
-
+              <div className="xl:col-span-1 relative min-h-125 flex items-center justify-center">
+                <Image
+                  src="https://cdn.rareblocks.xyz/collection/clarity/images/hero/1/illustration.png"
+                  alt="Illustration"
+                  width={1000}
+                  height={500}
+                  className="absolute right-0 bottom-0 w-125 h-auto object-contain"
+                />
+              </div>
             </div>
           </div>
         </section>

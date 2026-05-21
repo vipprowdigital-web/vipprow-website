@@ -2,7 +2,7 @@ import { SparklesCore } from "@/components/ui/sparkles";
 
 export default function TopProductSparkles() {
   return (
-    <div className="h-auto w-screen overflow-hidden bg-transparent mx-auto">
+    <div className="h-auto w-full overflow-hidden bg-transparent mx-auto">
       <div className="mx-auto mt-32 w-screen max-w-2xl">
         <div className="font-heading text-center text-4xl text-white">
           <span className="font-heading text-blue-600">

@@ -2,7 +2,7 @@ import { AnimatedSVGCard } from "@/components/aceternity-ui/card/AnimatedSVGCard
 
 export default function ServiceCardGrid() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-15">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-15 p-5 md:p-0">
       <AnimatedSVGCard
         href="/digital-marketing"
         title="Digital Marketing"

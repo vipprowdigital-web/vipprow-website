@@ -58,8 +58,10 @@ export default function DetailPage() {
           "
       >
         {item.title}
-        {new Date(item.createdAt!).toDateString()}
       </h1>
+      <p className="text-gray-400 py-0.5">
+        {new Date(item.createdAt!).toDateString()}
+      </p>
 
       {/* Header */}
       <div className="mt-2">

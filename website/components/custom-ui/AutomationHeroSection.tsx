@@ -69,9 +69,7 @@ export default function AutomationHeroSection() {
           fontSize: "2rem",
           zIndex: 6,
         }}
-      >
-        {/* Your content here */}
-      </div>
+      ></div>
 
       <Image
         height={1000}

@@ -34,7 +34,7 @@ export default function Home() {
         {/* Bento Grid Start */}
         <div className="pt-20">
           <PrimaryHeading
-            heading="Let    Automation  Do the  Work. You Drive Growth."
+            heading="Let Automation  Do the  Work. You Drive Growth."
             des="Simplify operations, improve productivity, and accelerate business growth effortlessly.."
           />
           <ClientBentoGridSection />
@@ -42,13 +42,13 @@ export default function Home() {
         {/* Bento Grid End */}
 
         {/* Testimonial Start */}
-        <div className="pt-20 max-w-7xl mx-auto">
+        {/* <div className="pt-20 max-w-7xl mx-auto">
           <PrimaryHeading
             heading="Client Experiences That Matter"
             des="Authentic stories from brands that achieved measurable growth through Vipprow’s strategic approach."
           />
           <ClientTestimonialMarquee />
-        </div>
+        </div> */}
         {/* Testimonial End */}
 
         {/* Editorial Grid Start */}

@@ -18,14 +18,14 @@ export default function GlassBottomCard({
 }: GlassBottomCardProps) {
   return (
     <Link href={href}>
-      <div className="relative overflow-hidden rounded-2xl bg-neutral-900 shadow-2xl min-w-[270px]">
+      <div className="relative overflow-hidden rounded-2xl bg-neutral-900 shadow-2xl min-w-67.5">
         {/* IMAGE */}
         <Image
           src={image}
           alt={title}
           width={800}
           height={800}
-          className="w-full h-[320px] object-cover"
+          className="w-full h-80 object-cover"
           priority
         />
 

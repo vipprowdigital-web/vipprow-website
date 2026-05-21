@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 
 export default function OurVisionSection() {
   return (
@@ -25,8 +26,6 @@ export default function OurVisionSection() {
             teams move faster, make smarter decisions, and stay focused on what
             truly matters.
           </p>
-
-          
 
           {/* Vision bullets */}
           <div className="mt-12 space-y-8">
@@ -67,10 +66,13 @@ Decisions Powered by Data"
       shadow-[0_0_80px_-15px_rgba(139,92,246,0.35)]
     "
               >
-                <img
+                <Image
                   src="/assets/images/company/mission.jpeg"
+                  width={800}
+                  height={500}
                   alt="Product preview"
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
             </div>
@@ -94,7 +96,7 @@ function VisionItem({
     <div>
       <h4 className="font-semibold flex items-center gap-2 font-heading">
         {title}
-        <ArrowUpRight className="h-4 w-4 text-blue-500" />
+        {/* <ArrowUpRight className="h-4 w-4 text-blue-500" /> */}
       </h4>
       <p className="mt-2 text-sm text-neutral-400 max-w-md">{description}</p>
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { easeInOut, motion, spring } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +10,7 @@ import {
   Zap,
   ArrowUpRight,
 } from "lucide-react";
+import Image from "next/image";
 
 export default function SaasHeroSection() {
   // State for animated counters
@@ -18,6 +19,12 @@ export default function SaasHeroSection() {
     transactions: 0,
     networks: 0,
   });
+
+  // ---
+  const [particles, setParticles] = useState<
+    { top: string; left: string; duration: number; delay: number }[]
+  >([]);
+  // ---
 
   // Animation to count up numbers
   useEffect(() => {
@@ -45,6 +52,17 @@ export default function SaasHeroSection() {
     }, 50);
 
     return () => clearInterval(interval);
+  }, []);
+
+  // NEW: Generate particle positions & animation values once after mount
+  useEffect(() => {
+    const generated = Array.from({ length: 20 }).map(() => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      duration: 3 + Math.random() * 2,
+      delay: Math.random() * 2,
+    }));
+    setParticles(generated);
   }, []);
 
   // Animation variants
@@ -156,11 +174,11 @@ export default function SaasHeroSection() {
       {/* Background effects */}
       <div className="absolute inset-0 z-0">
         {/* Radial gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/100 via-black/70 to-gray-950 blur-3xl"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-blue-900 via-black/70 to-gray-950 blur-3xl"></div>
 
         {/* Grid pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="h-full w-full bg-[linear-gradient(to_right,rgba(255,255,255,0.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.2)_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+          <div className="h-full w-full bg-[linear-gradient(to_right,rgba(255,255,255,0.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.2)_1px,transparent_1px)] bg-size-[4rem_4rem]"></div>
         </div>
 
         {/* Enhanced glow spots */}
@@ -177,7 +195,24 @@ export default function SaasHeroSection() {
 
         {/* Particle effects - subtle dots */}
         <div className="absolute inset-0 opacity-20">
-          {Array.from({ length: 20 }).map((_, i) => (
+          {particles.map((pos, i) => (
+            <motion.div
+              key={i}
+              className="absolute h-1 w-1 rounded-full bg-white"
+              style={{ top: pos.top, left: pos.left }}
+              animate={{
+                opacity: [0.2, 0.8, 0.2],
+                scale: [1, 1.5, 1],
+              }}
+              transition={{
+                duration: pos.duration,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: pos.delay,
+              }}
+            />
+          ))}
+          {/* {Array.from({ length: 20 }).map((_, i) => (
             <motion.div
               key={i}
               className="absolute h-1 w-1 rounded-full bg-white"
@@ -196,11 +231,11 @@ export default function SaasHeroSection() {
                 delay: Math.random() * 2,
               }}
             />
-          ))}
+          ))} */}
         </div>
       </div>
 
-      <div className="fadein-blur relative z-0 mx-auto mb-10 h-[300px] w-[300px] lg:absolute lg:top-1/2 lg:right-1/2 lg:mx-0 lg:mb-0 lg:h-[500px] lg:w-[500px] lg:translate-x-1/2 lg:-translate-y-2/3">
+      <div className="fadein-blur relative z-0 mx-auto mb-10 h-75 w-75 lg:absolute lg:top-1/2 lg:right-1/2 lg:mx-0 lg:mb-0 lg:h-125 lg:w-125 lg:translate-x-1/2 lg:-translate-y-2/3">
         <motion.div
           className="w-full cursor-pointer"
           animate={{
@@ -212,9 +247,11 @@ export default function SaasHeroSection() {
             repeat: Infinity,
           }}
         >
-          <img
+          <Image
             src="https://i.postimg.cc/fLptvwMg/nexus.webp"
             alt="Nexus Platform 3D Visualization"
+            width={1000}
+            height={500}
             className="h-full w-full object-contain drop-shadow-[0_0_35px_#3358ea85] transition-all duration-1000 hover:scale-110"
           />
         </motion.div>
@@ -238,7 +275,7 @@ export default function SaasHeroSection() {
           <div className="flex items-center gap-2">
             <Database className="h-4 w-4 text-blue-400" />
             <span className="text-xs font-medium text-blue-200">
-             Customized Solution
+              Customized Solution
             </span>
           </div>
         </motion.div>
@@ -272,16 +309,16 @@ export default function SaasHeroSection() {
               <span className="mr-2 rounded-full bg-blue-500 px-2 py-0.5 text-xs font-semibold text-white">
                 New
               </span>
-             SaaS Automation Company
+              SaaS Automation Company
             </motion.div>
 
             <motion.h1
               variants={itemVariants}
               className="font-heading mb-6 bg-gradient-to-r from-white/70 via-white to-blue-500/100 bg-clip-text text-3xl leading-tight text-transparent sm:text-4xl md:text-2xl lg:text-6xl"
             >
-             Intelligent SaaS Built  <br className="hidden sm:inline" />
+              Intelligent SaaS Built <br className="hidden sm:inline" />
               <span className="bg-gradient-to-r from-blue-600/20/20 via-blue-600/20 to-blue-600/20 bg-clip-text text-transparent">
-               for Modern Workflows
+                for Modern Workflows
               </span>
             </motion.h1>
 
@@ -346,7 +383,9 @@ export default function SaasHeroSection() {
               variants={itemVariants}
               className="mb-8 max-w-md px-6 text-center text-lg leading-relaxed text-slate-300/90 lg:text-end"
             >
-             Vipprow connects intelligent automation with business operations, helping teams work faster, smarter, and more efficiently — all from one powerful SaaS platform.
+              Vipprow connects intelligent automation with business operations,
+              helping teams work faster, smarter, and more efficiently — all
+              from one powerful SaaS platform.
             </motion.p>
             <motion.div
               variants={itemVariants}
@@ -377,8 +416,8 @@ export default function SaasHeroSection() {
                 ))}
               </div>
               <span className="text-xs text-slate-300">
-                <span className="font-semibold text-white">99+</span>{" "}
-                Our satisfied Customers
+                <span className="font-semibold text-white">99+</span> Our
+                satisfied Customers
               </span>
               <ArrowUpRight className="h-3 w-3 text-blue-400" />
             </motion.div>

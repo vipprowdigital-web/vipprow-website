@@ -27,7 +27,7 @@ Our systems are built to deliver measurable results and sustainable growth."
       {/* Client Category A Grid Start. */}
       <div className="pt-20 max-w-7xl mx-auto">
         <PrimaryHeading
-          heading=" Education Sector"
+          heading="Education Sector"
           des="We connect institutions with the right students using targeted campaigns and intelligent automation.."
         />
         <ClientCaseStudyGridScroller />
@@ -62,7 +62,7 @@ Our systems are built to deliver measurable results and sustainable growth."
       </div>
       <div className="pt-20 max-w-7xl mx-auto">
         <PrimaryHeading
-          heading="clothing Sector"
+          heading="Clothing Sector"
           des="We help fashion brands increase visibility and drive consistent online sales through performance marketing and targeted campaigns.."
         />
         <ClientCaseStudyGridScroller />

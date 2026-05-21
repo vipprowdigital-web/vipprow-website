@@ -24,11 +24,11 @@ export default function ServicesPage() {
       {/* Service Tab Grid End. */}
 
       {/* Testimonial Start */}
-      <div className="pt-20 max-w-7xl mx-auto">
-        <PrimaryHeading
+      <div className="max-w-7xl mx-auto">
+        {/* <PrimaryHeading
           heading="Empower Your Workflow with AI"
           des="Ask your AI Agent for real-time collaboration, seamless integrations, and actionable insghts to streamline your operations."
-        />
+        /> */}
         <ClientTestimonialMarquee />
       </div>
       {/* Testimonial End */}

@@ -1,9 +1,14 @@
+"use client";
+
 import { AvatarCirclesRow } from "@/components/magic-ui/AvatarCircles";
 import { StarsBackgroundVipprow } from "@/components/ui/backgrounds-stars";
 import PrimaryGlowButton from "@/components/ui/buttons/primary-glow-button";
 import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
+  const router = useRouter();
   return (
     <>
       <main className="relative min-h-[93vh]  md:min-h-screen overflow-hidden bg-zinc-50 font-sans dark:bg-black">
@@ -17,9 +22,7 @@ export default function HeroSection() {
             <AvatarCirclesRow />
             <span className="whitespace-nowrap">
               Join{" "}
-              <strong className="text-zinc-800 dark:text-zinc-200">
-                99+
-              </strong>{" "}
+              <strong className="text-zinc-800 dark:text-zinc-200">99+</strong>{" "}
               other loving clients
             </span>
           </div>
@@ -33,7 +36,7 @@ export default function HeroSection() {
           sm:text-5xl md:text-5xl
         "
           >
-            Vipprow  Managing Your Digital Business Ecosystem 
+            Vipprow Managing Your Digital Business Ecosystem
           </h1>
 
           {/* Subtitle */}
@@ -42,7 +45,7 @@ export default function HeroSection() {
           mt-6 max-w-xl
           text-sm leading-relaxed
           text-zinc-600 dark:text-zinc-400
-          sm:text-md leading-tight md:text-2xl
+          sm:text-md md:text-2xl
         "
           >
             The Best Platform to Grow your Business.
@@ -50,21 +53,26 @@ export default function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="mt-10 flex flex-row gap-4">
-            <PrimaryGlowButton heading="Get Started Now" />
-            <SecondaryButton heading="Book a Demo" />
+            <PrimaryGlowButton
+              heading="Get Started Now"
+              onClick={() => router.push("/contact")}
+            />
+            {/* <SecondaryButton heading="Book a Demo" /> */}
           </div>
         </section>
 
         {/* 🧩 Bottom Brand SVG */}
         <div className="pointer-events-none absolute bottom-24 left-0 right-0 z-0 px-0 md:px-10">
-          <img
+          <Image
             src="/assets/images/logo/brand_outline.svg"
             alt="VIPPROW Brand"
+            width={1000}
+            height={500}
             className="
-            mx-auto w-[100%] max-w-none
+            mx-auto w-full max-w-none
             translate-y-1/3
             opacity-15 dark:opacity-50
-            sm:w-[100%] md:w-[100%]
+            sm:w-full md:w-full
           "
           />
         </div>
@@ -73,7 +81,7 @@ export default function HeroSection() {
         <div
           className="
         pointer-events-none absolute bottom-0 left-0 z-10 h-20 w-full
-        bg-gradient-to-t
+        bg-linear-to-t
         from-zinc-50 via-zinc-50/90 to-transparent
         dark:from-black dark:via-black/70
       "

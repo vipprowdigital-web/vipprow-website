@@ -16,6 +16,7 @@ export default function WhyChooseUs() {
               width={800}
               height={500}
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           </div>
         </div>
@@ -71,7 +72,7 @@ function VisionItem({
     <div>
       <h4 className="font-semibold flex items-center gap-2 font-heading">
         {title}
-        <ArrowUpRight className="h-4 w-4 text-blue-500" />
+        {/* <ArrowUpRight className="h-4 w-4 text-blue-500" /> */}
       </h4>
       <p className="mt-2 text-sm text-neutral-400 max-w-md">{description}</p>
     </div>

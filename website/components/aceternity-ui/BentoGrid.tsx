@@ -55,7 +55,7 @@ const features = [
     className: "col-span-3 lg:col-span-1",
     background: (
       // <OrbitingCirclesDemo />
-      <OrbitingCirclesDemo className="absolute inset-0 h-full w-full scale-85 md:scale-100 border-none [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-100" />
+      <OrbitingCirclesDemo className="absolute inset-0 h-full w-full scale-85 md:scale-100 border-none mask-[linear-gradient(to_top,transparent_10%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-100" />
     ),
   },
   {
@@ -67,7 +67,7 @@ const features = [
     cta: "Learn more",
     className: "col-span-3 lg:col-span-1",
     background: (
-      <AreaChartSection className="absolute top-4 right-0 h-[450px] w-full scale-100 border-none [mask-image:linear-gradient(to_top,transparent_0%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-100" />
+      <AreaChartSection className="absolute top-4 right-0 h-112.5 w-full scale-100 border-none mask-[linear-gradient(to_top,transparent_0%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-100" />
     ),
   },
   {
@@ -78,7 +78,7 @@ const features = [
     href: "#",
     cta: "Learn more",
     background: (
-      <ChartBarLabelSection className="absolute top-4 right-0 h-[450px] w-full scale-100 border-none [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-100" />
+      <ChartBarLabelSection className="absolute top-4 right-0 h-112.5 w-full scale-100 border-none mask-[linear-gradient(to_top,transparent_10%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-100" />
     ),
   },
 ];

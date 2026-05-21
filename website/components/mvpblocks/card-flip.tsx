@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * @author: @nuelst
@@ -10,9 +10,9 @@
  * @github: https://github.com/nuelst
  */
 
-import { cn } from '@/lib/utils';
-import { ArrowRight, Code2, Copy, Rocket, Zap } from 'lucide-react';
-import { useState } from 'react';
+import { cn } from "@/lib/utils";
+import { ArrowRight, Code2, Copy, Rocket, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export interface CardFlipProps {
   title?: string;
@@ -22,65 +22,98 @@ export interface CardFlipProps {
 }
 
 export default function CardFlip({
-  title = 'Build MVPs Fast',
-  subtitle = 'Launch your idea in record time',
-  description = 'Copy, paste, customize—and launch your MVP faster than ever with our developer-first component library.',
+  title = "Build MVPs Fast",
+  subtitle = "Launch your idea in record time",
+  description = "Copy, paste, customize—and launch your MVP faster than ever with our developer-first component library.",
   features = [
-    'Copy & Paste Ready',
-    'Developer-First',
-    'MVP Optimized',
-    'Zero Setup Required',
+    "Copy & Paste Ready",
+    "Developer-First",
+    "MVP Optimized",
+    "Zero Setup Required",
   ],
 }: CardFlipProps) {
   const [isFlipped, setIsFlipped] = useState(false);
 
+  // -----
+  // Start with empty bars so SSR and hydration match
+  const [bars, setBars] = useState<
+    { width: string; marginLeft: string; delay: string }[]
+  >([]);
+
+  useEffect(() => {
+    // Generate random values only on the client, after mount
+    const generated = Array.from({ length: 6 }).map((_, i) => ({
+      width: `${60 + Math.random() * 40}%`,
+      marginLeft: `${Math.random() * 20}%`,
+      delay: `${i * 0.2}s`,
+    }));
+    // Schedule state update after paint → avoids "synchronous setState" warning
+    requestAnimationFrame(() => setBars(generated));
+  }, []);
+
   return (
     <div
-      className="group relative h-[360px] w-full max-w-[300px] [perspective:2000px]"
+      className="group relative h-90 w-full max-w-75 perspective-[2000px]"
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
     >
       <div
         className={cn(
-          'relative h-full w-full',
-          '[transform-style:preserve-3d]',
-          'transition-all duration-700',
+          "relative h-full w-full",
+          "transform-3d",
+          "transition-all duration-700",
           isFlipped
-            ? '[transform:rotateY(180deg)]'
-            : '[transform:rotateY(0deg)]',
+            ? "transform-[rotateY(180deg)]"
+            : "transform-[rotateY(0deg)]",
         )}
       >
         {/* Front of card */}
         <div
           className={cn(
-            'absolute inset-0 h-full w-full',
-            '[transform:rotateY(0deg)] [backface-visibility:hidden]',
-            'overflow-hidden rounded-2xl',
-            'bg-gradient-to-br from-white via-slate-50 to-slate-100',
-            'dark:from-zinc-900 dark:via-zinc-900/95 dark:to-zinc-800',
-            'border border-slate-200 dark:border-zinc-800/50',
-            'shadow-lg dark:shadow-xl',
-            'transition-all duration-700',
-            'group-hover:shadow-xl dark:group-hover:shadow-2xl',
-            'group-hover:border-blue-600/20 dark:group-hover:border-blue-600/30',
-            isFlipped ? 'opacity-0' : 'opacity-100',
+            "absolute inset-0 h-full w-full",
+            "transform-[rotateY(0deg)] backface-hidden",
+            "overflow-hidden rounded-2xl",
+            "bg-linear-to-br from-white via-slate-50 to-slate-100",
+            "dark:from-zinc-900 dark:via-zinc-900/95 dark:to-zinc-800",
+            "border border-slate-200 dark:border-zinc-800/50",
+            "shadow-lg dark:shadow-xl",
+            "transition-all duration-700",
+            "group-hover:shadow-xl dark:group-hover:shadow-2xl",
+            "group-hover:border-blue-600/20 dark:group-hover:border-blue-600/30",
+            isFlipped ? "opacity-0" : "opacity-100",
           )}
         >
           {/* Background gradient effect */}
-          <div className="from-blue-600/5 dark:from-blue-600/10 absolute inset-0 bg-gradient-to-br via-transparent to-blue-500/5 dark:to-blue-500/10" />
+          <div className="from-blue-600/5 dark:from-blue-600/10 absolute inset-0 bg-linear-to-br via-transparent to-blue-500/5 dark:to-blue-500/10" />
 
           {/* Animated code blocks */}
           <div className="absolute inset-0 flex items-center justify-center pt-20">
-            <div className="relative flex h-[100px] w-[200px] flex-col items-center justify-center gap-2">
+            <div className="relative flex h-25 w-50 flex-col items-center justify-center gap-2">
               {/* Code blocks animation */}
-              {[...Array(6)].map((_, i) => (
+              {bars.map((bar, i) => (
                 <div
                   key={i}
                   className={cn(
-                    'h-3 w-full rounded-sm',
-                    'from-blue-600/20 via-blue-600/30 to-blue-600/20 bg-gradient-to-r',
-                    'animate-[slideIn_2s_ease-in-out_infinite]',
-                    'opacity-0',
+                    "h-3 w-full rounded-sm",
+                    "from-blue-600/20 via-blue-600/30 to-blue-600/20 bg-linear-to-r",
+                    "animate-[slideIn_2s_ease-in-out_infinite]",
+                    "opacity-0",
+                  )}
+                  style={{
+                    width: bar.width,
+                    animationDelay: bar.delay,
+                    marginLeft: bar.marginLeft,
+                  }}
+                />
+              ))}
+              {/* {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className={cn(
+                    "h-3 w-full rounded-sm",
+                    "from-blue-600/20 via-blue-600/30 to-blue-600/20 bg-linear-to-r",
+                    "animate-[slideIn_2s_ease-in-out_infinite]",
+                    "opacity-0",
                   )}
                   style={{
                     width: `${60 + Math.random() * 40}%`,
@@ -88,18 +121,18 @@ export default function CardFlip({
                     marginLeft: `${Math.random() * 20}%`,
                   }}
                 />
-              ))}
+              ))} */}
 
               {/* Central rocket icon */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div
                   className={cn(
-                    'h-12 w-12 rounded-xl',
-                    'from-blue-600 via-blue-600/90 to-blue-600/80 bg-gradient-to-br',
-                    'flex items-center justify-center',
-                    'shadow-blue-600/25 shadow-lg',
-                    'animate-pulse',
-                    'transition-all duration-500 group-hover:scale-110 group-hover:rotate-12',
+                    "h-12 w-12 rounded-xl",
+                    "from-blue-600 via-blue-600/90 to-blue-600/80 bg-linear-to-br",
+                    "flex items-center justify-center",
+                    "shadow-blue-600/25 shadow-lg",
+                    "animate-pulse",
+                    "transition-all duration-500 group-hover:scale-110 group-hover:rotate-12",
                   )}
                 >
                   <Rocket className="h-6 w-6 text-white" />
@@ -112,7 +145,7 @@ export default function CardFlip({
           <div className="absolute right-0 bottom-0 left-0 p-5">
             <div className="flex items-center justify-between gap-3">
               <div className="space-y-1.5">
-                <h3 className="text-lg leading-snug font-semibold tracking-tight text-zinc-900 transition-all duration-500 ease-out group-hover:translate-y-[-4px] dark:text-white">
+                <h3 className="text-lg leading-snug font-semibold tracking-tight text-zinc-900 transition-all duration-500 ease-out group-hover:-translate-y-1 dark:text-white">
                   {title}
                 </h3>
                 <p className="line-clamp-2 text-sm tracking-tight text-zinc-600 transition-all delay-[50ms] duration-500 ease-out group-hover:translate-y-[-4px] dark:text-zinc-300">
@@ -122,9 +155,9 @@ export default function CardFlip({
               <div className="group/icon relative">
                 <div
                   className={cn(
-                    'absolute inset-[-8px] rounded-lg transition-opacity duration-300',
-                    'from-blue-600/20 via-blue-600/10 bg-gradient-to-br to-transparent',
-                    'opacity-0 group-hover/icon:opacity-100',
+                    "absolute inset-[-8px] rounded-lg transition-opacity duration-300",
+                    "from-blue-600/20 via-blue-600/10 bg-gradient-to-br to-transparent",
+                    "opacity-0 group-hover/icon:opacity-100",
                   )}
                 />
                 <Zap className="text-blue-600 relative z-10 h-5 w-5 transition-all duration-300 group-hover/icon:scale-110 group-hover/icon:rotate-12" />
@@ -136,18 +169,18 @@ export default function CardFlip({
         {/* Back of card */}
         <div
           className={cn(
-            'absolute inset-0 h-full w-full',
-            '[transform:rotateY(180deg)] [backface-visibility:hidden]',
-            'rounded-2xl p-5',
-            'bg-gradient-to-br from-white via-slate-50 to-slate-100',
-            'dark:from-zinc-900 dark:via-zinc-900/95 dark:to-zinc-800',
-            'border border-slate-200 dark:border-zinc-800',
-            'shadow-lg dark:shadow-xl',
-            'flex flex-col',
-            'transition-all duration-700',
-            'group-hover:shadow-xl dark:group-hover:shadow-2xl',
-            'group-hover:border-blue-600/20 dark:group-hover:border-blue-600/30',
-            !isFlipped ? 'opacity-0' : 'opacity-100',
+            "absolute inset-0 h-full w-full",
+            "[transform:rotateY(180deg)] [backface-visibility:hidden]",
+            "rounded-2xl p-5",
+            "bg-gradient-to-br from-white via-slate-50 to-slate-100",
+            "dark:from-zinc-900 dark:via-zinc-900/95 dark:to-zinc-800",
+            "border border-slate-200 dark:border-zinc-800",
+            "shadow-lg dark:shadow-xl",
+            "flex flex-col",
+            "transition-all duration-700",
+            "group-hover:shadow-xl dark:group-hover:shadow-2xl",
+            "group-hover:border-blue-600/20 dark:group-hover:border-blue-600/30",
+            !isFlipped ? "opacity-0" : "opacity-100",
           )}
         >
           {/* Background gradient */}
@@ -179,8 +212,8 @@ export default function CardFlip({
                     className="flex items-center gap-3 text-sm text-zinc-700 transition-all duration-500 dark:text-zinc-300"
                     style={{
                       transform: isFlipped
-                        ? 'translateX(0)'
-                        : 'translateX(-10px)',
+                        ? "translateX(0)"
+                        : "translateX(-10px)",
                       opacity: isFlipped ? 1 : 0,
                       transitionDelay: `${index * 100 + 200}ms`,
                     }}
@@ -195,19 +228,19 @@ export default function CardFlip({
             </div>
           </div>
 
-          <div className="relative z-10 mt-auto border-t border-slate-200 pt-4 dark:border-zinc-800">
+          {/* <div className="relative z-10 mt-auto border-t border-slate-200 pt-4 dark:border-zinc-800">
             <div
               className={cn(
-                'group/start relative',
-                'flex items-center justify-between',
-                'rounded-lg p-2.5',
-                'transition-all duration-300',
-                'bg-gradient-to-r from-slate-100 via-slate-100 to-slate-100',
-                'dark:from-zinc-800 dark:via-zinc-800 dark:to-zinc-800',
-                'hover:from-blue-600/10 hover:via-blue-600/5 hover:to-transparent',
-                'dark:hover:from-blue-600/20 dark:hover:via-blue-600/10 dark:hover:to-transparent',
-                'hover:scale-[1.02] hover:cursor-pointer',
-                'hover:border-blue-600/20 border border-transparent',
+                "group/start relative",
+                "flex items-center justify-between",
+                "rounded-lg p-2.5",
+                "transition-all duration-300",
+                "bg-gradient-to-r from-slate-100 via-slate-100 to-slate-100",
+                "dark:from-zinc-800 dark:via-zinc-800 dark:to-zinc-800",
+                "hover:from-blue-600/10 hover:via-blue-600/5 hover:to-transparent",
+                "dark:hover:from-blue-600/20 dark:hover:via-blue-600/10 dark:hover:to-transparent",
+                "hover:scale-[1.02] hover:cursor-pointer",
+                "hover:border-blue-600/20 border border-transparent",
               )}
             >
               <span className="group-hover/start:text-blue-600 text-sm font-semibold text-zinc-900 transition-colors duration-300 dark:text-white">
@@ -216,15 +249,15 @@ export default function CardFlip({
               <div className="group/icon relative">
                 <div
                   className={cn(
-                    'absolute inset-[-6px] rounded-lg transition-all duration-300',
-                    'from-blue-600/20 via-blue-600/10 bg-gradient-to-br to-transparent',
-                    'scale-90 opacity-0 group-hover/start:scale-100 group-hover/start:opacity-100',
+                    "absolute inset-[-6px] rounded-lg transition-all duration-300",
+                    "from-blue-600/20 via-blue-600/10 bg-gradient-to-br to-transparent",
+                    "scale-90 opacity-0 group-hover/start:scale-100 group-hover/start:opacity-100",
                   )}
                 />
                 <ArrowRight className="text-blue-600 relative z-10 h-4 w-4 transition-all duration-300 group-hover/start:translate-x-1 group-hover/start:scale-110" />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

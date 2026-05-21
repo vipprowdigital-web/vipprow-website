@@ -48,6 +48,8 @@ export default function TestimonialMarquee() {
 
   const testimonials = data?.data || [];
 
+  if (testimonials.length === 0) return null;
+
   return (
     <section className="w-full py-16">
       <div className="max-w-7xl mx-auto px-6">

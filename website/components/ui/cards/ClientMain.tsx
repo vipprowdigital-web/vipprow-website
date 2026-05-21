@@ -1,6 +1,6 @@
 export default function ClientMain() {
   return (
-    <section className="w-full px-4 sm:px-6 md:px-8 py-10">
+    <section className="w-full px-4 sm:px-6 md:px-8">
       <div className="max-w-5xl mx-auto text-center">
         <h2
           className="
@@ -16,4 +16,3 @@ export default function ClientMain() {
     </section>
   );
 }
-

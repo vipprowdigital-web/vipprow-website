@@ -2,11 +2,11 @@ import ClientCTA from "@/components/client-sections/ClientCTA";
 import ClientTestimonialMarquee from "@/components/client-sections/ClientTestimonialMarquee";
 import AutomationBentoGridSection from "@/components/custom-ui/AutomationBentoGridSection";
 import AutomationHeroSection from "@/components/custom-ui/AutomationHeroSection";
-import InfoSection from "@/components/custom-ui/InfoSection";
+// import InfoSection from "@/components/custom-ui/InfoSection";
 import AutomationFeatures from "@/components/mvpblock-ui/AutomationFeatures";
-import DigitalMarketingFeatureSection from "@/components/mvpblock-ui/DigitalMarketingFeatureSection";
+// import DigitalMarketingFeatureSection from "@/components/mvpblock-ui/DigitalMarketingFeatureSection";
 import FaqSection from "@/components/mvpblock-ui/FAQSection";
-import ServiceGridScroller from "@/components/ui/cards/ServiceGridScroller";
+// import ServiceGridScroller from "@/components/ui/cards/ServiceGridScroller";
 import PrimaryHeading from "@/components/ui/heading/PrimaryHeading";
 
 export default function AutomationPage() {
@@ -26,7 +26,7 @@ export default function AutomationPage() {
       </div>
       {/* Automation Feature End */}
 
-       {/* AutomationBentoGridSection Feature Start */}
+      {/* AutomationBentoGridSection Feature Start */}
       <div className="pt-20 max-w-7xl mx-auto">
         <PrimaryHeading
           heading="Where Automation Meets Intelligence"
@@ -37,13 +37,13 @@ export default function AutomationPage() {
       {/* AutomationBentoGridSection Feature End */}
 
       {/* Testimonial Start */}
-      <div className="pt-20 max-w-7xl mx-auto">
+      {/* <div className="pt-20 max-w-7xl mx-auto">
         <PrimaryHeading
           heading="Empower Your Workflow with AI"
           des="Ask your AI Agent for real-time collaboration, seamless integrations, and actionable insghts to streamline your operations."
         />
         <ClientTestimonialMarquee />
-      </div>
+      </div> */}
       {/* Testimonial End */}
 
       {/* FAQ Start */}

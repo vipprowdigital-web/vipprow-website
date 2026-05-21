@@ -27,7 +27,7 @@ export default function EditorialGrid({
           filter: "active",
         });
 
-        console.log("API RESPONSE 👉", res);
+        // console.log("API RESPONSE 👉", res);
 
         setArticles(Array.isArray(res.data) ? res.data : [res.data]);
       } catch (error) {

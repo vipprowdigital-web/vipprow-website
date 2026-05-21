@@ -20,33 +20,34 @@ export default function EditorialCard({
 
   return (
     <Link href={`${href}`}>
-    <div className="group cursor-pointer">
-      {/* Image Card */}
-      <div
-        className="
-          relative aspect-[16/9] overflow-hidden rounded-sm
+      <div className="group cursor-pointer">
+        {/* Image Card */}
+        <div
+          className="
+          relative aspect-video overflow-hidden rounded-sm
           bg-zinc-900
         "
-      >
-        {/* Background image */}
-        <Image
-          src={safeImage}
-          alt={safeTitle}
-          fill
-          className="
+        >
+          {/* Background image */}
+          <Image
+            src={safeImage}
+            alt={safeTitle}
+            fill
+            className="
             object-cover
             transition-transform duration-700
             group-hover:scale-105
           "
-        />
-      </div>
+            loading="lazy"
+          />
+        </div>
 
-      {/* Text */}
-      <div className="mt-3 space-y-1">
-        <p className="text-md text-zinc-200">{title}</p>
-        <span className="text-xs text-zinc-300">{safeCategory}</span>
+        {/* Text */}
+        <div className="mt-3 space-y-1">
+          <p className="text-md text-zinc-200">{title}</p>
+          <span className="text-xs text-zinc-300">{safeCategory}</span>
+        </div>
       </div>
-    </div>
     </Link>
   );
 }
