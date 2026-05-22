@@ -5,6 +5,8 @@ import {
   destroyFromCloudinary,
 } from "../utils/cloudinaryService.js";
 import mongoose from "mongoose";
+import { broadcastNewArticle } from "./newsletter.controller.js";
+import Category from "../models/blogs/category.model.js";
 
 // Format mongoose validation errors
 const formatErrors = (err) => {
@@ -245,7 +247,7 @@ export const createBlog = async (req, res) => {
     if (req.files?.thumbnail?.[0]?.path) {
       const upload = await uploadToCloudinary(
         req.files.thumbnail[0].path,
-        "blog/thumbnails"
+        "blog/thumbnails",
       );
       thumbnailUrl = upload.secure_url;
       uploaded.thumbnail = upload.public_id;
@@ -275,7 +277,29 @@ export const createBlog = async (req, res) => {
       createdBy: req.user._id,
     });
 
-    res.status(201).json({ success: true, data: blog });
+    // console.log("Blog created: ", blog);
+
+    // Send email to the subscribed users
+    const articleCategory = await Category.findById({ _id: category });
+    const articleData = {
+      title: title,
+      category: articleCategory?.name || "Uncategorized",
+      url: `${process.env.NEXT_FRONTEND_URL}/articles/details/${blog._id}`,
+    };
+    // console.log("Article Data: ", articleData);
+    // await broadcastNewArticle(articleData);
+
+    // res.status(201).json({ success: true, data: blog });
+    // Send response immediately
+    res.status(201).json({
+      success: true,
+      data: blog,
+    });
+
+    // Run newsletter in background
+    broadcastNewArticle(articleData).catch((err) => {
+      console.error("Newsletter Broadcast Failed:", err);
+    });
   } catch (err) {
     console.error(err);
 
@@ -324,7 +348,7 @@ export const updateBlog = async (req, res) => {
 
       const up = await uploadToCloudinary(
         req.files.thumbnail[0].path,
-        "blog/thumbnails"
+        "blog/thumbnails",
       );
       blog.thumbnail = up.secure_url;
     }

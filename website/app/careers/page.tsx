@@ -20,6 +20,41 @@ interface Job {
 }
 
 // --- SERVER ACTION (THE BACKEND API INSIDE THE PAGE) ---
+// async function handleApplicationSubmit(formData: FormData) {
+//   try {
+//     const name = formData.get("name") as string;
+//     const jobTitle = formData.get("jobTitle") as string;
+//     const resumeFile = formData.get("resume") as File | null;
+
+//     if (!name || !jobTitle || !resumeFile || resumeFile.size === 0) {
+//       return {
+//         success: false,
+//         message: "Missing required profile parameter details.",
+//       };
+//     }
+
+//     // Convert file binary into a secure buffer for your file storage bucket or internal database push
+//     const bytes = await resumeFile.arrayBuffer();
+//     const buffer = Buffer.from(bytes);
+
+//     // --- FUTURE BACKEND WORKSPACE IMPLEMENTATION ---
+//     console.log(
+//       `Processing intake file for ${name} applying to position: ${jobTitle}`,
+//     );
+//     console.log(
+//       `Payload configuration: ${resumeFile.name} (${resumeFile.size} bytes)`,
+//     );
+//     // -----------------------------------------------
+
+//     return { success: true, message: "Application submitted successfully!" };
+//   } catch (error) {
+//     console.error("Internal server action failure:", error);
+//     return {
+//       success: false,
+//       message: "Server encountered an operational execution fault.",
+//     };
+//   }
+// }
 async function handleApplicationSubmit(formData: FormData) {
   try {
     const name = formData.get("name") as string;
@@ -32,21 +67,28 @@ async function handleApplicationSubmit(formData: FormData) {
         message: "Missing required profile parameter details.",
       };
     }
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    // Forward the exact formData object to your Node/Express backend
+    // Multipart/form-data headers are automatically configured by fetch when passing FormData
+    const response = await fetch(`${apiUrl}/applicant`, {
+      method: "POST",
+      body: formData,
+    });
 
-    // Convert file binary into a secure buffer for your file storage bucket or internal database push
-    const bytes = await resumeFile.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const result = await response.json();
+    if (!response.ok) {
+      return {
+        success: false,
+        message:
+          result.message || "Failed to submit application to the backend.",
+      };
+    }
 
-    // --- FUTURE BACKEND WORKSPACE IMPLEMENTATION ---
-    console.log(
-      `Processing intake file for ${name} applying to position: ${jobTitle}`,
-    );
-    console.log(
-      `Payload configuration: ${resumeFile.name} (${resumeFile.size} bytes)`,
-    );
-    // -----------------------------------------------
-
-    return { success: true, message: "Application submitted successfully!" };
+    return {
+      success: true,
+      message: "Application submitted successfully!",
+      data: result.data,
+    };
   } catch (error) {
     console.error("Internal server action failure:", error);
     return {
@@ -58,7 +100,6 @@ async function handleApplicationSubmit(formData: FormData) {
 
 // --- CLIENT UI COMPONENT ---
 export default function CareersPage() {
-  // Initialized directly with your core job positions including Sales
   const [jobs, setJobs] = useState<Job[]>([
     // {
     //   _id: "f1",
@@ -90,14 +131,14 @@ export default function CareersPage() {
     // },
     {
       _id: "f5",
-      title: "Sales Executive & Accounts Manager",
+      title: "Sales Executive",
       department: "Sales",
       location: "Onsite (Jabalpur)",
       type: "Full-time",
     },
   ]);
 
-  const [loadingJobs, setLoadingJobs] = useState(false); // Set to false to show jobs instantly
+  const [loadingJobs, setLoadingJobs] = useState(false);
   const [selectedDept, setSelectedDept] = useState("All");
 
   // Form Fields State
@@ -179,10 +220,16 @@ export default function CareersPage() {
 
       if (result.success) {
         setSubmitStatus({ type: "success", message: result.message });
+        setTimeout(() => {
+          setSubmitStatus({ type: null, message: "" });
+        }, 3000);
         setForm({ name: "", jobTitle: "" });
         setResume(null);
       } else {
         setSubmitStatus({ type: "error", message: result.message });
+        setTimeout(() => {
+          setSubmitStatus({ type: null, message: "" });
+        }, 3000);
       }
     } catch (err) {
       console.error(err);
@@ -190,6 +237,9 @@ export default function CareersPage() {
         type: "error",
         message: "Network error occurred. Please try again.",
       });
+      setTimeout(() => {
+        setSubmitStatus({ type: null, message: "" });
+      }, 3000);
     } finally {
       setIsSubmitting(false);
     }
@@ -205,9 +255,9 @@ export default function CareersPage() {
       : jobs.filter((j) => j.department === selectedDept);
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-blue-600/30">
+    <div className="min-h-screen text-white font-sans selection:bg-blue-600/30 bg-linear-to-b from-blue-950/20 via-black to-black">
       {/* Structural Hero Grid Section */}
-      <section className="relative mt-30 py-20 px-4 text-center overflow-hidden border-b border-white/8 bg-linear-to-b from-blue-950/20 via-black to-black">
+      <section className="relative mt-20 py-30 px-4 text-center overflow-hidden border-b border-white/8 bg-linear-to-b from-blue-950/20 via-black to-black flex-col items-center">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-size-[32px_32px]" />
         <div className="relative max-w-3xl mx-auto z-10">
           <span className="inline-block px-3 py-1 text-xs font-semibold uppercase tracking-widest text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full mb-4">
@@ -244,7 +294,7 @@ export default function CareersPage() {
                 className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 cursor-pointer ${
                   selectedDept === dept
                     ? "bg-blue-600 border-blue-500 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]"
-                    : "bg-white/[0.02] border-white/[0.08] text-gray-400 hover:text-white hover:bg-white/[0.05]"
+                    : "bg-white/2 border-white/8 text-gray-400 hover:text-white hover:bg-white/5"
                 }`}
               >
                 {dept}
@@ -268,7 +318,7 @@ export default function CareersPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.98 }}
                   key={job._id}
-                  className="group relative flex flex-col sm:flex-row sm:items-center justify-between p-6 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-blue-500/30 hover:bg-white/[0.04] transition-all duration-200"
+                  className="group relative flex flex-col sm:flex-row sm:items-center justify-between p-6 rounded-xl bg-white/2 border border-white/6 hover:border-blue-500/30 hover:bg-white/4 transition-all duration-200"
                 >
                   <div className="mb-4 sm:mb-0">
                     <div className="flex items-center gap-2 mb-1.5">
@@ -286,7 +336,7 @@ export default function CareersPage() {
                   </div>
                   <button
                     onClick={() => handleApplyClick(job.title)}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold text-white bg-white/[0.05] border border-white/[0.1] hover:bg-blue-600 hover:border-blue-500 transition-all duration-200 cursor-pointer"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold text-white bg-white/5 border border-white/10 hover:bg-blue-600 hover:border-blue-500 transition-all duration-200 cursor-pointer"
                   >
                     Apply Now
                   </button>
@@ -295,7 +345,7 @@ export default function CareersPage() {
             </AnimatePresence>
 
             {filteredJobs.length === 0 && (
-              <div className="text-center py-16 border border-dashed border-white/[0.08] rounded-xl bg-white/[0.01]">
+              <div className="text-center py-16 border border-dashed border-white/8 rounded-xl bg-white/1">
                 <Briefcase className="mx-auto text-gray-600 mb-3" size={28} />
                 <p className="text-sm text-gray-400 font-medium">
                   No open tracks matched this selection query.
@@ -311,8 +361,8 @@ export default function CareersPage() {
         id="apply-form-section"
         className="max-w-2xl mx-auto px-4 py-16 scroll-mt-6"
       >
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 sm:p-10 backdrop-blur-md shadow-2xl relative">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
+        <div className="bg-white/2 border border-white/6 rounded-2xl p-6 sm:p-10 backdrop-blur-md shadow-2xl relative">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-linear-to-r from-transparent via-blue-500/40 to-transparent" />
 
           <div className="text-center mb-8">
             <h2 className="font-heading text-2xl font-extrabold tracking-tight text-white mb-2">
@@ -351,7 +401,7 @@ export default function CareersPage() {
                 onChange={handleChange}
                 placeholder="John Doe"
                 required
-                className="w-full bg-black border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white font-sans outline-none placeholder-white/20 transition-all duration-200 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10"
+                className="w-full bg-black border border-white/8 rounded-xl px-4 py-3 text-sm text-white font-sans outline-none placeholder-white/20 transition-all duration-200 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10"
               />
             </div>
 
@@ -365,7 +415,7 @@ export default function CareersPage() {
                 value={form.jobTitle}
                 onChange={handleChange}
                 required
-                className="w-full bg-black border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white font-sans outline-none cursor-pointer transition-all duration-200 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10 appearance-none"
+                className="w-full bg-black border border-white/8 rounded-xl px-4 py-3 text-sm text-white font-sans outline-none cursor-pointer transition-all duration-200 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10 appearance-none"
                 style={{
                   backgroundImage:
                     "url(\"data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e\")",
@@ -394,7 +444,7 @@ export default function CareersPage() {
               <label className="block text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-1.5 font-heading">
                 Upload Resume / CV <span className="text-blue-500">*</span>
               </label>
-              <div className="relative group/zone w-full flex flex-col items-center justify-center border-2 border-dashed border-white/[0.08] hover:border-blue-500/40 bg-black/40 rounded-xl p-6 text-center transition-colors duration-200">
+              <div className="relative group/zone w-full flex flex-col items-center justify-center border-2 border-dashed border-white/8 hover:border-blue-500/40 bg-black/40 rounded-xl p-6 text-center transition-colors duration-200">
                 <input
                   type="file"
                   accept=".pdf,.doc,.docx"

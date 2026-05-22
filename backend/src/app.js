@@ -35,6 +35,8 @@ import domainsRoutes from "./routes/domain.routes.js";
 import policyRoutes from "./routes/policy.routes.js";
 import contatUsRoutes from "./routes/contactus.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
+import applicantRoutes from "./routes/applicant.routes.js";
+import newsletterRoutes from "./routes/newsletter.routes.js";
 
 // ===============================================
 // 🧠 Environment Config
@@ -162,6 +164,8 @@ app.use(`${routePrefix}/domains`, domainsRoutes);
 app.use(`${routePrefix}/policy`, policyRoutes);
 app.use(`${routePrefix}/contact`, contatUsRoutes);
 app.use(`${routePrefix}/upload`, uploadRoutes);
+app.use(`${routePrefix}/applicant`, applicantRoutes);
+app.use(`${routePrefix}/newsletter`, newsletterRoutes);
 
 // ===============================================
 // 🩵 Health Check

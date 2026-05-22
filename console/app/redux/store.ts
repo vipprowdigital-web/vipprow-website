@@ -28,6 +28,10 @@ import { domainApi } from "~/features/domains/data/domainsApi";
 import serviceReducer from "~/features/service/data/serviceSlice";
 import { serviceApi } from "~/features/service/data/serviceApi";
 
+// ⚙️ Service Feature
+import applicantReducer from "~/features/applicant/data/applicantSlice";
+import { applicantApi } from "~/features/applicant/data/applicantApi";
+
 // ⚙️  Policy Feature
 import policyReducer from "~/features/policy/data/policySlice";
 import { policyApi } from "~/features/policy/data/policyApi";
@@ -73,13 +77,17 @@ export const store = configureStore({
     category: categoryReducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
 
-// ✅ Domain state + API
+    // ✅ Domain state + API
     domain: domainReducer,
     [domainApi.reducerPath]: domainApi.reducer,
 
     // ✅ Service state + API
     service: serviceReducer,
     [serviceApi.reducerPath]: serviceApi.reducer,
+
+    // ✅ Applicant state + API
+    applicant: applicantReducer,
+    [applicantApi.reducerPath]: applicantApi.reducer,
 
     // ✅ Policy state + API
     policy: policyReducer,
@@ -113,12 +121,13 @@ export const store = configureStore({
       categoryApi.middleware,
       domainApi.middleware,
       serviceApi.middleware,
+      applicantApi.middleware,
       policyApi.middleware,
       testimonialApi.middleware,
       galleryApi.middleware,
       certificateApi.middleware,
       userCertificateApi.middleware,
-      contactApi.middleware
+      contactApi.middleware,
     ),
 });
 

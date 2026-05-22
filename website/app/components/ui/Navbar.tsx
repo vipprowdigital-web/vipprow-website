@@ -36,9 +36,13 @@ export function NavbarMenu() {
       link: "/articles",
     },
     {
-      name: "Contact",
-      link: "/contact",
+      name: "Careers",
+      link: "/careers",
     },
+    // {
+    //   name: "Contact",
+    //   link: "/contact",
+    // },
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

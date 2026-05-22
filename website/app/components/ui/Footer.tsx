@@ -22,10 +22,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { AppConfig } from "@/types/app-config";
 import { usePublicPolicies } from "@/app/features/policy/hook/usePolicy";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function Footer() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [email, setEmail] = useState("");
 
   const appConfig = useSelector(
     (state: RootState) => state.appConfig.data as AppConfig | null,
@@ -113,6 +116,42 @@ export default function Footer() {
     ...(legalLinks.length > 0 ? (["legal"] as NavigationSection[]) : []),
   ];
 
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email || !email.trim() || !email.includes("@")) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    // const loadingToastId = toast.loading("Subscribing to newsletter...");
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
+      const { data } = await axios.post(`${apiUrl}/newsletter/subscribe`, {
+        email,
+      });
+
+      if (data.success === false) {
+        toast.error(data.message || "Failed to deliver subscription email.");
+        return;
+      }
+
+      toast.success(data.message || "Subscribed successfully!");
+      setEmail("");
+    } catch (error: unknown) {
+      console.error("Subscription error:", error);
+
+      if (axios.isAxiosError(error)) {
+        const serverMessage = error.response?.data?.message;
+        toast.error(serverMessage || "Server error occurred.");
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
+    }
+  };
+
   if (!mounted) return null;
 
   return (
@@ -144,7 +183,7 @@ export default function Footer() {
                     size="icon"
                     variant="outline"
                     asChild
-                    className="hover:bg-primary dark:hover:bg-blue-600 !border-primary/30 !hover:border-primary cursor-pointer shadow-none transition-all duration-500 hover:scale-110 hover:-rotate-12 hover:text-white hover:shadow-md"
+                    className="hover:bg-primary dark:hover:bg-blue-600 border-primary/30! !hover:border-primary cursor-pointer shadow-none transition-all duration-500 hover:scale-110 hover:-rotate-12 hover:text-white hover:shadow-md"
                   >
                     <Link href={href!} target="_blank">
                       <Icon className="h-4 w-4" />
@@ -167,7 +206,7 @@ export default function Footer() {
               </Button> */}
             </div>
             <form
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubscribe}
               className="w-full max-w-md space-y-3"
             >
               <label htmlFor="email" className="block text-sm font-medium">
@@ -177,6 +216,9 @@ export default function Footer() {
                 <Input
                   type="email"
                   id="email"
+                  value={email}
+                  name="email"
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   className="h-12 w-full"
                   required
@@ -192,7 +234,7 @@ export default function Footer() {
                 Get the latest updates, tutorials, and exclusive offers.
               </p>
             </form>
-            <h1 className="font-heading from-muted-foreground/95 bg-gradient-to-b bg-clip-text text-3xl font-extrabold text-transparent lg:text-6xl">
+            <h1 className="font-heading from-muted-foreground/95 bg-linear-to-b bg-clip-text text-3xl font-extrabold text-transparent lg:text-6xl">
               Grow with us.
             </h1>
           </div>
@@ -207,13 +249,19 @@ export default function Footer() {
                 <ul className="space-y-3">
                   {data().navigation[section].map((item) => (
                     <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        className="group text-muted-foreground hover:text-blue-500 decoration-blue-600 -ml-5 inline-flex items-center gap-1 underline-offset-8 transition-all duration-500 hover:pl-5 hover:underline"
-                      >
-                        <ArrowDownLeft className="text-primary rotate-225 opacity-30 transition-all duration-500 group-hover:opacity-100 sm:group-hover:rotate-225 md:rotate-0" />
-                        {item.name}
-                      </Link>
+                      {item.href === "#" ? (
+                        <p className="group text-muted-foreground  decoration-blue-600 -ml-5 inline-flex items-center gap-1 underline-offset-8 transition-all duration-500">
+                          {item.name}
+                        </p>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          className="group text-muted-foreground hover:text-blue-500 decoration-blue-600 -ml-5 inline-flex items-center gap-1 underline-offset-8 transition-all duration-500 hover:pl-5 hover:underline"
+                        >
+                          <ArrowDownLeft className="text-primary rotate-225 opacity-30 transition-all duration-500 group-hover:opacity-100 sm:group-hover:rotate-225 md:rotate-0" />
+                          {item.name}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -243,7 +291,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="animate-rotate-3d via-blue-600 h-px w-full bg-gradient-to-r from-transparent to-transparent" />
+        <div className="animate-rotate-3d via-blue-600 h-px w-full bg-linear-to-r from-transparent to-transparent" />
         <div className="text-muted-foreground container m-auto flex flex-col items-center justify-between gap-4 p-4 text-xs md:flex-row md:px-0 md:text-sm">
           <p className="">&copy; {currentYear} Vipprow | All rights reserved</p>
           <div className="flex items-center gap-4">
@@ -254,7 +302,7 @@ export default function Footer() {
             ))} */}
           </div>
         </div>
-        <span className="from-blue-600/20 absolute inset-x-0 bottom-0 left-0 -z-10 h-1/3 w-full bg-gradient-to-t" />
+        <span className="from-blue-600/20 absolute inset-x-0 bottom-0 left-0 -z-10 h-1/3 w-full bg-linear-to-t" />
       </div>
 
       {/* Animations */}

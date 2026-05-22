@@ -54,6 +54,7 @@ export default async function ArticlesPage({
             <EditorialCard
               key={item._id}
               href={`/articles/details/${item._id}`}
+              // href={`/articles/details/${item.slug}`}
               image={item.thumbnail ?? "/image/placeholder.png"}
               title={item.title}
               category_name={
