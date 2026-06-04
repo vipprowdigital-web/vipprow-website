@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, isValidElement } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -36,19 +36,24 @@ export default function Footer() {
 
   const socialLinks = [
     {
-      icon: Facebook,
+      icon: "/assets/socials/facebook-logo.svg",
       label: "Facebook",
       href: appConfig?.facebookLink,
     },
     {
-      icon: Instagram,
+      icon: "/assets/socials/instagram-logo.svg",
       label: "Instagram",
       href: appConfig?.instagramLink,
     },
     {
-      icon: Linkedin,
+      icon: "/assets/socials/linkedin-logo.svg",
       label: "LinkedIn",
       href: appConfig?.linkedinLink,
+    },
+    {
+      icon: "/assets/socials/twitter-logo.svg",
+      label: "Twitter",
+      href: appConfig?.twitterLink,
     },
     {
       icon: MessageCircleMore,
@@ -96,6 +101,7 @@ export default function Footer() {
         { name: "Blog", href: "/articles" },
         { name: "Careers", href: "/careers" },
         { name: "Contact", href: "/contact" },
+        { name: "Portfolio", href: "https://portfolio.vipprow.com/" },
       ],
       // resources: [
       //   { name: "Docs", href: "/docs" },
@@ -167,7 +173,8 @@ export default function Footer() {
                 src="/assets/images/logo/vipprow_logo.svg"
                 alt="Logo"
                 width={200}
-                height={200}
+                height={50}
+                style={{ width: "200px", height: "auto" }}
                 className=""
               />
             </Link>
@@ -177,7 +184,34 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-2">
               <div className="flex gap-2">
-                {socialLinks.map(({ icon: Icon, label, href }) => (
+                {socialLinks.map(({ icon, label, href }) => {
+                  const isLocalSvg = typeof icon === "string";
+                  const LucideIcon = !isLocalSvg ? icon : null;
+                  return (
+                    <Button
+                      key={label}
+                      size="icon"
+                      variant="outline"
+                      asChild
+                      className="hover:bg-primary dark:hover:bg-blue-600 border-primary/30! !hover:border-primary cursor-pointer shadow-none transition-all duration-500 hover:scale-110 hover:-rotate-12 hover:text-white hover:shadow-md"
+                    >
+                      <Link href={href!} target="_blank">
+                        {isLocalSvg ? (
+                          <Image
+                            src={icon as string}
+                            alt={label}
+                            width={16}
+                            height={16}
+                            className={`h-5 w-5 object-contain ${label === "Twitter" ? "" : "dark:invert"}`}
+                          />
+                        ) : (
+                          LucideIcon && <LucideIcon className="h-4 w-4" />
+                        )}
+                      </Link>
+                    </Button>
+                  );
+                })}
+                {/* {socialLinks.map(({ icon: Icon, label, href }) => (
                   <Button
                     key={label}
                     size="icon"
@@ -189,13 +223,13 @@ export default function Footer() {
                       <Icon className="h-4 w-4" />
                     </Link>
                   </Button>
-                ))}
+                ))} */}
               </div>
               {/* <Button
                 variant="outline"
                 size="icon"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="hover:bg-primary dark:hover:bg-blue-600 !border-primary/30 !hover:border-primary cursor-pointer shadow-none transition-all duration-1000 hover:scale-110 hover:-rotate-12 hover:text-white hover:shadow-md"
+                className="hover:bg-primary dark:hover:bg-blue-600 border-primary/30! !hover:border-primary cursor-pointer shadow-none transition-all duration-1000 hover:scale-110 hover:-rotate-12 hover:text-white hover:shadow-md"
               >
                 {theme === "dark" ? (
                   <Sun className="h-4 w-4" />

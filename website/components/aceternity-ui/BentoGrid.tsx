@@ -41,7 +41,7 @@ const features = [
     cta: "Learn more",
     className: "col-span-3 lg:col-span-1",
     background: (
-      <ChatDemoLoop className="absolute top-0 right-2 h-[400px] w-full scale-100 border-none [mask-image:linear-gradient(to_top,transparent_5%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-100" />
+      <ChatDemoLoop className="absolute top-0 right-2 h-100 w-full scale-100 border-none mask-[linear-gradient(to_top,transparent_5%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-100" />
       // <AnimatedListDemo className="absolute top-4 right-2 h-[450px] w-full scale-100 border-none [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-90" />
     ),
   },

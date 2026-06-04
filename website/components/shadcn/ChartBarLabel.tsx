@@ -56,7 +56,7 @@ export function ChartBarLabelSection({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "relative flex h-[500px] w-full flex-col overflow-hidden p-2",
+        "relative flex h-125 w-full flex-col overflow-hidden p-2",
         className,
       )}
     >

@@ -53,7 +53,7 @@ export default function EditorialGrid({
           <EditorialCard
             key={item._id}
             href={`/articles/details/${item._id}`}
-            image={item.thumbnail ?? "/image/placeholder.png"}
+            image={item.thumbnail ?? "/assets/images/backgrounds/b2.jpg"}
             title={item.title}
             category_name={
               typeof item.category === "object" && item.category !== null

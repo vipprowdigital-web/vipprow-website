@@ -72,7 +72,7 @@ Decisions Powered by Data"
                   height={500}
                   alt="Product preview"
                   className="w-full h-full object-cover"
-                  loading="lazy"
+                  
                 />
               </div>
             </div>

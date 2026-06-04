@@ -33,9 +33,7 @@ const reviews = [
     body: "I'm at a loss for words. This is amazing. I love it.",
     img: "/assets/images/logo/products/CRM.png",
   },
-  
 ];
-
 
 const firstRow = reviews.slice(0, reviews.length);
 
@@ -55,26 +53,22 @@ const ReviewCard = ({
       className={cn(
         "relative h-full w-40 cursor-pointer overflow-hidden bg-transparent shrink-0",
         // light styles
-        "border-black/[.1] bg-black/[.01] hover:bg-black/[.05]",
+        "border-black/10 bg-black/1 hover:bg-black/5",
         // dark styles
-        "dark:border-black/[.1] dark:bg-black/[.10] dark:hover:bg-black/[.15]"
+        "dark:border-black/10 dark:bg-black/10 dark:hover:bg-black/15",
       )}
     >
-     <div className="w-32 h-32 flex items-center justify-center rounded-xl shadow-sm p-0 gap-6">
-  <Image
-    src={img}
-    alt={name}
-    width={128}
-    height={128}
-    className="object-contain "
-  />
-</div>
+      <div className="w-32 h-32 flex items-center justify-center rounded-xl shadow-sm p-0 gap-6">
+        <Image
+          src={img}
+          alt={name}
+          width={128}
+          height={128}
+          className="object-contain"
+        />
+      </div>
 
-
-
-
-
-{/* 
+      {/* 
        <Image
           src={img}
           alt="Brand Name"

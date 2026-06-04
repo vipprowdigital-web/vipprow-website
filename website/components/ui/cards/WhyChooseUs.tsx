@@ -16,7 +16,6 @@ export default function WhyChooseUs() {
               width={800}
               height={500}
               className="w-full h-full object-cover"
-              loading="lazy"
             />
           </div>
         </div>

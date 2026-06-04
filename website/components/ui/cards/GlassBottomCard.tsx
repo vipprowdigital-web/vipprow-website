@@ -4,7 +4,7 @@ import Link from "next/link";
 interface GlassBottomCardProps {
   image: string;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   tag?: string;
   href: string;
 }
@@ -25,7 +25,7 @@ export default function GlassBottomCard({
           alt={title}
           width={800}
           height={800}
-          className="w-full h-80 object-cover"
+          className="w-full h-80 object-contain rounded-2xl bg-white"
           priority
         />
 
@@ -41,10 +41,10 @@ export default function GlassBottomCard({
         "
         >
           <div>
-            <h4 className="text-sm font-semibold font-heading text-white">
+            <h4 className="text-sm font-semibold font-heading text-black">
               {title}
             </h4>
-            <p className="text-xs text-white/70">{subtitle}</p>
+            <p className="text-xs text-black/70">{subtitle}</p>
           </div>
 
           {/* {tag && (

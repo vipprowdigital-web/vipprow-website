@@ -49,7 +49,7 @@ export default function DigitalMarketingHeroSection() {
                     className="w-full"
                     width={1000}
                     height={500}
-                    loading="lazy"
+                    
                   />
                 </motion.div>
               </div>

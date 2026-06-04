@@ -14,18 +14,18 @@ export default function EditorialCard({
   title,
   category_name,
 }: EditorialCardProps) {
-  const safeImage = image ?? "/image/placeholder.png";
+  const safeImage = image ?? "/assets/images/backgrounds/b2.jpg";
   const safeTitle = title ?? "Untitled Article";
   const safeCategory = category_name ?? "Uncategorized";
 
   return (
     <Link href={`${href}`}>
-      <div className="group cursor-pointer">
+      <div className="group cursor-pointer  border border-zinc-900 rounded-2xl overflow-hidden">
         {/* Image Card */}
         <div
           className="
           relative aspect-video overflow-hidden rounded-sm
-          bg-zinc-900
+          bg-zinc-900 
         "
         >
           {/* Background image */}
@@ -38,12 +38,12 @@ export default function EditorialCard({
             transition-transform duration-700
             group-hover:scale-105
           "
-            loading="lazy"
+            priority
           />
         </div>
 
         {/* Text */}
-        <div className="mt-3 space-y-1">
+        <div className="mt-3 space-y-1 p-4">
           <p className="text-md text-zinc-200">{title}</p>
           <span className="text-xs text-zinc-300">{safeCategory}</span>
         </div>

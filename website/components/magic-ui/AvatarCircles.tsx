@@ -1,32 +1,44 @@
-import { AvatarCircles } from "../ui/avatar-circles"
+import { AvatarCircles } from "../ui/avatar-circles";
 
 const avatars = [
   {
-    imageUrl: "assets/images/clients logo/allure.jpg",
-    profileUrl: "assets/images/clients logo/allure.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779539847/allure_so2b7p.jpg",
+    profileUrl:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779539847/allure_so2b7p.jpg",
   },
   {
-    imageUrl: "assets/images/clients logo/aman-motors.jpg.jpeg",
-    profileUrl: "assets/images/clients logo/aman-motors.jpg.jpeg",
+    imageUrl:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779539848/aman-motors.jpg_gsrrtd.jpg",
+    profileUrl:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779539848/aman-motors.jpg_gsrrtd.jpg",
   },
   {
-    imageUrl: "assets/images/clients logo/belleza.jpg",
-    profileUrl: "assets/images/clients logo/belleza.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779539848/belleza_umsgkj.jpg",
+    profileUrl:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779539848/belleza_umsgkj.jpg",
   },
   {
-    imageUrl: "assets/images/clients logo/Bunty Mart (1).png",
-    profileUrl: "assets/images/clients logo/Bunty Mart (1).png",
+    imageUrl:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779539848/Bunty_Mart_1_fpw0nz.png",
+    profileUrl:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779539848/Bunty_Mart_1_fpw0nz.png",
   },
   {
-    imageUrl: "assets/images/clients logo/mango-tree.jpg",
-    profileUrl: "assets/images/clients logo/mango-tree.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779539848/mango-tree_cykmon.jpg",
+    profileUrl:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779539848/mango-tree_cykmon.jpg",
   },
   {
-    imageUrl: "assets/images/clients logo/odyssefy.jpg",
-    profileUrl: "assets/images/clients logo/odyssefy.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779539848/odyssefy_rva7dz.jpg",
+    profileUrl:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779539848/odyssefy_rva7dz.jpg",
   },
-]
+];
 
 export function AvatarCirclesRow() {
-  return <AvatarCircles numPeople={99} avatarUrls={avatars} />
+  return <AvatarCircles numPeople={99} avatarUrls={avatars} />;
 }

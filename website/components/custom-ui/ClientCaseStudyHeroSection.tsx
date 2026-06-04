@@ -57,7 +57,6 @@ export default function ClientCaseStudyHeroSection() {
               src="https://i.postimg.cc/0yk8Vz7t/dashboard.webp"
               className="w-full rounded-lg border shadow-lg"
               alt="unlink"
-              loading="lazy"
             />
           </div>
         </div>

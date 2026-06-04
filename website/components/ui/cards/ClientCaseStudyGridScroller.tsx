@@ -47,8 +47,18 @@ const SERVICES = [
 ];
 
 /* ------------------ COMPONENT ------------------ */
+interface ClientItem {
+  image: string;
+  title: string;
+  subtitle?: string; // Optional field since it's present in SERVICES data
+  tag: string;
+}
 
-export default function ClientCaseStudyGridScroller() {
+export default function ClientCaseStudyGridScroller({
+  clients,
+}: {
+  clients: ClientItem[];
+}) {
   return (
     <section className="relative py-20 bg-black overflow-hidden max-w-7xl mx-auto">
       <div className="relative px-6 md:px-16">
@@ -64,18 +74,23 @@ export default function ClientCaseStudyGridScroller() {
             pauseOnMouseEnter: true,
           }}
           speed={6000} // 🔥 controls scroll smoothness
-          className="!overflow-visible"
+          className="overflow-visible!"
         >
-          {SERVICES.map((service, index) => (
-            <SwiperSlide key={index} className="!w-[260px] md:!w-[280px]">
-              <GlassBottomCard href="#" {...service} />
+          {clients.map((client, index) => (
+            <SwiperSlide key={index} className="w-65! md:w-70!">
+              <GlassBottomCard href="#" {...client} />
             </SwiperSlide>
           ))}
+          {/* {SERVICES.map((service, index) => (
+            <SwiperSlide key={index} className="w-65! md:w-70!">
+              <GlassBottomCard href="#" {...service} />
+            </SwiperSlide>
+          ))} */}
         </Swiper>
 
         {/* Fade edges */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-black to-transparent z-10" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-black to-transparent z-10" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-linear-to-r from-black to-transparent z-10" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-linear-to-l from-black to-transparent z-10" />
       </div>
     </section>
   );

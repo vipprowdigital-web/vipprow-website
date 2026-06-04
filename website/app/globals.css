@@ -215,11 +215,11 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image: url("https://res.cloudinary.com/dh87x8i37/image/upload/v1769848271/artistic-blurry-colorful-wallpaper-background_gialtg.jpg");
-    background-size: cover;
-    background-position: top;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    /* background-image: url("https://res.cloudinary.com/dh87x8i37/image/upload/v1769848271/artistic-blurry-colorful-wallpaper-background_gialtg.jpg"); */
+    /* background-size: cover; */
+    /* background-position: top; */
+    /* background-repeat: no-repeat; */
+    /* background-attachment: fixed; */
   }
 }
 

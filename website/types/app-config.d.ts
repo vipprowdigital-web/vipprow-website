@@ -15,4 +15,5 @@ export interface AppConfig {
   instagramLink?: string;
   linkedinLink?: string;
   whatsAppLink?: string;
+  twitterLink?: string;
 }
