@@ -1,23 +1,11 @@
 "use client";
-import { useEffect, useState, isValidElement } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { Input } from "@/components/ui/input";
-import {
-  Github,
-  Linkedin,
-  Twitter,
-  Moon,
-  Sun,
-  ArrowDownLeft,
-  MessageCircle,
-  Facebook,
-  Instagram,
-  MessageCircleMore,
-  MapPin,
-} from "lucide-react";
+import { ArrowDownLeft, MessageCircleMore, MapPin } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { AppConfig } from "@/types/app-config";
@@ -122,7 +110,7 @@ export default function Footer() {
     ...(legalLinks.length > 0 ? (["legal"] as NavigationSection[]) : []),
   ];
 
-  const handleSubscribe = async (e) => {
+  const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email || !email.trim() || !email.includes("@")) {
       toast.error("Please enter a valid email address.");
