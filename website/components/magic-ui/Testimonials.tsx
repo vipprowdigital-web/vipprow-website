@@ -11,31 +11,31 @@ import Link from "next/link";
 import Image from "next/image";
 import { BorderBeam } from "../ui/border-beam";
 
-const reviews = [
-  {
-    name: "Belleza Beauty & Makeup Academy",
-    username: "Client Dep. 1",
-    body: `Vipprow’s ad strategy gave us a strong boost in leads and conversions.
-    <span>What we liked most is their transparency and performance tracking approach.</span>
-    We could clearly see how the digital marketing investment was converting into real inquiries.`,
-    img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
-  },
-  {
-    name: "The Mango Tree Staycation",
-    username: "Client Dep. 2",
-    body: `We wanted digital marketing that looks premium and feels authentic —
-    <span>The content they created was aligned with our brand vibe.</span>
-    Vipprow doesn’t just post content — they build brand value.`,
-    img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
-  },
-  {
-    name: "Odyssefy | Travel Agency",
-    username: "Client Dep. 3",
-    body: `Smooth onboarding and clear communication.
-    <span>Their optimization improved our engagement significantly.</span>`,
-    img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1",
-  },
-];
+// const reviews = [
+//   {
+//     name: "Belleza Beauty & Makeup Academy",
+//     username: "Client Dep. 1",
+//     body: `Vipprow’s ad strategy gave us a strong boost in leads and conversions.
+//     <span>What we liked most is their transparency and performance tracking approach.</span>
+//     We could clearly see how the digital marketing investment was converting into real inquiries.`,
+//     img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
+//   },
+//   {
+//     name: "The Mango Tree Staycation",
+//     username: "Client Dep. 2",
+//     body: `We wanted digital marketing that looks premium and feels authentic —
+//     <span>The content they created was aligned with our brand vibe.</span>
+//     Vipprow doesn’t just post content — they build brand value.`,
+//     img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
+//   },
+//   {
+//     name: "Odyssefy | Travel Agency",
+//     username: "Client Dep. 3",
+//     body: `Smooth onboarding and clear communication.
+//     <span>Their optimization improved our engagement significantly.</span>`,
+//     img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1",
+//   },
+// ];
 
 export default function TestimonialMarquee() {
   const { data, isLoading, isError } = useTestimonials({
@@ -95,7 +95,7 @@ export default function TestimonialMarquee() {
 
                     {/* RIGHT IMAGE */}
                     <div className="flex justify-center md:justify-end">
-                      <div className="relative w-[300px] h-[300px] rounded-full overflow-hidden">
+                      <div className="relative w-75 h-75 rounded-full overflow-hidden">
                         <Image
                           fill
                           src={testimonial.avatar ?? ""}

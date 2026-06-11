@@ -58,13 +58,13 @@ const ReviewCard = ({
         "dark:border-black/10 dark:bg-black/10 dark:hover:bg-black/15",
       )}
     >
-      <div className="w-32 h-32 flex items-center justify-center rounded-xl shadow-sm p-0 gap-6">
+      <div className="relative w-32 h-32 flex items-center justify-center rounded-xl shadow-sm">
         <Image
           src={img}
           alt={name}
-          width={128}
-          height={128}
+          fill
           className="object-contain"
+          sizes="128px"
         />
       </div>
 

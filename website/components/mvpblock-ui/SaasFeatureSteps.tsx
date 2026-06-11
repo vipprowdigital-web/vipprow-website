@@ -106,7 +106,7 @@ export default function SaasFeatureSteps() {
 
           <div
             className={cn(
-              "border-blue-600/20 relative order-1 h-[200px] overflow-hidden rounded-xl border [box-shadow:0_5px_30px_-15px_rgba(30,78,200,0.15)] md:order-2 md:h-[300px] lg:h-[400px]",
+              "border-blue-600/20 relative order-1 h-50 overflow-hidden rounded-xl border [box-shadow:0_5px_30px_-15px_rgba(30,78,200,0.15)] md:order-2 md:h-75 lg:h-100",
             )}
           >
             <AnimatePresence mode="wait">
@@ -128,7 +128,7 @@ export default function SaasFeatureSteps() {
                         width={1000}
                         height={500}
                       />
-                      <div className="from-background via-background/50 absolute right-0 bottom-0 left-0 h-2/3 bg-gradient-to-t to-transparent" />
+                      <div className="from-background via-background/50 absolute right-0 bottom-0 left-0 h-2/3 bg-linear-to-t to-transparent" />
 
                       <div className="bg-background/80 absolute bottom-4 left-4 rounded-lg p-2 backdrop-blur-sm">
                         <span className="text-blue-600 text-xs font-medium">

@@ -7,44 +7,44 @@ import "swiper/css";
 
 /* ------------------ DATA ------------------ */
 
-const SERVICES = [
-  {
-    image: "/assets/images/services/marketing.jpg",
-    title: "Digital Marketing",
-    subtitle: "Growth-driven campaigns",
-    tag: "Growth",
-  },
-  {
-    image: "/assets/images/services/seo.jpg",
-    title: "SEO Optimization",
-    subtitle: "Search visibility",
-    tag: "SEO",
-  },
-  {
-    image: "/assets/images/services/branding.jpg",
-    title: "Brand Identity",
-    subtitle: "Visual branding",
-    tag: "Brand",
-  },
-  {
-    image: "/assets/images/services/marketing.jpg",
-    title: "Digital Marketing",
-    subtitle: "Growth-driven campaigns",
-    tag: "Growth",
-  },
-  {
-    image: "/assets/images/services/seo.jpg",
-    title: "SEO Optimization",
-    subtitle: "Search visibility",
-    tag: "SEO",
-  },
-  {
-    image: "/assets/images/services/branding.jpg",
-    title: "Brand Identity",
-    subtitle: "Visual branding",
-    tag: "Brand",
-  },
-];
+// const SERVICES = [
+//   {
+//     image: "/assets/images/services/marketing.jpg",
+//     title: "Digital Marketing",
+//     subtitle: "Growth-driven campaigns",
+//     tag: "Growth",
+//   },
+//   {
+//     image: "/assets/images/services/seo.jpg",
+//     title: "SEO Optimization",
+//     subtitle: "Search visibility",
+//     tag: "SEO",
+//   },
+//   {
+//     image: "/assets/images/services/branding.jpg",
+//     title: "Brand Identity",
+//     subtitle: "Visual branding",
+//     tag: "Brand",
+//   },
+//   {
+//     image: "/assets/images/services/marketing.jpg",
+//     title: "Digital Marketing",
+//     subtitle: "Growth-driven campaigns",
+//     tag: "Growth",
+//   },
+//   {
+//     image: "/assets/images/services/seo.jpg",
+//     title: "SEO Optimization",
+//     subtitle: "Search visibility",
+//     tag: "SEO",
+//   },
+//   {
+//     image: "/assets/images/services/branding.jpg",
+//     title: "Brand Identity",
+//     subtitle: "Visual branding",
+//     tag: "Brand",
+//   },
+// ];
 
 /* ------------------ COMPONENT ------------------ */
 interface ClientItem {
@@ -60,7 +60,7 @@ export default function ClientCaseStudyGridScroller({
   clients: ClientItem[];
 }) {
   return (
-    <section className="relative py-20 bg-black overflow-hidden max-w-7xl mx-auto">
+    <section className="relative py-20 bg-black overflow-hidden max-w-7xl mx-auto min-h-120">
       <div className="relative px-6 md:px-16">
         <Swiper
           modules={[Autoplay]}

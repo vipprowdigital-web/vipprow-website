@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Webhook } from "lucide-react";
-import Image from "next/image";
+// import Image from "next/image";
 import { BorderBeam } from "@/components/ui/border-beam";
 import PrimaryHeading from "../ui/heading/PrimaryHeading";
 import { useRouter } from "next/navigation";
@@ -207,7 +207,7 @@ export default function FaqSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="from-blue-600/30 via-blue-600/10 to-blue-600/5 border-blue-600/30 group relative m-auto mt-10 flex w-full flex-col items-center justify-center overflow-hidden rounded-xl border bg-gradient-to-tl px-8 py-12 text-center shadow-[0_0_45px_10px_hsl(var(--blue-600)/0.15)] transition-all duration-500 hover:shadow-[0_0_45px_10px_hsl(var(--blue-600)/0.2)] mt-20"
+          className="from-blue-600/30 via-blue-600/10 to-blue-600/5 border-blue-600/30 group relative m-auto mt-10 flex w-full flex-col items-center justify-center overflow-hidden rounded-xl border bg-linear-to-tl px-8 py-12 text-center shadow-[0_0_45px_10px_hsl(var(--blue-600)/0.15)] transition-all duration-500 hover:shadow-[0_0_45px_10px_hsl(var(--blue-600)/0.2)]"
         >
           <BorderBeam
             duration={12}

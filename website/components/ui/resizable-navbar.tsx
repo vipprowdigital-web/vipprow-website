@@ -37,9 +37,9 @@ type LinkButton = NavbarButtonCommon & {
 
 type NavbarButtonProps = AnchorButton | ButtonButton | LinkButton;
 
-type PolymorphicProps<T extends React.ElementType, Props = {}> = Props & {
-  as?: T;
-} & Omit<React.ComponentPropsWithoutRef<T>, keyof Props | "as">;
+// type PolymorphicProps<T extends React.ElementType, Props = {}> = Props & {
+//   as?: T;
+// } & Omit<React.ComponentPropsWithoutRef<T>, keyof Props | "as">;
 
 interface NavbarProps {
   children: React.ReactNode;
@@ -81,10 +81,7 @@ interface MobileNavMenuProps {
 
 export const Navbar = ({ children, className }: NavbarProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
+  const { scrollY } = useScroll();
   const [visible, setVisible] = useState<boolean>(false);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -271,7 +268,8 @@ export const NavbarLogo = () => {
         alt="Logo"
         width={120}
         height={50}
-        // style={{ width: "120px", height: "auto" }}
+        unoptimized
+        style={{ width: "120px", height: "auto" }}
       />
     </Link>
   );

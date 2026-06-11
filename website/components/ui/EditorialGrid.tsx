@@ -42,7 +42,22 @@ export default function EditorialGrid({
 
   if (loading) {
     return (
-      <section className="px-6 py-16 text-white">Loading articles...</section>
+      <section className="px-6 py-16">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: itemsPerPage }).map((_, i) => (
+            <div
+              key={i}
+              className="rounded-2xl overflow-hidden border border-zinc-900"
+            >
+              <div className="aspect-video bg-zinc-900 animate-pulse rounded-sm" />
+              <div className="mt-3 space-y-2 p-4">
+                <div className="h-4 bg-zinc-800 animate-pulse rounded w-3/4" />
+                <div className="h-3 bg-zinc-800 animate-pulse rounded w-1/4" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     );
   }
 

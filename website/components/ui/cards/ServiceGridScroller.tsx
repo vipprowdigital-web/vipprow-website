@@ -55,13 +55,17 @@ export default function ServiceGridScroller({
   });
 
   if (domainLoading)
-    return <p className="text-white text-center py-20">Loading domains...</p>;
+    return (
+      <section className="relative py-20 bg-black overflow-hidden max-w-7xl mx-auto min-h-120 flex items-center justify-center">
+        <p className="text-white text-center">Loading...</p>
+      </section>
+    );
 
   if (!filteredDomains.length) return null;
   // return <p className="text-white text-center py-20">No domains found.</p>;
 
   return (
-    <section className="relative py-20 bg-black overflow-hidden max-w-7xl mx-auto">
+    <section className="relative py-20 bg-black overflow-hidden max-w-7xl mx-auto min-h-120">
       {/* ------------------- TABS (Animated Glass Style) ------------------- */}
       {/* <div className="px-2 md:px-0 mb-10 flex justify-center">
         <div className="relative inline-flex gap-5 p-1 rounded-full bg-white/5 backdrop-blur-2xl backdrop-saturate-150 border border-white/15 shadow-[0_0_40px_-10px_rgba(255,255,255,0.15)]">
@@ -105,7 +109,9 @@ export default function ServiceGridScroller({
       {/* ------------------- SERVICES SWIPER (Animated) ------------------- */}
       <div className="relative px-6 md:px-16">
         {serviceLoading ? (
-          <p className="text-white text-center">Loading services...</p>
+          <div className="min-h-80 flex items-center justify-center">
+            <p className="text-white text-center">Loading services...</p>
+          </div>
         ) : (
           <AnimatePresence mode="wait">
             <motion.div

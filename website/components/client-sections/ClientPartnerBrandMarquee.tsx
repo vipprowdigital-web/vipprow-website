@@ -6,7 +6,10 @@ import dynamic from "next/dynamic";
 
 const PartnerBrandMarquee = dynamic(
   () => import("@/components/magic-ui/PartnerBrandMarquee"),
-  { ssr: false },
+  {
+    ssr: false,
+    loading: () => <div className="h-32 w-full max-w-7xl mx-auto" />,
+  },
 );
 
 export default function ClientPartnerBrandMarquee() {
