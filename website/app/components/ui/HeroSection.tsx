@@ -1,11 +1,19 @@
 "use client";
 
 import { AvatarCirclesRow } from "@/components/magic-ui/AvatarCircles";
-import { StarsBackgroundVipprow } from "@/components/ui/backgrounds-stars";
 import PrimaryGlowButton from "@/components/ui/buttons/primary-glow-button";
 import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+
+const StarsBackgroundVipprow = dynamic(
+  () =>
+    import("@/components/ui/backgrounds-stars").then(
+      (m) => m.StarsBackgroundVipprow,
+    ),
+  { ssr: false },
+);
 
 export default function HeroSection() {
   const router = useRouter();

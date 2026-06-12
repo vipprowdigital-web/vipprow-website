@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "next-themes";
+// import { useTheme } from "next-themes";
 import { Input } from "@/components/ui/input";
 import { ArrowDownLeft, MessageCircleMore, MapPin } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 export default function Footer() {
-  const { theme, setTheme } = useTheme();
+  // const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState("");
 
@@ -160,10 +160,10 @@ export default function Footer() {
               <Image
                 src="/assets/images/logo/vipprow_logo.svg"
                 alt="Logo"
-                width={200}
-                height={50}
+                width={0}
+                height={0}
+                sizes="200px"
                 style={{ width: "200px", height: "auto" }}
-                className=""
               />
             </Link>
             <p className="text-muted-foreground max-w-md">

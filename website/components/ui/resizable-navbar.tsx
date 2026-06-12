@@ -263,14 +263,18 @@ export const NavbarLogo = () => {
       href="/"
       className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
     >
-      <Image
-        src="/assets/images/logo/vipprow_logo.svg"
-        alt="Logo"
-        width={120}
-        height={50}
-        unoptimized
-        style={{ width: "120px", height: "auto" }}
-      />
+      <div
+        className="relative shrink-0"
+        style={{ width: "120px", height: "50px" }}
+      >
+        <Image
+          src="/assets/images/logo/vipprow_logo.svg"
+          alt="Logo"
+          fill
+          unoptimized
+          style={{ objectFit: "contain" }}
+        />
+      </div>
     </Link>
   );
 };

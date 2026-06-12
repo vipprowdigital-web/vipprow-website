@@ -2,6 +2,10 @@
 
 const nextConfig = {
   output: "standalone",
+  compress: true,
+  experimental: {
+    optimizeCss: true,
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },
