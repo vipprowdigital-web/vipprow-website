@@ -7,7 +7,7 @@ interface GlassBottomCardProps {
   subtitle?: string;
   tag?: string;
   href: string;
-  fromServices: boolean;
+  fromServices?: boolean;
 }
 
 export default function GlassBottomCard({
