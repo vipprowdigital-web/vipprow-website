@@ -272,6 +272,8 @@ export const NavbarLogo = () => {
           alt="Logo"
           fill
           unoptimized
+          priority
+          loading="eager"
           style={{ objectFit: "contain" }}
         />
       </div>

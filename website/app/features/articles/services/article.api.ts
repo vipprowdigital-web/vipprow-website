@@ -29,10 +29,10 @@ export const fetchPublicArticles = async (
   params: ArticleQuery = {},
 ): Promise<ArticleResponse> => {
   const url = new URL(`${BASE_URL}/blog`);
-  const query: Record<string, string | undefined> = {
+  const query = {
     ...params,
     categories: params.categories?.join(","),
-  } as Record<string, string | undefined>;
+  };
 
   Object.entries(query).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
