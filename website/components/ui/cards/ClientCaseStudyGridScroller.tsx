@@ -67,7 +67,7 @@ export default function ClientCaseStudyGridScroller({
           slidesPerView="auto"
           spaceBetween={24}
           grabCursor
-          loop
+          loop={clients.length >= 6}
           autoplay={{
             delay: 2, // 🔥 smooth continuous scroll
             disableOnInteraction: false,

@@ -56,7 +56,9 @@ export default function ClientCaseStudyHeroSection() {
               height={1000}
               src="https://i.postimg.cc/0yk8Vz7t/dashboard.webp"
               className="w-full rounded-lg border shadow-lg"
-              alt="unlink"
+              alt="Vipprow Dashboard"
+              priority
+              loading="eager"
             />
           </div>
         </div>

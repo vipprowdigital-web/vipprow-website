@@ -242,7 +242,7 @@ Our systems are built to deliver measurable results and sustainable growth."
       {/* Client Category A Grid End. */}
 
       {/* Client Category B Grid Start. */}
-      <div className="pt-20 max-w-7xl mx-auto">
+      <div className="pt-0 max-w-7xl mx-auto">
         <PrimaryHeading
           heading="Health Care Sector"
           des="Through analytics and automation, we help healthcare providers grow efficiently and consistently.."
@@ -252,7 +252,7 @@ Our systems are built to deliver measurable results and sustainable growth."
       {/* Client Category B Grid End. */}
 
       {/* Client Category C Grid Start. */}
-      <div className="pt-20 max-w-7xl mx-auto">
+      <div className="pt-0 max-w-7xl mx-auto">
         <PrimaryHeading
           heading="Electrical's & Electronics Sector"
           des="We help electrical and electronics businesses increase product visibility, generate quality inquiries, and drive consistent sales through performance marketing and automation.."
@@ -267,28 +267,28 @@ Our systems are built to deliver measurable results and sustainable growth."
         /> */}
       {/* <ClientCaseStudyGridScroller /> */}
       {/* </div> */}
-      <div className="pt-20 max-w-7xl mx-auto">
+      <div className="pt-0 max-w-7xl mx-auto">
         <PrimaryHeading
           heading="Clothing Sector"
           des="We help fashion brands increase visibility and drive consistent online sales through performance marketing and targeted campaigns.."
         />
         <ClientCaseStudyGridScroller clients={clothingSectorClients} />
       </div>
-      <div className="pt-20 max-w-7xl mx-auto">
+      <div className="pt-0 max-w-7xl mx-auto">
         <PrimaryHeading
           heading="Solar Sector"
           des="From residential to commercial projects, we connect solar companies with serious buyers using performance marketing."
         />
         <ClientCaseStudyGridScroller clients={solarSectorClients} />
       </div>
-      <div className="pt-20 max-w-7xl mx-auto">
+      <div className="pt-0 max-w-7xl mx-auto">
         <PrimaryHeading
           heading="Jewellery Sector"
           des="We elevate jewellery brands with premium digital positioning, high-intent targeting, and conversion-focused strategies."
         />
         <ClientCaseStudyGridScroller clients={jewellerySectorClients} />
       </div>
-      <div className="pt-20 max-w-7xl mx-auto">
+      <div className="pt-0 max-w-7xl mx-auto">
         <PrimaryHeading
           heading="Other Sectors"
           des="We bring our signature premium digital positioning and conversion-focused strategies to leading brands across a diverse range of fast-growing sectors."
@@ -298,7 +298,7 @@ Our systems are built to deliver measurable results and sustainable growth."
       {/* Client Category C Grid End. */}
 
       {/* FAQ Start */}
-      <div className="pt-20 max-w-7xl mx-auto">
+      <div className="pt-0 max-w-7xl mx-auto">
         <FaqSection />
       </div>
       {/* FAQ End */}

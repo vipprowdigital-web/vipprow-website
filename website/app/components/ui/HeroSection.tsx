@@ -2,7 +2,7 @@
 
 import { AvatarCirclesRow } from "@/components/magic-ui/AvatarCircles";
 import PrimaryGlowButton from "@/components/ui/buttons/primary-glow-button";
-import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
+// import SecondaryButton from "@/components/ui/buttons/SecondaryButton";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -76,6 +76,8 @@ export default function HeroSection() {
             alt="VIPPROW Brand"
             width={1000}
             height={500}
+            priority
+            loading="eager"
             className="
             mx-auto w-full max-w-none
             translate-y-1/3

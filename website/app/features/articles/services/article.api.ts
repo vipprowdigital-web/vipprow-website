@@ -1,6 +1,5 @@
 // website\app\features\articles\services\article.api.ts
 
-import { API } from "@/lib/axiosClient";
 import { Article } from "@/types/article";
 
 export interface ArticleQuery {
@@ -23,21 +22,33 @@ export interface ArticleResponse {
   };
 }
 
+const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
+
 // Fetch Article List
 export const fetchPublicArticles = async (
   params: ArticleQuery = {},
 ): Promise<ArticleResponse> => {
-  const res = await API.get("/blog", {
-    params: {
-      ...params,
-      categories: params.categories?.join(","),
-    },
+  const url = new URL(`${BASE_URL}/blog`);
+  const query: Record<string, string | undefined> = {
+    ...params,
+    categories: params.categories?.join(","),
+  } as Record<string, string | undefined>;
+
+  Object.entries(query).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      url.searchParams.set(key, String(value));
+    }
   });
-  return res.data;
+
+  const res = await fetch(url.toString());
+  if (!res.ok) throw new Error(`Failed to fetch articles: ${res.status}`);
+  return res.json();
 };
 
-// Fetch Article By
+// Fetch Article By ID
 export const fetchArticleById = async (id: string): Promise<Article> => {
-  const res = await API.get(`/blog/${id}`);
-  return res.data.data;
+  const res = await fetch(`${BASE_URL}/blog/${id}`);
+  if (!res.ok) throw new Error(`Failed to fetch article: ${res.status}`);
+  const json = await res.json();
+  return json.data;
 };

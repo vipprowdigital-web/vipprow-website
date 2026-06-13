@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import GlassBottomCard from "./GlassBottomCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
@@ -35,19 +35,7 @@ export default function ServiceGridScroller({
     return domainData.data;
   }, [domainData, domainSlug]);
 
-  const [activeDomainId, setActiveDomainId] = useState<string | null>(
-    filteredDomains.length > 0 ? filteredDomains[0]._id : null,
-  );
-
-  /* ---------- Auto Select First Domain ---------- */
-  // useEffect(() => {
-  //   if (filteredDomains.length > 0 && !activeDomainId) {
-  //     setActiveDomainId(filteredDomains[0]._id);
-  //   }
-  // }, [filteredDomains, activeDomainId]);
-
-  const resolvedActiveDomainId =
-    activeDomainId ?? filteredDomains[0]?._id ?? null;
+  const resolvedActiveDomainId = filteredDomains[0]?._id ?? null;
 
   /* ---------- Fetch Services ---------- */
   const { data: serviceData, isLoading: serviceLoading } = usePublicServices({
@@ -115,7 +103,7 @@ export default function ServiceGridScroller({
         ) : (
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeDomainId}
+              key={resolvedActiveDomainId}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
@@ -126,7 +114,7 @@ export default function ServiceGridScroller({
                 slidesPerView="auto"
                 spaceBetween={24}
                 grabCursor
-                loop
+                loop={(serviceData?.data?.length ?? 0) >= 6}
                 autoplay={{
                   delay: 2800,
                   disableOnInteraction: false,
@@ -163,6 +151,7 @@ export default function ServiceGridScroller({
                             : "N/A"
                         }
                         href={`/services/details/${service._id}`}
+                        fromServices={true}
                       />
                     </motion.div>
                   </SwiperSlide>

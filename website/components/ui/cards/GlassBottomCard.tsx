@@ -7,6 +7,7 @@ interface GlassBottomCardProps {
   subtitle?: string;
   tag?: string;
   href: string;
+  fromServices: boolean;
 }
 
 export default function GlassBottomCard({
@@ -15,6 +16,7 @@ export default function GlassBottomCard({
   subtitle,
   tag,
   href,
+  fromServices = false,
 }: GlassBottomCardProps) {
   return (
     <Link href={href}>
@@ -25,26 +27,25 @@ export default function GlassBottomCard({
           alt={title}
           width={800}
           height={800}
-          className="w-full h-80 object-contain rounded-2xl bg-white"
-          priority
+          className={`w-full ${fromServices ? "h-80 object-cover" : "h-50 object-contain"}  rounded-2xl bg-black`}
         />
 
         {/* GLASS BOTTOM OVERLAY */}
         <div
-          className="
+          className={`
           absolute inset-x-0 bottom-0
-          bg-white/10
+          ${fromServices ? "bg-white/5" : "bg-black"}
           backdrop-blur-xl backdrop-saturate-150
           border-t border-white/20
           px-5 py-4
-          flex items-center justify-between
-        "
+          flex items-center justify-between text-center
+        `}
         >
           <div>
-            <h4 className="text-sm font-semibold font-heading text-black">
+            <h4 className="text-sm font-semibold text-center font-heading text-white">
               {title}
             </h4>
-            <p className="text-xs text-black/70">{subtitle}</p>
+            <p className="text-xs text-white/70 text-center">{subtitle}</p>
           </div>
 
           {/* {tag && (
