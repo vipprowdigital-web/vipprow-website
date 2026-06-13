@@ -31,7 +31,7 @@ export default function EditorialGrid({
 
         setArticles(Array.isArray(res.data) ? res.data : [res.data]);
       } catch (error) {
-        console.error("Failed to fetch articles:", error);
+        // console.error("Failed to fetch articles:", error);
       } finally {
         setLoading(false);
       }
