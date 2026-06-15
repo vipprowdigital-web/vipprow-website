@@ -7,7 +7,7 @@ import ClinetLayout from "@/components/client-sections/ClientLayout";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "swap",
+  display: "optional",
   preload: false,
 });
 
@@ -16,7 +16,7 @@ const poppins = Poppins({
   weight: ["400", "600", "700"],
   variable: "--font-poppins",
   display: "swap",
-  preload: false,
+  preload: true,
 });
 
 export const metadata: Metadata = {
