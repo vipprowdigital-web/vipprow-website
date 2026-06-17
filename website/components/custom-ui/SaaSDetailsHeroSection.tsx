@@ -45,10 +45,10 @@ export default function SaaSDetailsHeroSection({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h1 className="font-heading group mx-auto w-fit rounded-3xl border-[2px] border-white/5 bg-gradient-to-tr from-zinc-300/5 via-gray-400/5 to-transparent px-5 py-2 text-sm text-gray-400 mb-5">
-              {domain ?? "Build products for everyone"}
-              {/* <ArrowRight className="ml-2 inline h-4 w-4 duration-300 group-hover:translate-x-1" /> */}
-            </h1>
+            {/* <h1 className="font-heading group mx-auto w-fit rounded-3xl border-[2px] border-white/5 bg-gradient-to-tr from-zinc-300/5 via-gray-400/5 to-transparent px-5 py-2 text-sm text-gray-400 mb-5"> */}
+            {/* {domain ?? "Build products for everyone"} */}
+            {/* <ArrowRight className="ml-2 inline h-4 w-4 duration-300 group-hover:translate-x-1" /> */}
+            {/* </h1> */}
             <h1 className="font-heading mx-auto mb-6 max-w-4xl text-4xl font-semibold md:text-5xl lg:text-6xl">
               {heading ?? "N/A"}
               {/* <span className="text-[#1E4EC8]">AI-Powered</span> Crypto Insights */}

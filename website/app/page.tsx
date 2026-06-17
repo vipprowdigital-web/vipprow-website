@@ -8,6 +8,7 @@ import ClientBentoGridSection from "@/components/client-sections/ClientBentoGrid
 import ClientPartnerBrandMarquee from "@/components/client-sections/ClientPartnerBrandMarquee";
 import { Metadata } from "next";
 import FaqSection from "@/components/mvpblock-ui/FAQSection";
+import IndiaClientMap from "@/components/sections/IndiaClientMap";
 
 export const metadata: Metadata = {
   title: "VIPPROW",
@@ -30,6 +31,10 @@ export default function Home() {
           <ServiceCardGrid />
         </div>
         {/* Services End */}
+
+        <div className="pt-20 w-full">
+          <IndiaClientMap />
+        </div>
 
         {/* Bento Grid Start */}
         <div className="pt-20">
@@ -54,8 +59,10 @@ export default function Home() {
         {/* Editorial Grid Start */}
         <div className="pt-20 max-w-7xl mx-auto">
           <PrimaryHeading
-            heading="Success Powered by Vipprow"
-            des="Proven success driven by intelligent strategies and scalable solutions."
+            heading="Growth Stories Worth Sharing"
+            // heading="Success Powered by Vipprow"
+            des="From strategy to scale — explore how Vipprow drives real results for real businesses."
+            // des="Proven success driven by intelligent strategies and scalable solutions."
           />
           <EditorialGrid itemsPerPage={3} />
         </div>

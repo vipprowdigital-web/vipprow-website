@@ -7,7 +7,10 @@ import Link from "next/link";
 import { IconType } from "react-icons/lib";
 import { Icon } from "lucide-react";
 
-type ServiceType = "business-automation" | "digital-marketing" | "software-development";
+type ServiceType =
+  | "business-automation"
+  | "digital-marketing"
+  | "software-development";
 
 interface AnimatedSVGCardProp {
   href: string;
@@ -15,22 +18,20 @@ interface AnimatedSVGCardProp {
   description: string;
   serviceType: ServiceType;
   icon?: IconType; // optional if not always used
+  skeletonContent?: React.ReactNode;
 }
 
 export function AnimatedSVGCard({
   href,
   title,
   description,
-  // icon: Icon,
+  skeletonContent,
 }: AnimatedSVGCardProp) {
   return (
     <Link href={href}>
       <Card>
-        <CardSkeletonContainer>
-          {/* <div className="h-full flex items-center justify-center">
-            <Icon className="h-10 w-10 text-white" />
-            </div> */}
-          <Skeleton />
+        <CardSkeletonContainer showGradient={!skeletonContent}>
+          {skeletonContent ?? <Skeleton />}
         </CardSkeletonContainer>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
@@ -241,10 +242,10 @@ export const CardSkeletonContainer = ({
   return (
     <div
       className={cn(
-        "h-[15rem] md:h-[20rem] rounded-xl z-40",
+        "h-60 md:h-80 rounded-xl z-40",
         className,
         showGradient &&
-          "bg-neutral-300 dark:bg-[rgba(40,40,40,0.70)] [mask-image:radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]",
+          "bg-neutral-300 dark:bg-[rgba(40,40,40,0.70)] mask-[radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]",
       )}
     >
       {children}
@@ -422,6 +423,41 @@ export const MetaIconOutline = ({ className }: { className?: string }) => {
         fill="url(#linear-gradient-2)"
         d="M82.35,31.23c-12.27,0-22.69,8.61-31.41,21.78C38.61,71.62,31.06,99.34,31.06,126c0,11,2.41,19.41,5.56,24.51L10.14,167.91C3.34,156.6,0,141.76,0,124.85,0,94.1,8.44,62.05,24.49,37.3,38.73,15.35,59.28,0,82.85,0Z"
       />
+    </svg>
+  );
+};
+
+export const InstagramLogo = ({ className }: { className?: string }) => {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <defs>
+        {/* Instagram Sunset Gradient */}
+        <linearGradient id="instaGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#FED373" />
+          <stop offset="25%" stopColor="#F15245" />
+          <stop offset="60%" stopColor="#D92E7F" />
+          <stop offset="100%" stopColor="#9C26B0" />
+        </linearGradient>
+      </defs>
+
+      {/* Gradient Background Rounded Square */}
+      <rect width="24" height="24" rx="5.5" fill="url(#instaGradient)" />
+
+      {/* White Camera Glyph */}
+      <g fill="white">
+        {/* Outer Camera Body */}
+        <path d="M12 6.5c2.28 0 2.55.01 3.45.05.83.04 1.28.18 1.58.3.4.15.68.34.98.64.3.3.49.58.64.98.12.3.26.75.3 1.58.04.9.05 1.17.05 3.45s-.01 2.55-.05 3.45c-.04.83-.18 1.28-.3 1.58-.15.4-.34.68-.64.98-.3.3-.58.49-.98.64-.3.12-.75.26-1.58.3-.9.04-1.17.05-3.45.05s-2.55-.01-3.45-.05c-.83-.04-1.28-.18-1.58-.3-.4-.15-.68-.34-.98-.64-.3-.3-.49-.58-.64-.98-.12-.3-.26-.75-.3-1.58-.04-.9-.05-.17-.05-3.45s.01-2.55.05-3.45c.04-.83.18-1.28.3-1.58.15-.4.34-.68.64-.98.3-.3.58-.49.98-.64.3-.12.75-.26 1.58-.3.9-.04 1.17-.05 3.45-.05m0-1.5c-2.32 0-2.61.01-3.52.05-.91.04-1.53.19-2.07.4-.56.22-1.04.51-1.51.99-.48.47-.77.95-.99 1.51-.21.54-.36 1.16-.4 2.07-.04.91-.05 1.2-.05 3.52s.01 2.61.05 3.52c.04.91.19 1.53.4 2.07.22.56.51 1.04.99 1.51.47.48.95.77 1.51.99.54.21 1.16.36 2.07.4.91.04 1.2.05 3.52.05s2.61-.01 3.52-.05c.91-.04 1.53-.19 2.07-.4.56-.22 1.04-.51 1.51-.99.48-.47.77-.95.99-.151.21-.54.36-1.16.4-2.07.04-.91.05-1.2.05-3.52s-.01-2.61-.05-3.52c-.04-.91-.19-1.53-.4-2.07-.22-.56-.51-1.04-.99-1.51-.47-.48-.95-.77-1.51-.99-.54-.21-1.16-.36-2.07-.4C14.61 5.01 14.32 5 12 5z" />
+
+        {/* Lens Circle */}
+        <path d="M12 8.4a3.6 3.6 0 100 7.2 3.6 3.6 0 000-7.2zm0 6a2.4 2.4 0 110-4.8 2.4 2.4 0 010 4.8z" />
+
+        {/* Top-Right Flash Dot */}
+        <circle cx="15.75" cy="8.25" r="0.85" />
+      </g>
     </svg>
   );
 };
