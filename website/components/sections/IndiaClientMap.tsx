@@ -100,7 +100,7 @@ export default function IndiaClientMap() {
   const [mounted, setMounted] = useState(false);
   const [hoveredCluster, setHoveredCluster]     = useState<string | null>(null);
   const [hoveredStandalone, setHoveredStandalone] = useState<string | null>(null);
-  const [cardPos, setCardPos] = useState<{ x: number; y: number } | null>(null);
+  const [cardPos, setCardPos] = useState<{ x: number; y: number; containerWidth: number } | null>(null);
 
   // ── intro line animation state ──
   // "idle"     → waiting for map to enter viewport
@@ -114,7 +114,8 @@ export default function IndiaClientMap() {
   const timersRef      = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
-    setMounted(true);
+    const handleSetMounted = () => setMounted(true);
+    handleSetMounted();
   }, []);
 
   // ── IntersectionObserver: start animation only when map scrolls into view ──
@@ -166,7 +167,8 @@ export default function IndiaClientMap() {
 
   function handleClusterEnter(id: string, cx: number, cy: number) {
     setHoveredCluster(id);
-    setCardPos(svgToContainer(cx + 18, cy - 10));
+    const pos = svgToContainer(cx + 18, cy - 10);
+    setCardPos({ ...pos, containerWidth: containerRef.current?.offsetWidth ?? 9999 });
   }
   function handleClusterLeave() { setHoveredCluster(null); setCardPos(null); }
 
@@ -181,7 +183,7 @@ export default function IndiaClientMap() {
   ];
 
   return (
-    <div className="relative w-full rounded-2xl bg-transparent overflow-hidden select-none font-sans">
+    <div className="relative w-full select-none font-sans px-3 sm:px-10">
       <style dangerouslySetInnerHTML={{ __html: `
         /* ── pin drop ── */
         @keyframes indiaPinDrop {
@@ -241,8 +243,65 @@ export default function IndiaClientMap() {
         }
       ` }} />
 
-      <div ref={containerRef} className="relative mx-auto max-w-6xl flex justify-center">
-        <svg ref={svgRef} viewBox="-40 -40 780 860"
+      {/* ── GRID: text left | map right ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
+
+        {/* ── LEFT: title + description ── */}
+        <div className="flex flex-col justify-center gap-6 px-2 lg:px-0 order-1">
+          {/* heading */}
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+            Serving Clients{" "}
+            Across India
+          </h2>
+
+          {/* description */}
+          <p className="text-neutral-400 leading-tight text-sm sm:text-base leading-relaxed max-w-md">
+            From the foothills of Uttarakhand to the coasts of Maharashtra, Vipprow delivers
+            technology solutions to businesses spread across the length and breadth of India.
+            Our network spans{" "}
+            <span className="text-white font-medium">
+              {STANDALONES.length + CLUSTERS.reduce((s, c) => s + c.cities.length, 0)} cities
+            </span>{" "}
+            across{" "}
+            <span className="text-white font-medium">multiple states</span>, all connected to
+            our headquarters in Jabalpur.
+          </p>
+
+          {/* stat chips */}
+          <div className="flex flex-wrap gap-3">
+            {[
+              { value: `${STANDALONES.length + CLUSTERS.reduce((s, c) => s + c.cities.length, 0)}+`, label: "Client Cities" },
+              { value: "10+",  label: "States Covered" },
+              // { value: "1",   label: "Jabalpur" },
+            ].map(({ value, label }) => (
+              <div key={label}
+                className="flex flex-col items-center px-10 sm:w-60 py-2.5 rounded-xl bg-gray-200/10 border border-slate-400/40 min-w-[80px]">
+                <span className="text-2xl font-bold text-white">{value}</span>
+                <span className="text-xs text-slate-500 mt-0.5 font-mono tracking-wide whitespace-nowrap">{label}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* legend */}
+          <div className="flex gap-5 text-sm text-slate-500">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_6px_#3b82f6] shrink-0" />
+              Vipprow
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_6px_#ef4444] shrink-0" />
+              Client Location
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_6px_#6366f1] shrink-0" />
+              State
+            </span>
+          </div>
+        </div>
+
+        {/* ── RIGHT: map ── */}
+        <div ref={containerRef} className="relative w-full order-2 flex justify-center">
+          <svg ref={svgRef} viewBox="-40 -40 760 860"
           className="w-full" style={{ display: "block" }} xmlns="http://www.w3.org/2000/svg">
           <defs>
             <filter id="borderGlow" x="-20%" y="-20%" width="140%" height="140%">
@@ -376,13 +435,13 @@ export default function IndiaClientMap() {
 
                   <g className="pin-drop" style={{ animationDelay: `${idx * 0.06}s` }}>
                     {/* Blinking ring around pin head */}
-                    <circle cx={city.x} cy={headY} r="3"
-                      fill="none" stroke="#22d3ee" strokeWidth="1"
+                    <circle cx={city.x} cy={headY} r="10"
+                      fill="none" stroke="#f8f8f8ff" strokeWidth="2"
                       className="pin-ring"
                       style={{ animationDelay: `${idx * 0.25}s` }} />
                     {/* Second offset blink for layered effect */}
-                    <circle cx={city.x} cy={headY} r="3"
-                      fill="none" stroke="#22d3ee" strokeWidth="0.7"
+                    <circle cx={city.x} cy={headY} r="10"
+                      fill="none" stroke="#fbfbfbff" strokeWidth="1"
                       className="pin-ring"
                       style={{ animationDelay: `${idx * 0.25 + 0.8}s` }} />
 
@@ -405,7 +464,7 @@ export default function IndiaClientMap() {
                   {/* Label */}
                   <text x={city.x + 9} y={city.y - 5}
                     fill={isHovered ? "#ffffff" : "#e2e8f0"}
-                    fontSize={isHovered ? "11.5" : "10.5"}
+                    fontSize={isHovered ? "16" : "14"}
                     fontWeight={isHovered ? "700" : "500"}
                     fontFamily="ui-monospace, monospace"
                     style={{ pointerEvents: "none", transition: "all 0.15s ease" }}>
@@ -465,7 +524,7 @@ export default function IndiaClientMap() {
               fontSize="11" fontWeight="800"
               fontFamily="ui-monospace, monospace" letterSpacing="0.08em"
               style={{ pointerEvents: "none" }}>
-              VIPPROW HQ
+              VIPPROW
             </text>
           </g>
         </svg>
@@ -473,7 +532,7 @@ export default function IndiaClientMap() {
         {/* ── CLUSTER CARD OVERLAY ── */}
         {hoveredCluster && cardPos && (() => {
           const cl = clusterData.find((c) => c.id === hoveredCluster)!;
-          const flipLeft = cardPos.x + 165 > (containerRef.current?.offsetWidth ?? 9999);
+          const flipLeft = cardPos.x + 165 > cardPos.containerWidth;
           return (
             <div className="tooltip-fade pointer-events-none" style={{
               position: "absolute",
@@ -490,7 +549,7 @@ export default function IndiaClientMap() {
             }}>
               <div style={{
                 fontSize: "14px", fontWeight: 700, letterSpacing: "0.13em",
-                textTransform: "uppercase", color: "#60a5fa", marginBottom: "8px",
+                textTransform: "uppercase", color: "#ffffffff", marginBottom: "8px",
                 fontFamily: "ui-monospace, monospace",
                 borderBottom: "1px solid rgba(59,130,246,0.25)", paddingBottom: "6px",
               }}>{cl.label}</div>
@@ -501,7 +560,7 @@ export default function IndiaClientMap() {
                 }}>
                   <div style={{
                     width: "5px", height: "5px", borderRadius: "50%",
-                    background: "#22d3ee", flexShrink: 0,
+                    background: "#174ad6ff", flexShrink: 0,
                     boxShadow: "0 0 5px #22d3ee88",
                   }} />
                   <span style={{
@@ -516,16 +575,18 @@ export default function IndiaClientMap() {
 
         {/* ── STANDALONE TOOLTIP ── */}
         {hoveredStandalone && hoveredStandalone !== "hq" && (
-          <div className="tooltip-fade absolute bottom-4 right-4 bg-slate-950/95 border border-slate-700/80 backdrop-blur-sm px-3.5 py-2.5 rounded-xl shadow-2xl pointer-events-none">
-            <span className="block font-mono text-[9px] uppercase tracking-widest text-slate-500 mb-1">Client Hub</span>
-            <span className="flex items-center gap-2 text-sm font-bold text-white">
-              <span className="w-2 h-2 rounded-full shrink-0 bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />
+          <div className="tooltip-fade absolute bottom-20 sm:bottom-70 right-4 sm:right-17 bg-slate-950/95 border border-slate-700/80 backdrop-blur-sm px-3.5 py-2.5 rounded-xl shadow-2xl pointer-events-none">
+            <span className="block font-mono text-[8px] sm:text-[9px] uppercase tracking-widest text-slate-500 mb-1">Client Hub</span>
+            <span className="flex items-center gap-2 text-[10px] sm:text-sm font-bold text-white">
+              <span className="w-2 h-2 rounded-full shrink-0 bg-blue-400 shadow-[0_0_8px_#22d3ee]" />
               {standaloneData.find((s) => s.id === hoveredStandalone)?.name}
             </span>
-            <span className="block text-[10px] text-emerald-400 mt-1 font-mono">✓ Service pipeline active</span>
+            {/* <span className="block text-[10px] text-emerald-400 mt-1 font-mono">✓ Service pipeline active</span> */}
           </div>
         )}
-      </div>
+        </div>{/* end map column */}
+
+      </div>{/* end grid */}
     </div>
   );
 }
