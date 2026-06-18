@@ -11,6 +11,7 @@ import {
   OpenAILogo,
   InstagramLogo,
 } from "@/components/aceternity-ui/card/AnimatedSVGCard";
+import Image from "next/image";
 
 const Circle = forwardRef<
   HTMLDivElement,
@@ -59,9 +60,14 @@ export function AnimatedBeamDemo() {
       {/* Brand center */}
       <Circle
         ref={centerRef}
-        className="h-14 w-14 border-2 border-gray-400 shadow-[0_0_15px_rgba(210,210,210,0.4)]"
+        className="h-14 w-14 border-2 border-blue-400 shadow-[0_0_15px_rgba(210,210,210,0.4)]"
       >
-        <OpenAILogo className="h-7 w-7 text-gray-200" />
+        <Image
+          src="/assets/images/logo/vipprow-logo.png"
+          width={100}
+          height={100}
+          alt="Vipprow Logo"
+        />
       </Circle>
 
       {/* Output results */}
@@ -74,6 +80,7 @@ export function AnimatedBeamDemo() {
         </Circle>
         <Circle ref={growthRef}>
           <TrendingUp className="h-7 w-7 text-green-500" />
+          {/* <OpenAILogo className="h-7 w-7 text-gray-200" /> */}
         </Circle>
       </div>
 

@@ -76,8 +76,7 @@ export default function HeroSection() {
             alt="VIPPROW Brand"
             width={1000}
             height={500}
-            priority
-            loading="eager"
+            loading="lazy"
             unoptimized
             style={{ height: "auto" }}
             className="
