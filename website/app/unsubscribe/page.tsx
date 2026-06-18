@@ -1,5 +1,6 @@
 "use client";
 
+import "@/components/mvpblocks/minimal-hero.css";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, MailX, Loader2, CheckCircle2, AlertCircle } from "lucide-react";

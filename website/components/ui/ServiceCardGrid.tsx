@@ -1,7 +1,8 @@
 import { AnimatedSVGCard } from "@/components/aceternity-ui/card/AnimatedSVGCard";
 import { CodeComparisonDemo } from "@/components/ui/code-comparison-demo";
 import { AnimatedBeamDemo } from "@/components/ui/animated-beam-demo";
-import { WavyBackgroundDemo } from "@/components/ui/wavy-background-demo";
+import { BusinessAutomationSkeleton } from "@/components/ui/BusinessAutomationSkeleton";
+import { SoftwareDevSkeleton } from "./SoftwareDevSkeleton";
 
 export default function ServiceCardGrid() {
   return (
@@ -20,7 +21,7 @@ Performance-driven digital marketing strategies that build visibility, generate 
         title="Software Development"
         description="Custom-built software solutions designed to streamline operations, enhance efficiency, and scale with your business."
         serviceType="software-development"
-        skeletonContent={<CodeComparisonDemo />}
+        skeletonContent={<SoftwareDevSkeleton />}
       />
 
       <AnimatedSVGCard
@@ -28,7 +29,7 @@ Performance-driven digital marketing strategies that build visibility, generate 
         title="Business Automation (A.I)"
         description="Intelligent automation systems that simplify workflows, reduce manual effort, and accelerate business performance."
         serviceType="business-automation"
-        skeletonContent={<WavyBackgroundDemo />}
+        skeletonContent={<BusinessAutomationSkeleton />}
       />
     </div>
   );

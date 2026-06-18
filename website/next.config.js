@@ -5,6 +5,7 @@ const nextConfig = {
   compress: true,
   experimental: {
     optimizeCss: true,
+    cssChunking: "strict",
   },
   images: {
     remotePatterns: [

@@ -1,5 +1,6 @@
 'use client';
 
+import './minimal-hero.css';
 import React, { useEffect, useRef } from 'react';
 
 const colors = {
@@ -96,7 +97,7 @@ export default function MinimalHero() {
   }, []);
 
   return (
-    <div className="font-primary relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-[#1a1d18] via-black to-[#2a2e26] text-[#e6e1d7]">
+    <div className="font-primary relative min-h-screen w-full overflow-hidden bg-linear-to-br from-[#1a1d18] via-black to-[#2a2e26] text-[#e6e1d7]">
       <svg
         className="absolute inset-0 h-full w-full"
         xmlns="http://www.w3.org/2000/svg"

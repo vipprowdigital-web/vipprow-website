@@ -1,14 +1,25 @@
-import HeroSection from "./components/ui/HeroSection";
-import PrimaryHeading from "@/components/ui/heading/PrimaryHeading";
-import EditorialGrid from "@/components/ui/EditorialGrid";
-import ServiceCardGrid from "@/components/ui/ServiceCardGrid";
-import ClientCTA from "@/components/client-sections/ClientCTA";
-import ClientTestimonialMarquee from "@/components/client-sections/ClientTestimonialMarquee";
-import ClientBentoGridSection from "@/components/client-sections/ClientBentoGridSection";
-import ClientPartnerBrandMarquee from "@/components/client-sections/ClientPartnerBrandMarquee";
+import dynamic from "next/dynamic";
 import { Metadata } from "next";
-import FaqSection from "@/components/mvpblock-ui/FAQSection";
-import IndiaClientMap from "@/components/sections/IndiaClientMap";
+
+// Static — above the fold; these contain the LCP element and must not be deferred
+import HeroSection from "./components/ui/HeroSection";
+import ClientPartnerBrandMarquee from "@/components/client-sections/ClientPartnerBrandMarquee";
+import PrimaryHeading from "@/components/ui/heading/PrimaryHeading";
+
+// Dynamic — below the fold; deferred so their JS bundles don't block LCP paint.
+// Each import becomes a separate chunk that the browser fetches after first paint.
+const ServiceCardGrid = dynamic(
+  () => import("@/components/ui/ServiceCardGrid"),
+);
+const IndiaClientMap = dynamic(
+  () => import("@/components/sections/IndiaClientMap"),
+);
+const ClientBentoGridSection = dynamic(
+  () => import("@/components/client-sections/ClientBentoGridSection"),
+);
+const EditorialGrid = dynamic(() => import("@/components/ui/EditorialGrid"));
+const FaqSection = dynamic(() => import("@/components/mvpblock-ui/FAQSection"));
+const ClientCTA = dynamic(() => import("@/components/client-sections/ClientCTA"));
 
 export const metadata: Metadata = {
   title: "VIPPROW",

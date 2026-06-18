@@ -15,7 +15,7 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
   variable: "--font-poppins",
-  display: "swap",
+  display: "optional",
   preload: true,
 });
 
@@ -32,11 +32,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        {/* Preconnect to external image domains so DNS+TLS is ready before images request */}
-        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+        {/* dns-prefetch resolves the domain early without holding a TCP+TLS connection open.
+            Only cloudinary is kept — it serves images that appear on scroll.
+            Unsplash is removed: Lighthouse confirmed it receives zero requests on this page. */}
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://images.unsplash.com" />
 
         {/* Google Tag Manager */}
         <Script id="gtm-script" strategy="afterInteractive">
