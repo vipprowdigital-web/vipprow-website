@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence, easeInOut } from "framer-motion";
+import { motion, AnimatePresence, easeInOut } from "motion/react";
 import {
   Accordion,
   AccordionContent,

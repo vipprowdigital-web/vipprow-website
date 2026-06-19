@@ -37,10 +37,6 @@ type LinkButton = NavbarButtonCommon & {
 
 type NavbarButtonProps = AnchorButton | ButtonButton | LinkButton;
 
-// type PolymorphicProps<T extends React.ElementType, Props = {}> = Props & {
-//   as?: T;
-// } & Omit<React.ComponentPropsWithoutRef<T>, keyof Props | "as">;
-
 interface NavbarProps {
   children: React.ReactNode;
   className?: string;

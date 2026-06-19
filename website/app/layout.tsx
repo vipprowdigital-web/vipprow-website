@@ -3,19 +3,20 @@ import { Inter, Poppins } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import ClinetLayout from "@/components/client-sections/ClientLayout";
+import LazyMetaPixel from "@/components/LazyMetaPixel";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "optional",
-  preload: false,
+  display: "swap",
+  preload: true,
 });
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
   variable: "--font-poppins",
-  display: "optional",
+  display: "swap",
   preload: true,
 });
 
@@ -30,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" data-scroll-behavior="smooth">
       <head>
         {/* dns-prefetch resolves the domain early without holding a TCP+TLS connection open.
             Only cloudinary is kept — it serves images that appear on scroll.
@@ -48,23 +49,7 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Meta Pixel Code */}
-        <Script id="meta-pixel" strategy="afterInteractive">
-          {`
-            !function(f,b,e,v,n,t,s){
-            if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;
-            n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];
-            t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)
-            }(window, document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '1305760707629374');
-            fbq('track', 'PageView');
-          `}
-        </Script>
+        <LazyMetaPixel />
       </head>
       <body
         className={`${inter.variable} ${poppins.variable} antialiased bg-black`}
@@ -76,18 +61,6 @@ export default function RootLayout({
             height="0"
             width="0"
             style={{ display: "none", visibility: "hidden" }}
-          />
-        </noscript>
-
-        {/* Meta Pixel noscript */}
-        <noscript>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=1305760707629374&ev=PageView&noscript=1"
-            alt="meta-pixel"
           />
         </noscript>
 

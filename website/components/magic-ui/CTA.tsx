@@ -1,8 +1,6 @@
 "use client";
 
-import { TextReveal } from "@/components/ui/text-reveal";
 import PrimaryGlowButton from "../ui/buttons/primary-glow-button";
-import SecondaryButton from "../ui/buttons/SecondaryButton";
 import { useRouter } from "next/navigation";
 
 export default function CTA() {

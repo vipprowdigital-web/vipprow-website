@@ -68,11 +68,9 @@ export default function Footer() {
     })) || [];
 
   useEffect(() => {
-    const changeSetMounted = () => {
-      setMounted(true);
-    };
-    changeSetMounted();
-  });
+    const handleSetMounted = () => setMounted(true);
+    handleSetMounted();
+  }, []);
 
   const data = () => ({
     navigation: {

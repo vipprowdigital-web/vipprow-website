@@ -7,6 +7,11 @@ const nextConfig = {
     optimizeCss: true,
     cssChunking: "strict",
   },
+  modularizeImports: {
+    "@tabler/icons-react": {
+      transform: "@tabler/icons-react/dist/esm/icons/{{member}}",
+    },
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },
@@ -14,6 +19,7 @@ const nextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "assets.aceternity.com" },
       { protocol: "https", hostname: "cdn.rareblocks.xyz" },
+      { protocol: "https", hostname: "lh3.googleusercontent.com" },
     ],
   },
 };

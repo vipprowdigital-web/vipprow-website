@@ -1,0 +1,232 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@600&display=swap");
+@import "tailwindcss";
+
+:root {
+  --violet: #8b5cf6;
+  --violet-dark: #6d28d9;
+  --violet-glow: rgba(139, 92, 246, 0.15);
+  --glass: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --text-sub: rgba(255, 255, 255, 0.72);
+  --color-brand: #8b5cf6; /* primary purple */
+  --color-brand-light: #c084fc; /* lighter purple for gradients */
+  --color-bg: #080810; /* main dark background */
+  --color-surface: rgba(255, 255, 255, 0.04); /* card backgrounds */
+  --color-border: rgba(255, 255, 255, 0.07); /* subtle borders */
+  --color-text-muted: rgba(255, 255, 255, 0.45); /* secondary text */
+}
+
+html[data-scroll-behavior='smooth'] {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #050508;
+  color: #ffffff;
+  font-family: "DM Sans", sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── Noise overlay ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #050508;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--violet);
+  border-radius: 2px;
+}
+
+/* ── Utility classes ── */
+.font-sora {
+  font-family: "Sora", sans-serif;
+}
+
+.glass-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  /* backdrop-filter: blur(12px); */
+  /* -webkit-backdrop-filter: blur(12px); */
+  backdrop-filter: blur(120px);
+  -webkit-backdrop-filter: blur(120px);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #fff 0%, #c0c0c0 50%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.violet-gradient-text {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899, #8b5cf6);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s ease infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.section-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--violet);
+  font-weight: 600;
+  font-family: "Sora", sans-serif;
+}
+
+.divider-glow {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(139, 92, 246, 0.45),
+    transparent
+  );
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.brand-color {
+  color: var(--color-brand);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* @keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.pause-on-hover:hover .animate-marquee {
+  animation-play-state: paused;
+} */
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Slower duration (80s). Increase this number to slow it down even more */
+.animate-marquee-slow {
+  animation: marquee 100s linear infinite;
+}
+
+.animate-marquee-slow-reverse {
+  animation: marquee 100s linear infinite reverse;
+}
+
+.conveyor-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+/* Optional: Pause on hover so users can actually look at a logo */
+.conveyor-track:hover {
+  animation-play-state: paused;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+.font-sora {
+  font-family: "Sora", sans-serif;
+}
+
+/* Glassmorphism Effect */
+.glass-card-2 {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(120px);
+  -webkit-backdrop-filter: blur(120px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Gradient Text Styles */
+.gradient-text-2 {
+  background: linear-gradient(135deg, #fff 0%, #c0c0c0 50%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.violet-gradient-text-2 {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899, #8b5cf6);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s ease infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Noise Texture Overlay */
+.noise-bg {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}

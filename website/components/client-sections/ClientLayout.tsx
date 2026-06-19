@@ -4,23 +4,35 @@
 
 import ReduxProvider from "@/providers/ReduxProvider";
 import QueryProvider from "@/providers/QueryProvider";
-import AppConfigLoader from "@/providers/AppConfigLoader";
 import { NavbarMenu } from "@/app/components/ui/Navbar";
-// import Footer from "@/app/components/ui/Footer";
 import { Toaster } from "react-hot-toast";
-import Footer from "@/app/components/ui/Footer";
+import dynamic from "next/dynamic";
+import PortfolioFooter from "../../components/portfolio-components/Footer";
+import PortfolioNavbar from "../../components/portfolio-components/Navbar";
+
+const Footer = dynamic(() => import("@/app/components/ui/Footer"), {
+  ssr: false,
+});
+import AppConfigLoader from "@/providers/AppConfigLoader";
+import { usePathname } from "next/navigation";
 
 export default function ClinetLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const pathName = usePathname();
   return (
     <>
       <ReduxProvider>
         <QueryProvider>
           <AppConfigLoader />
-          <NavbarMenu />
+          {pathName.includes("portfolio") ? (
+            <PortfolioNavbar />
+          ) : (
+            <NavbarMenu />
+          )}
+
           {children}
-          <Footer />
+          {pathName.includes("portfolio") ? <PortfolioFooter /> : <Footer />}
           <Toaster position="bottom-center" />
         </QueryProvider>
       </ReduxProvider>

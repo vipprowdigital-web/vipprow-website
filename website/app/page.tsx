@@ -6,11 +6,10 @@ import HeroSection from "./components/ui/HeroSection";
 import ClientPartnerBrandMarquee from "@/components/client-sections/ClientPartnerBrandMarquee";
 import PrimaryHeading from "@/components/ui/heading/PrimaryHeading";
 
+import ClientServiceCardGrid from "@/components/client-sections/ClientServiceCardGrid";
+
 // Dynamic — below the fold; deferred so their JS bundles don't block LCP paint.
 // Each import becomes a separate chunk that the browser fetches after first paint.
-const ServiceCardGrid = dynamic(
-  () => import("@/components/ui/ServiceCardGrid"),
-);
 const IndiaClientMap = dynamic(
   () => import("@/components/sections/IndiaClientMap"),
 );
@@ -39,7 +38,7 @@ export default function Home() {
             heading="We Empower Brands Through"
             des="Strategic digital marketing, intelligent software, and automation solutions designed to accelerate growth.."
           />
-          <ServiceCardGrid />
+          <ClientServiceCardGrid />
         </div>
         {/* Services End */}
 
