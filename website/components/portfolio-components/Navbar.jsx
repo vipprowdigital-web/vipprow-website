@@ -41,7 +41,7 @@ export default function Navbar() {
       >
         {/* Logo */}
         <Link
-          href="/"
+          href="/portfolio"
           className="font-sora text-xl font-extrabold tracking-widest select-none"
         >
           <div className="relative w-40 h-10">

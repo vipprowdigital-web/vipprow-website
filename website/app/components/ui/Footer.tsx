@@ -87,7 +87,7 @@ export default function Footer() {
         { name: "Blog", href: "/articles" },
         { name: "Careers", href: "/careers" },
         { name: "Contact", href: "/contact" },
-        { name: "Portfolio", href: "https://portfolio.vipprow.com/" },
+        { name: "Portfolio", href: "/portfolio" },
       ],
       // resources: [
       //   { name: "Docs", href: "/docs" },
