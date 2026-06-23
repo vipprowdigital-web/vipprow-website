@@ -1,10 +1,10 @@
 "use client";
 
 import { AvatarCirclesRow } from "@/components/magic-ui/AvatarCircles";
-import PrimaryGlowButton from "@/components/ui/buttons/primary-glow-button";
+// import { HeroCTA } from "@/components/ui/HeroCTA";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+import { HeroCTA } from "./HeroCTA";
 
 const StarsBackgroundVipprow = dynamic(
   () =>
@@ -15,7 +15,6 @@ const StarsBackgroundVipprow = dynamic(
 );
 
 export default function HeroSection() {
-  const router = useRouter();
   return (
     <>
       <main className="relative min-h-[93vh]  md:min-h-screen overflow-hidden bg-zinc-50 font-sans dark:bg-black">
@@ -59,13 +58,7 @@ export default function HeroSection() {
           </p>
 
           {/* CTA Buttons */}
-          <div className="mt-10 flex flex-row gap-4">
-            <PrimaryGlowButton
-              heading="Get Started Now"
-              onClick={() => router.push("/contact")}
-            />
-            {/* <SecondaryButton heading="Book a Demo" /> */}
-          </div>
+          <HeroCTA />
         </section>
 
         {/* 🧩 Bottom Brand SVG */}

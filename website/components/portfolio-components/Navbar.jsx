@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { scrollTo } from "../../utils/scrollTo";
 
 const NAV_LINKS = [
+  { label: "Home", href: "/" },
   { label: "Portfolio", href: "/portfolio" },
   { label: "Client Experience", href: "/portfolio/client-experience" },
   { label: "Milestones", href: "/portfolio/milestones" },
@@ -41,7 +42,7 @@ export default function Navbar() {
       >
         {/* Logo */}
         <Link
-          href="/portfolio"
+          href="/"
           className="font-sora text-xl font-extrabold tracking-widest select-none"
         >
           <div className="relative w-40 h-10">

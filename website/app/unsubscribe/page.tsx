@@ -84,9 +84,9 @@ export default function UnsubscribePage() {
                 </div>
 
                 {/* Heading */}
-                <h1 className="text-center text-xl md:text-3xl font-bold font-heading text-white">
+                <h2 className="text-center text-xl md:text-3xl font-bold font-heading text-white">
                   Unsubscribe Newsletter
-                </h1>
+                </h2>
 
                 <p className="mt-4 text-center text-sm md:text-base leading-relaxed text-white/70">
                   Enter your email address below to confirm your unsubscription
