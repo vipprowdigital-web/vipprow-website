@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { useMotionValue, motion, useMotionTemplate } from "motion/react";
-import React from "react";
+import React, { useRef } from "react";
 
 export const HeroHighlight = ({
   children,
@@ -12,8 +12,10 @@ export const HeroHighlight = ({
   className?: string;
   containerClassName?: string;
 }) => {
-  let mouseX = useMotionValue(0);
-  let mouseY = useMotionValue(0);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
 
   // SVG patterns for different states and themes
   const dotPatterns = {
@@ -27,23 +29,26 @@ export const HeroHighlight = ({
     },
   };
 
-  function handleMouseMove({
-    currentTarget,
-    clientX,
-    clientY,
-  }: React.MouseEvent<HTMLDivElement>) {
-    if (!currentTarget) return;
-    let { left, top } = currentTarget.getBoundingClientRect();
+  function handleMouseEnter() {
+    if (containerRef.current) {
+      rectRef.current = containerRef.current.getBoundingClientRect();
+    }
+  }
 
-    mouseX.set(clientX - left);
-    mouseY.set(clientY - top);
+  function handleMouseMove({ clientX, clientY }: React.MouseEvent<HTMLDivElement>) {
+    const rect = rectRef.current;
+    if (!rect) return;
+    mouseX.set(clientX - rect.left);
+    mouseY.set(clientY - rect.top);
   }
   return (
     <div
+      ref={containerRef}
       className={cn(
-        "group relative flex h-[30rem] w-full items-center justify-center bg-white dark:bg-black",
+        "group relative flex h-120 w-full items-center justify-center bg-white dark:bg-black",
         containerClassName,
       )}
+      onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
     >
       <div
@@ -130,7 +135,7 @@ export const Highlight = ({
         display: "inline",
       }}
       className={cn(
-        `relative inline-block rounded-lg bg-gradient-to-r from-blue-300 to-indigo-200 px-2 pb-1 dark:from-blue-500 dark:to-blue-900`,
+        `relative inline-block rounded-lg bg-linear-to-r from-blue-300 to-indigo-200 px-2 pb-1 dark:from-blue-500 dark:to-blue-900`,
         className,
       )}
     >

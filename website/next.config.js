@@ -5,7 +5,13 @@ const nextConfig = {
   compress: true,
   experimental: {
     optimizeCss: true,
-    cssChunking: "strict",
+    cssChunking: "loose",
+    optimizePackageImports: [
+      "framer-motion",
+      "lucide-react",
+      "react-icons",
+      "recharts",
+    ],
   },
   modularizeImports: {
     "@tabler/icons-react": {

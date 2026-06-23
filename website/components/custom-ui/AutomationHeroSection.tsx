@@ -6,6 +6,7 @@ import Image from "next/image";
 
 export default function AutomationHeroSection() {
   const revealImgRef = useRef<HTMLImageElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
 
   return (
     <div
@@ -15,8 +16,12 @@ export default function AutomationHeroSection() {
         overflow: "hidden",
         backgroundColor: "#000",
       }}
+      onMouseEnter={(e) => {
+        rectRef.current = e.currentTarget.getBoundingClientRect();
+      }}
       onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
+        const rect = rectRef.current;
+        if (!rect) return;
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         const el = revealImgRef.current;

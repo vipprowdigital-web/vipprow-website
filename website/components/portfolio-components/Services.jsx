@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 // import { Zap, Layers, Search, Monitor, Wind } from "lucide-react";
 
@@ -41,16 +41,27 @@ const SERVICES = [
 
 // ── Service card with cursor-tracking border glow ──────────────────────────
 function ServiceCard({ icon: Icon, name, desc, accent, index }) {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
   const [hovered, setHovered] = useState(false);
+  const cardRef = useRef(null);
+  const rectRef = useRef(null);
+
+  const handleMouseEnter = () => {
+    if (cardRef.current) {
+      rectRef.current = cardRef.current.getBoundingClientRect();
+    }
+    setHovered(true);
+  };
 
   const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    const rect = rectRef.current;
+    if (!rect || !cardRef.current) return;
+    cardRef.current.style.setProperty("--gx", `${e.clientX - rect.left}px`);
+    cardRef.current.style.setProperty("--gy", `${e.clientY - rect.top}px`);
   };
 
   return (
     <motion.div
+      ref={cardRef}
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
@@ -60,11 +71,13 @@ function ServiceCard({ icon: Icon, name, desc, accent, index }) {
         ease: [0.25, 0.46, 0.45, 0.94],
       }}
       whileHover={{ y: -8 }}
+      onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
+      onMouseLeave={() => setHovered(false)}
       className="relative p-7 rounded-2xl overflow-hidden cursor-default group"
       style={{
+        "--gx": "0px",
+        "--gy": "0px",
         background: "rgba(255,255,255,0.04)",
         border: "1px solid rgba(255,255,255,0.07)",
       }}
@@ -74,7 +87,7 @@ function ServiceCard({ icon: Icon, name, desc, accent, index }) {
         className="absolute inset-0 pointer-events-none rounded-2xl transition-opacity duration-300"
         style={{
           opacity: hovered ? 1 : 0,
-          background: `radial-gradient(200px circle at ${pos.x}px ${pos.y}px, ${accent}22, transparent 70%)`,
+          background: `radial-gradient(200px circle at var(--gx) var(--gy), ${accent}22, transparent 70%)`,
         }}
       />
 

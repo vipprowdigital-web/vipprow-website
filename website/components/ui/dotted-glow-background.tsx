@@ -160,9 +160,11 @@ export const DottedGlowBackground = ({
     let stopped = false;
 
     const dpr = Math.max(1, window.devicePixelRatio || 1);
+    let dims = { width: 0, height: 0 };
 
     const resize = () => {
       const { width, height } = container.getBoundingClientRect();
+      dims = { width, height };
       el.width = Math.max(1, Math.floor(width * dpr));
       el.height = Math.max(1, Math.floor(height * dpr));
       el.style.width = `${Math.floor(width)}px`;
@@ -179,7 +181,7 @@ export const DottedGlowBackground = ({
 
     const regenDots = () => {
       dots = [];
-      const { width, height } = container.getBoundingClientRect();
+      const { width, height } = dims;
       const cols = Math.ceil(width / gap) + 2;
       const rows = Math.ceil(height / gap) + 2;
       const min = Math.min(speedMin, speedMax);
@@ -203,13 +205,9 @@ export const DottedGlowBackground = ({
 
     regenDots();
 
-    let last = performance.now();
-
     const draw = (now: number) => {
       if (stopped) return;
-      const dt = (now - last) / 1000; // seconds
-      last = now;
-      const { width, height } = container.getBoundingClientRect();
+      const { width, height } = dims;
 
       ctx.clearRect(0, 0, el.width, el.height);
       ctx.globalAlpha = opacity;

@@ -30,7 +30,7 @@ export default function MultiSectionScroller() {
                 {isActive && (
                   <motion.span
                     layoutId="active-tab"
-                    className="absolute left-0 bottom-0 h-[2px] w-full"
+                    className="absolute left-0 bottom-0 h-0.5 w-full"
                     style={{ backgroundColor: item.color }}
                   />
                 )}
@@ -86,7 +86,7 @@ export default function MultiSectionScroller() {
                         show: { opacity: 1, x: 0 },
                       }}
                       transition={{ duration: 0.4, ease: "easeOut" }}
-                      className="min-w-[260px] rounded-2xl bg-[#1f1f1f] p-6"
+                      className="min-w-65 rounded-2xl bg-[#1f1f1f] p-6"
                     >
                       <h3 className="text-base font-semibold">{card.title}</h3>
                       <p className="mt-3 text-sm text-zinc-400">{card.text}</p>
