@@ -141,12 +141,12 @@ const clientLogos = [
   },
   {
     name: "Lakme Academy powered by Aptech",
-    logo: "/assets/images/clients Logo/lakme-logo.jpg",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1782215013/lakme-logo.jpg_w8axb9.jpg",
     domain: "Other",
   },
   {
     name: "VLCC ",
-    logo: "/assets/images/clients Logo/vlcc-logo.png",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1782215013/vlcc-logo_zis4xv.png",
     domain: "Other",
   },
   //   {

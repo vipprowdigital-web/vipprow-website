@@ -523,7 +523,7 @@ export default function Footer() {
                 Build. Scale. Dominate.
               </p>
               {/* ── NEW: PORTFOLIO REDIRECT SECTION ── */}
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -557,7 +557,7 @@ export default function Footer() {
                 >
                   Official Website <ArrowUpRight size={14} />
                 </a>
-              </motion.div>
+              </motion.div> */}
               {/* ───────────────────────────────────── */}
             </div>
 
