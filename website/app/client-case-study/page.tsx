@@ -146,6 +146,16 @@ const jewellerySectorClients = [
 
 const otherClients = [
   {
+    title: "Lakme Academy powered by Aptech",
+    image: "/assets/images/clients Logo/lakme-logo.jpg",
+    tag: "Other",
+  },
+  {
+    title: "VLCC ",
+    image: "/assets/images/clients Logo/vlcc-logo.png",
+    tag: "Other",
+  },
+  {
     title: "DFashionista",
     image:
       "https://res.cloudinary.com/dh87x8i37/image/upload/v1779713962/dfashionista-logo_sfqnc4.jpg",

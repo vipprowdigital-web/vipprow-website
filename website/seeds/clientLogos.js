@@ -139,6 +139,16 @@ const clientLogos = [
     logo: "https://res.cloudinary.com/dh87x8i37/image/upload/v1779776457/lemon-tree-hotel-logo_otuur0.jpg",
     domain: "Other",
   },
+  {
+    name: "Lakme Academy powered by Aptech",
+    logo: "/assets/images/clients Logo/lakme-logo.jpg",
+    domain: "Other",
+  },
+  {
+    name: "VLCC ",
+    logo: "/assets/images/clients Logo/vlcc-logo.png",
+    domain: "Other",
+  },
   //   {
   //     name: "Moment Photography",
   //     logo: "/images/moment-photgraphy-logo.avif",
