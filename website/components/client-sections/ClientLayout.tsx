@@ -1,5 +1,3 @@
-// website\components\client-sections\ClientLayout.tsx
-
 "use client";
 
 import ReduxProvider from "@/providers/ReduxProvider";
@@ -20,19 +18,28 @@ export default function ClinetLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const pathName = usePathname();
+
+  const isBeautyAcademy = pathName.startsWith("/portfolio/beauty-academy");
+  const isPortfolio = pathName.startsWith("/portfolio");
+
   return (
     <>
       <ReduxProvider>
         <QueryProvider>
           <AppConfigLoader />
-          {pathName.includes("portfolio") ? (
+          {isBeautyAcademy ? null : isPortfolio ? (
             <PortfolioNavbar />
           ) : (
             <NavbarMenu />
           )}
 
           {children}
-          {pathName.includes("portfolio") ? <PortfolioFooter /> : <Footer />}
+
+          {isBeautyAcademy ? null : isPortfolio ? (
+            <PortfolioFooter />
+          ) : (
+            <Footer />
+          )}
           <Toaster position="bottom-center" />
         </QueryProvider>
       </ReduxProvider>

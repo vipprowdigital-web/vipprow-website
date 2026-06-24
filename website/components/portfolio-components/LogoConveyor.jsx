@@ -1,4 +1,4 @@
-// const LogoConveyor = ({ data }) => {
+import Image from "next/image";
 
 const LogoConveyor = ({ data }) => {
   // Split data into 3 chunks
@@ -64,11 +64,13 @@ const LogoConveyor = ({ data }) => {
                   key={i}
                   className="flex flex-col items-center justify-center gap-2 px-12 py-2 sm:py-5 rounded-4xl border border-white/5 bg-white/2 backdrop-blur-xl hover:bg-white/5 hover:border-purple-500/20 transition-all duration-500 min-w-70 md:min-w-75"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={item.logo}
                     alt={item.name}
-                    className="h-20 w-auto object-contain transition-transform duration-500 hover:scale-110"
+                    height={80}
+                    width={160}
+                    style={{ width: "auto", height: "80px" }}
+                    className="object-contain transition-transform duration-500 hover:scale-110"
                   />
                   <div className="mt-2 flex justify-center">
                     <span className="text-violet-400/80 text-[10px] font-bold uppercase tracking-[0.3em] text-center">

@@ -88,6 +88,7 @@ export default function Footer() {
         { name: "Careers", href: "/careers" },
         { name: "Contact", href: "/contact" },
         { name: "Portfolio", href: "/portfolio" },
+        { name: "Beauty Academy Portfolio", href: "/portfolio/beauty-academy" },
       ],
       // resources: [
       //   { name: "Docs", href: "/docs" },

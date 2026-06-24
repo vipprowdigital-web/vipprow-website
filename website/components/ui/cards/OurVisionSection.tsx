@@ -67,12 +67,11 @@ Decisions Powered by Data"
     "
               >
                 <Image
-                  src="/assets/images/company/mission.jpeg"
+                  src="/assets/images/company/vipprow-our-vision.png"
                   width={800}
                   height={500}
                   alt="Product preview"
                   className="w-full h-full object-cover"
-                  
                 />
               </div>
             </div>
