@@ -67,7 +67,7 @@ Decisions Powered by Data"
     "
               >
                 <Image
-                  src="/assets/images/company/vipprow-our-vision.png"
+                  src="/assets/images/company/vipprow-vision-img.jpeg"
                   width={800}
                   height={500}
                   alt="Product preview"

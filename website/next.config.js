@@ -5,7 +5,7 @@ const nextConfig = {
   compress: true,
   experimental: {
     optimizeCss: true,
-    cssChunking: "loose",
+    cssChunking: "strict",
     optimizePackageImports: [
       "framer-motion",
       "lucide-react",

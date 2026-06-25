@@ -1,3 +1,4 @@
+import { Sora } from "next/font/google";
 import Hero from "../../components/portfolio-components/Hero";
 import Divider from "../../components/portfolio-components/Divider";
 import About from "../../components/portfolio-components/About";
@@ -12,9 +13,16 @@ import { clientLogos } from "../../seeds/clientLogos";
 import { FAQS_PAGE_1 } from "../../seeds/FAQs";
 import "./index.css";
 
+const sora = Sora({
+  subsets: ["latin"],
+  weight: ["600"],
+  variable: "--font-portfolio-sora",
+  display: "swap",
+});
+
 export default function HomePage() {
   return (
-    <div>
+    <div className={sora.variable}>
       <Hero />
       <Divider />
       <About />

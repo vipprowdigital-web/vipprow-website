@@ -164,23 +164,36 @@ const Threads: React.FC<ThreadsProps> = ({
 
     const mesh = new Mesh(gl, { geometry, program });
 
-    function resize() {
-      const { clientWidth, clientHeight } = container;
-      renderer.setSize(clientWidth, clientHeight);
-      program.uniforms.iResolution.value.r = clientWidth;
-      program.uniforms.iResolution.value.g = clientHeight;
-      program.uniforms.iResolution.value.b = clientWidth / clientHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
+    // Cache the bounding rect so mousemove never forces a synchronous layout read.
+    // Update only on resize (rare) rather than on every pointer event (frequent).
+    let cachedRect = container.getBoundingClientRect();
 
-    let currentMouse = [0.5, 0.5];
+    const ro = new ResizeObserver((entries) => {
+      const { width, height } = entries[0].contentRect;
+      renderer.setSize(width, height);
+      program.uniforms.iResolution.value.r = width;
+      program.uniforms.iResolution.value.g = height;
+      program.uniforms.iResolution.value.b = width / (height || 1);
+      // Defer the rect cache update to after the canvas resize is painted.
+      requestAnimationFrame(() => {
+        cachedRect = container.getBoundingClientRect();
+      });
+    });
+    ro.observe(container);
+
+    // Seed the initial renderer size from the first observed entry.
+    const { clientWidth, clientHeight } = container;
+    renderer.setSize(clientWidth, clientHeight);
+    program.uniforms.iResolution.value.r = clientWidth;
+    program.uniforms.iResolution.value.g = clientHeight;
+    program.uniforms.iResolution.value.b = clientWidth / (clientHeight || 1);
+
+    const currentMouse = [0.5, 0.5];
     let targetMouse = [0.5, 0.5];
 
     function handleMouseMove(e: MouseEvent) {
-      const rect = container.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = 1.0 - (e.clientY - rect.top) / rect.height;
+      const x = (e.clientX - cachedRect.left) / cachedRect.width;
+      const y = 1.0 - (e.clientY - cachedRect.top) / cachedRect.height;
       targetMouse = [x, y];
     }
     function handleMouseLeave() {
@@ -211,7 +224,7 @@ const Threads: React.FC<ThreadsProps> = ({
 
     return () => {
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
-      window.removeEventListener('resize', resize);
+      ro.disconnect();
 
       if (enableMouseInteraction) {
         container.removeEventListener('mousemove', handleMouseMove);

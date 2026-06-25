@@ -172,10 +172,6 @@ export const DottedGlowBackground = ({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    const ro = new ResizeObserver(resize);
-    ro.observe(container);
-    resize();
-
     // Precompute dot metadata for a medium-sized grid and regenerate on resize
     let dots: { x: number; y: number; phase: number; speed: number }[] = [];
 
@@ -190,18 +186,26 @@ export const DottedGlowBackground = ({
         for (let j = -1; j < rows; j++) {
           const x = i * gap + (j % 2 === 0 ? 0 : gap * 0.5); // offset every other row
           const y = j * gap;
-          // Randomize phase and speed slightly per dot
           const phase = Math.random() * Math.PI * 2;
           const span = Math.max(max - min, 0);
-          const speed = min + Math.random() * span; // configurable rad/s
+          const speed = min + Math.random() * span;
           dots.push({ x, y, phase, speed });
         }
       }
     };
 
-    const regenThrottled = () => {
+    const ro = new ResizeObserver((entries) => {
+      const { width, height } = entries[0].contentRect;
+      dims = { width, height };
+      el.width = Math.max(1, Math.floor(width * dpr));
+      el.height = Math.max(1, Math.floor(height * dpr));
+      el.style.width = `${Math.floor(width)}px`;
+      el.style.height = `${Math.floor(height)}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       regenDots();
-    };
+    });
+    ro.observe(container);
+    resize();
 
     regenDots();
 
@@ -263,18 +267,11 @@ export const DottedGlowBackground = ({
       raf = requestAnimationFrame(draw);
     };
 
-    const handleResize = () => {
-      resize();
-      regenThrottled();
-    };
-
-    window.addEventListener("resize", handleResize);
     raf = requestAnimationFrame(draw);
 
     return () => {
       stopped = true;
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", handleResize);
       ro.disconnect();
     };
   }, [

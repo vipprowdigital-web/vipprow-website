@@ -50,8 +50,9 @@ import "swiper/css";
 interface ClientItem {
   image: string;
   title: string;
-  subtitle?: string; // Optional field since it's present in SERVICES data
+  subtitle?: string;
   tag: string;
+  bgColor?: string;
 }
 
 export default function ClientCaseStudyGridScroller({
@@ -65,7 +66,7 @@ export default function ClientCaseStudyGridScroller({
         <Swiper
           modules={[Autoplay]}
           slidesPerView="auto"
-          spaceBetween={24}
+          spaceBetween={30}
           grabCursor
           loop={clients.length >= 6}
           autoplay={{

@@ -52,6 +52,7 @@ const allowedOrigins = [
   process.env.VIPPROW_LANDING_PAGE_URL,
   "http://192.168.29.175:3000",
   "http://localhost:3000",
+  "http://localhost:3001",
   "http://localhost:5173",
   "http://localhost:5174",
 ];

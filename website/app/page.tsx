@@ -7,6 +7,7 @@ import ClientPartnerBrandMarquee from "@/components/client-sections/ClientPartne
 import PrimaryHeading from "@/components/ui/heading/PrimaryHeading";
 
 import ClientServiceCardGrid from "@/components/client-sections/ClientServiceCardGrid";
+import { ClientLogosConveyor } from "@/components/ui/client-logos-conveyor";
 
 // Dynamic — below the fold; deferred so their JS bundles don't block LCP paint.
 // Each import becomes a separate chunk that the browser fetches after first paint.
@@ -18,7 +19,9 @@ const ClientBentoGridSection = dynamic(
 );
 const EditorialGrid = dynamic(() => import("@/components/ui/EditorialGrid"));
 const FaqSection = dynamic(() => import("@/components/mvpblock-ui/FAQSection"));
-const ClientCTA = dynamic(() => import("@/components/client-sections/ClientCTA"));
+const ClientCTA = dynamic(
+  () => import("@/components/client-sections/ClientCTA"),
+);
 
 export const metadata: Metadata = {
   title: "VIPPROW",
@@ -65,6 +68,14 @@ export default function Home() {
           <ClientTestimonialMarquee />
         </div> */}
         {/* Testimonial End */}
+
+        <div className="pt-20 max-w-7xl space-y-3 mx-auto">
+          <PrimaryHeading
+            heading="Brands That Trust Us"
+            des="A growing family of businesses that chose Vipprow to build, grow, and scale their digital presence."
+          />
+          <ClientLogosConveyor />
+        </div>
 
         {/* Editorial Grid Start */}
         <div className="pt-20 max-w-7xl mx-auto">

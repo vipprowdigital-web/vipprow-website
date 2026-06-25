@@ -6,6 +6,7 @@ import Journey from "@/components/ui/cards/Journey";
 import MissionSection from "@/components/ui/cards/MissionSection";
 import OurVisionSection from "@/components/ui/cards/OurVisionSection";
 import WhyChooseUs from "@/components/ui/cards/WhyChooseUs";
+import { ClientLogosConveyor } from "@/components/ui/client-logos-conveyor";
 import PrimaryHeading from "@/components/ui/heading/PrimaryHeading";
 import ServiceCardGrid from "@/components/ui/ServiceCardGrid";
 
@@ -32,6 +33,14 @@ export default function CompanyPage() {
       </div>
       {/* Mission End */}
 
+      <div className="pt-20 max-w-7xl space-y-3 mx-auto">
+        <PrimaryHeading
+          heading="Brands That Trust Us"
+          des="A growing family of businesses that chose Vipprow to build, grow, and scale their digital presence."
+        />
+        <ClientLogosConveyor />
+      </div>
+
       {/* Vision Start */}
       <div className="pt-20 max-w-7xl mx-auto">
         <PrimaryHeading
@@ -47,7 +56,6 @@ export default function CompanyPage() {
         <PrimaryHeading
           heading="Why Choose Us"
           des="Vipprow creates structured, data-driven growth systems powered by performance marketing and automation."
-          
         />
         <WhyChooseUs />
       </div>
@@ -61,5 +69,3 @@ export default function CompanyPage() {
     </>
   );
 }
-
- 

@@ -54,10 +54,10 @@ export const WavyBackground = ({
     h = ctx.canvas.height = parent ? parent.clientHeight : window.innerHeight;
     ctx.filter = `blur(${blur}px)`;
     nt = 0;
-    const resizeObserver = new ResizeObserver(() => {
-      const p = canvas.parentElement;
-      w = ctx.canvas.width = p ? p.clientWidth : window.innerWidth;
-      h = ctx.canvas.height = p ? p.clientHeight : window.innerHeight;
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      w = ctx.canvas.width = entry ? Math.round(entry.contentRect.width) : window.innerWidth;
+      h = ctx.canvas.height = entry ? Math.round(entry.contentRect.height) : window.innerHeight;
       ctx.filter = `blur(${blur}px)`;
     });
     if (canvas.parentElement) resizeObserver.observe(canvas.parentElement);

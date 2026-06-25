@@ -3,7 +3,7 @@
    CSS Variables — controlled by theme.ts
    ============================================ */
 
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap");
+/* Fonts loaded via next/font/google in layout.tsx — no @import needed */
 
 :root {
   /* COLORS */
@@ -41,10 +41,10 @@
   );
 
   /* FONTS */
-  --font-heading: "Playfair Display", Georgia, serif;
-  --font-body: "Cormorant Garamond", Georgia, serif;
-  --font-accent: "Cinzel", serif;
-  --font-sans: "DM Sans", sans-serif;
+  --font-heading: var(--font-beauty-heading), Georgia, serif;
+  --font-body: var(--font-beauty-body), Georgia, serif;
+  --font-accent: var(--font-beauty-accent), serif;
+  --font-sans: var(--font-beauty-sans), sans-serif;
 
   /* FONT SIZES */
   --text-xs: 0.75rem;

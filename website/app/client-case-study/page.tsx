@@ -8,6 +8,31 @@ import PrimaryHeading from "@/components/ui/heading/PrimaryHeading";
 
 const educationSectorClients = [
   {
+    title: "Lakme Academy powered by Aptech",
+    image:
+      "https://res.cloudinary.com/dl6fjer3y/image/upload/v1782215013/lakme-logo.jpg_w8axb9.jpg",
+    tag: "Education",
+  },
+  {
+    title: "VLCC ",
+    image:
+      "https://res.cloudinary.com/dl6fjer3y/image/upload/v1782215013/vlcc-logo_zis4xv.png",
+    tag: "Education",
+  },
+  {
+    title: "UK International London Beauty School",
+    image:
+      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779713963/london-beuaty-school_zhrgka.png",
+    tag: "Education",
+  },
+  {
+    title: "Belleza Beauty School",
+    image:
+      "https://res.cloudinary.com/dl6fjer3y/image/upload/v1782383362/belleza_favicon_main_lwrtxm.svg",
+    tag: "Education",
+  },
+
+  {
     title: "Livewire",
     image:
       "https://res.cloudinary.com/dh87x8i37/image/upload/v1779712367/livewire-logo_ducl6n.png",
@@ -16,7 +41,7 @@ const educationSectorClients = [
   {
     title: "Edify School",
     image:
-      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779712780/edify-school-logo_aswc4t.png",
+      "https://res.cloudinary.com/dl6fjer3y/image/upload/v1782389847/edify-logo_pi8yeu.png",
     tag: "Education",
   },
   {
@@ -146,29 +171,12 @@ const jewellerySectorClients = [
 
 const otherClients = [
   {
-    title: "Lakme Academy powered by Aptech",
-    image:
-      "https://res.cloudinary.com/dl6fjer3y/image/upload/v1782215013/lakme-logo.jpg_w8axb9.jpg",
-    tag: "Other",
-  },
-  {
-    title: "VLCC ",
-    image:
-      "https://res.cloudinary.com/dl6fjer3y/image/upload/v1782215013/vlcc-logo_zis4xv.png",
-    tag: "Other",
-  },
-  {
     title: "DFashionista",
     image:
       "https://res.cloudinary.com/dh87x8i37/image/upload/v1779713962/dfashionista-logo_sfqnc4.jpg",
     tag: "Other",
   },
-  {
-    title: "UK International London Beauty School",
-    image:
-      "https://res.cloudinary.com/dh87x8i37/image/upload/v1779713963/london-beuaty-school_zhrgka.png",
-    tag: "Other",
-  },
+
   {
     title: "SDPL",
     image:
