@@ -11,7 +11,7 @@ export default function WhyChooseUs() {
         <div className="relative">
           <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-white/5 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_0_80px_-15px_rgba(139,92,246,0.35)]">
             <Image
-              src="/assets/images/company/mission.jpeg"
+              src="/assets/images/company/why-choose-us.jpeg"
               alt="Company Vision"
               width={800}
               height={500}

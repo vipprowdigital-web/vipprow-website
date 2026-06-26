@@ -60,6 +60,8 @@ export default function ClientCaseStudyGridScroller({
 }: {
   clients: ClientItem[];
 }) {
+  const shouldLoop = clients.length >= 6;
+
   return (
     <section className="relative py-20 bg-black overflow-hidden max-w-7xl mx-auto min-h-120">
       <div className="relative px-6 md:px-16">
@@ -68,13 +70,14 @@ export default function ClientCaseStudyGridScroller({
           slidesPerView="auto"
           spaceBetween={30}
           grabCursor
-          loop={clients.length >= 6}
-          autoplay={{
-            delay: 2, // 🔥 smooth continuous scroll
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-          }}
-          speed={6000} // 🔥 controls scroll smoothness
+          centeredSlides={clients.length < 4}
+          loop={shouldLoop}
+          autoplay={
+            shouldLoop
+              ? { delay: 2, disableOnInteraction: false, pauseOnMouseEnter: true }
+              : false
+          }
+          speed={6000}
           className="overflow-visible!"
         >
           {clients.map((client, index) => (
@@ -82,11 +85,6 @@ export default function ClientCaseStudyGridScroller({
               <GlassBottomCard href="#" {...client} />
             </SwiperSlide>
           ))}
-          {/* {SERVICES.map((service, index) => (
-            <SwiperSlide key={index} className="w-65! md:w-70!">
-              <GlassBottomCard href="#" {...service} />
-            </SwiperSlide>
-          ))} */}
         </Swiper>
 
         {/* Fade edges */}

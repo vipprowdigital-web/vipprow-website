@@ -1,7 +1,9 @@
 "use client";
 
-import Beams from "../Beams";
+import dynamic from "next/dynamic";
 import PrimaryHeading from "../ui/heading/PrimaryHeading";
+
+const Beams = dynamic(() => import("../Beams"), { ssr: false });
 
 type DigitalMarketingDetailsHeroSectionProp = {
   heading?: string | null;
@@ -14,7 +16,7 @@ export default function DigitalMarketingDetailsHeroSection({
 }: DigitalMarketingDetailsHeroSectionProp) {
   return (
     <>
-      <section className="relative w-screen h-[40vh] md:h-[400px] overflow-hidden">
+      <section className="relative w-screen h-[40vh] md:h-100 overflow-hidden">
         {/* Background Shader */}
         <Beams
           beamWidth={3}

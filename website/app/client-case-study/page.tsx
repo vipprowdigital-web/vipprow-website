@@ -137,6 +137,24 @@ const clothingSectorClients = [
       "https://res.cloudinary.com/dh87x8i37/image/upload/v1779713634/mangaldeep-logo_uoyyt4.webp",
     tag: "Clothing",
   },
+  {
+    title: "Kamna Fabrics",
+    image:
+      "https://res.cloudinary.com/dl6fjer3y/image/upload/v1782467965/kamna-sarees-logi_sxuepf.jpg",
+    tag: "Clothing",
+  },
+  {
+    title: "Bhaiya Ji Sarees",
+    image:
+      "https://res.cloudinary.com/dl6fjer3y/image/upload/v1782467965/bhaiya-ji-sarees-logo_izaexa.png",
+    tag: "Clothing",
+  },
+  {
+    title: "He N She Store",
+    image:
+      "https://res.cloudinary.com/dl6fjer3y/image/upload/v1781864016/he-and-she-logo_dopcaa.jpg",
+    tag: "Clothing",
+  },
 ];
 
 const solarSectorClients = [

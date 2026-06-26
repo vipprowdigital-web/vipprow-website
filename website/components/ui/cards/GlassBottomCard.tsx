@@ -29,7 +29,7 @@ export default function GlassBottomCard({
           alt={title}
           width={800}
           height={800}
-          className={`w-full ${fromServices ? "h-80 object-cover" : "h-70 object-contain"} rounded-4xl bg-black p-5`}
+          className={`w-full ${fromServices ? "h-80 object-cover" : "h-70 object-contain"} rounded-4xl bg-black p-10`}
         />
 
         {/* GLASS BOTTOM OVERLAY */}

@@ -17,17 +17,17 @@ export default function ClientCaseStudyHeroSection() {
           <div className="absolute inset-0 bg-linear-to-t from-black to-transparent to-90%"></div>
         </div>
 
-        <div className="z-10 mx-auto max-w-screen-xl gap-12 px-4 py-28 text-gray-600 md:px-8">
-          <div className="mx-auto max-w-3xl space-y-5 text-center leading-0 lg:leading-5">
-            <h1 className="font-heading group mx-auto w-fit rounded-3xl border-[2px] border-white/5 bg-gradient-to-tr from-zinc-300/5 via-gray-400/5 to-transparent px-5 py-2 text-sm text-gray-400">
+        <div className="z-10 mx-auto max-w-7xl gap-12 px-4 py-28 text-gray-600 md:px-8">
+          <div className="mx-auto max-w-3xl space-y-5 text-center leading-5">
+            <h1 className="font-heading group mx-auto w-fit rounded-3xl border-2 border-white/5 bg-linear-to-tr from-zinc-300/5 via-gray-400/5 to-transparent px-5 py-2 text-sm text-gray-400">
               Our Success Stories.
               <ArrowRight className="ml-2 inline h-4 w-4 duration-300 group-hover:translate-x-1" />
             </h1>
 
-            <h2 className="font-heading font-semibold mx-auto bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)] bg-clip-text text-4xl tracking-tight text-transparent md:text-6xl">
+            <h2 className="font-heading font-semibold mx-auto bg-[linear-gradient(180deg,#FFF_0%,rgba(255,255,255,0.00)_202.08%)] bg-clip-text text-4xl tracking-tight text-transparent md:text-6xl">
               Turning Ideas into <br />
               {""}
-              <span className="bg-gradient-to-r from-blue-800 to-blue-100 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-blue-800 to-blue-100 bg-clip-text text-transparent">
                 Results Strategy
               </span>
             </h2>

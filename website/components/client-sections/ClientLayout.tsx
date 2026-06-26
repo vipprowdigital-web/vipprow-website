@@ -5,8 +5,15 @@ import QueryProvider from "@/providers/QueryProvider";
 import { NavbarMenu } from "@/app/components/ui/Navbar";
 import { Toaster } from "react-hot-toast";
 import dynamic from "next/dynamic";
-import PortfolioFooter from "../../components/portfolio-components/Footer";
-import PortfolioNavbar from "../../components/portfolio-components/Navbar";
+
+const PortfolioFooter = dynamic(
+  () => import("../../components/portfolio-components/Footer"),
+  { ssr: false },
+);
+const PortfolioNavbar = dynamic(
+  () => import("../../components/portfolio-components/Navbar"),
+  { ssr: false },
+);
 
 const Footer = dynamic(() => import("@/app/components/ui/Footer"), {
   ssr: false,
