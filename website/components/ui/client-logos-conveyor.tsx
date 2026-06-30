@@ -30,14 +30,25 @@ export function ClientLogosConveyor() {
   );
 }
 
+function getOptimizedCloudinaryUrl(url: string): string {
+  return url.replace(
+    "/image/upload/",
+    "/image/upload/w_320,h_200,c_fit,f_auto,q_auto/"
+  );
+}
+
 function LogoCard({ client }: { client: { name: string; logo: string } }) {
+  const src = client.logo.includes("res.cloudinary.com")
+    ? getOptimizedCloudinaryUrl(client.logo)
+    : client.logo;
+
   return (
     <div className="flex items-center justify-center rounded-lg border border-border px-3 py-2 shadow-sm transition-shadow hover:shadow-md">
       <Image
-        src={client.logo}
+        src={src}
         alt={client.name}
-        width={80}
-        height={32}
+        width={320}
+        height={200}
         className="h-25 w-auto max-w-40 object-contain"
         unoptimized
       />

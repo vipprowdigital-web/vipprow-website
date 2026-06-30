@@ -74,6 +74,7 @@ export default function MissionSection() {
               width={800}
               height={800}
               className="h-auto w-full object-cover rounded-2xl"
+              sizes="(max-width: 1024px) 100vw, 50vw"
               priority
             />
 
