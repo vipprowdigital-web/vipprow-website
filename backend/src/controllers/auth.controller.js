@@ -43,7 +43,7 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    console.log("📥 Incoming login payload:", req.body);
+    // console.log("📥 Incoming login payload:", req.body);
     let { email, password } = req.body;
 
     // Normalize email (avoid case sensitivity issues)

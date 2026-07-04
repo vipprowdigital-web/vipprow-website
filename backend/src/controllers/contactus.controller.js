@@ -18,6 +18,8 @@ export const createContactUs = async (req, res) => {
       businessName,
       city,
       state,
+      course,
+      qualification,
     } = req.body;
 
     // Validate required fields
@@ -33,6 +35,28 @@ export const createContactUs = async (req, res) => {
         status: "error",
         message: "Name & Phone are required.",
       });
+    }
+
+    // Enrollment-specific validation
+    if (type === "Enrollment") {
+      if (!course) {
+        return res.status(400).json({
+          status: "error",
+          message: "Course selection is required for enrollment.",
+        });
+      }
+      if (!qualification) {
+        return res.status(400).json({
+          status: "error",
+          message: "Qualification is required for enrollment.",
+        });
+      }
+      if (!city) {
+        return res.status(400).json({
+          status: "error",
+          message: "City is required for enrollment.",
+        });
+      }
     }
 
     if (services && Array.isArray(services)) {
@@ -60,9 +84,13 @@ export const createContactUs = async (req, res) => {
       businessName: businessName,
       city: city,
       state: state,
+      // enrollment specific
+      course: course || null,
+      qualification: qualification || null,
+      // enrollment specific
       message,
       meta: meta || {},
-      services: services || null, // 👈 ADD THIS
+      services: services || null,
       ipAddress: req.ip,
       userAgent: req.headers["user-agent"],
       createdBy: req.user?._id || null,

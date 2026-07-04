@@ -5,6 +5,7 @@ const nextConfig = {
   compress: true,
   turbopack: {},
   experimental: {
+    inlineCss: true,
     optimizeCss: true,
     cssChunking: "strict",
     optimizePackageImports: [

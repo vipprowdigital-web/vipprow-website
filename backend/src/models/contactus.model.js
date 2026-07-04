@@ -11,7 +11,7 @@ const contactUsSchema = new Schema(
     type: {
       type: String,
       required: true,
-      enum: ["General", "Career", "Services", "other"],
+      enum: ["General", "Career", "Services", "Enrollment", "other"],
       index: true,
       default: "General",
     },
@@ -55,6 +55,28 @@ const contactUsSchema = new Schema(
       trim: true,
     },
     // FOR LANDING PAGE
+
+    //  Enrollment Fields
+    course: {
+      type: String,
+      trim: true,
+      enum: ["digital-marketing", "performance-marketing", null],
+      default: null,
+    },
+    qualification: {
+      type: String,
+      trim: true,
+      enum: [
+        "high-school",
+        "undergraduate",
+        "graduate",
+        "working",
+        "other",
+        null,
+      ],
+      default: null,
+    },
+    //  Enrollment Fields
 
     services: [
       {

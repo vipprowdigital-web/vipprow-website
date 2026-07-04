@@ -19,7 +19,7 @@ export function SignInForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  console.log("INSIDE SignInForm....");
+  // console.log("INSIDE SignInForm....");
 
   const { login, isLoading } = useAuth();
   const [formData, setFormData] = useState({

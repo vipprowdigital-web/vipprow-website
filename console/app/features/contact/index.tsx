@@ -199,6 +199,35 @@ export default function ContactPage() {
       },
     },
 
+    {
+      accessorKey: "course",
+      header: "Course",
+      cell: ({ row }) => {
+        if (row.original.type !== "Enrollment") return "-";
+        const courseLabels: Record<string, string> = {
+          "digital-marketing": "Digital Marketing",
+          "performance-marketing": "Performance Marketing",
+        };
+        return courseLabels[row.original.course] ?? "-";
+      },
+    },
+
+    {
+      accessorKey: "qualification",
+      header: "Qualification",
+      cell: ({ row }) => {
+        if (row.original.type !== "Enrollment") return "-";
+        const qualLabels: Record<string, string> = {
+          "high-school": "High School",
+          undergraduate: "Undergraduate",
+          graduate: "Graduate",
+          working: "Working Professional",
+          other: "Other",
+        };
+        return qualLabels[row.original.qualification] ?? "-";
+      },
+    },
+
     // {
     //   accessorKey: "subject",
     //   header: "Subject",
