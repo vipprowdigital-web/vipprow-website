@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 export default function Hero() {
@@ -16,14 +15,11 @@ export default function Hero() {
       item.style.opacity = "0";
       item.style.transform = "translateY(30px)";
 
-      setTimeout(
-        () => {
-          item.style.transition = "all 0.8s cubic-bezier(0.22, 1, 0.36, 1)";
-          item.style.opacity = "1";
-          item.style.transform = "translateY(0)";
-        },
-        200 + i * 150,
-      );
+      setTimeout(() => {
+        item.style.transition = "all 0.8s cubic-bezier(0.22, 1, 0.36, 1)";
+        item.style.opacity = "1";
+        item.style.transform = "translateY(0)";
+      }, 200 + i * 150);
     });
   }, []);
 
@@ -234,7 +230,7 @@ export default function Hero() {
           <div className="hero-grid">
             <div className="hero-text-col">
               <span data-reveal className="section-label">
-                Est. India&apos;s Premier
+                Est. India's Premier
               </span>
 
               <h1 data-reveal style={styles.heading} className="hero-heading">
@@ -245,7 +241,7 @@ export default function Hero() {
                     Beauty Academies
                   </span>
                   <br />
-                  <span style={styles.line3}>Digitally</span>
+                  <span className="animate-shimmer" style={styles.lineGold}>Digitally</span>
                 </span>
 
                 <span className="mobile-heading">
@@ -260,9 +256,7 @@ export default function Hero() {
                     <span className="animate-shimmer" style={styles.lineGold}>
                       Academies
                     </span>{" "}
-                    <span className="mobile-digitally" style={styles.line3}>
-                      Digitally
-                    </span>
+                     <span className="animate-shimmer" style={styles.lineGold}>Digitally</span>
                   </span>
                 </span>
               </h1>
@@ -279,13 +273,13 @@ export default function Hero() {
                 </a>
 
                 <a href="tel:+917974718311" className="btn-outline">
-                  📞 7974718311
+                   7974718311
                 </a>
               </div>
 
               <div data-reveal className="hero-stats">
                 {[
-                  { number: "5+", label: "Academies Served" },
+                  { number: "20+", label: "Academies Served" },
                   { number: "100+", label: "Campaigns Created" },
                   { number: "8+", label: "Services Offered" },
                   { number: "∞", label: "Growth Delivered" },
@@ -301,35 +295,32 @@ export default function Hero() {
             <div data-reveal className="hero-img-col">
               {!imgError ? (
                 <div className="hero-img-box">
-                  <Image
-                    src="/assets/images/company/hero-image.png"
+                  <img
+                    src="https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147596/home_yeljre.jpg"
                     alt="Vipprow Beauty Academy Digital Marketing"
-                    fill
-                    style={{ objectFit: "cover" }}
                     onError={() => setImgError(true)}
                   />
                 </div>
               ) : (
-                // <div className="hero-img-fallback">
-                //   <span style={styles.fbIcon}>✦</span>
+                <div className="hero-img-fallback">
+                  <span style={styles.fbIcon}>✦</span>
 
-                //   <p style={styles.fbTitle}>Apni Image Yahan Add Karein</p>
+                  <p style={styles.fbTitle}>Apni Image Yahan Add Karein</p>
 
-                //   <p style={styles.fbDesc}>
-                //     Image file rename karke{" "}
-                //     <strong style={{ color: "var(--color-primary)" }}>
-                //       hero-image.png
-                //     </strong>{" "}
-                //     rakho aur{" "}
-                //     <strong style={{ color: "var(--color-primary)" }}>
-                //       /public/
-                //     </strong>{" "}
-                //     folder mein paste karo.
-                //   </p>
+                  <p style={styles.fbDesc}>
+                    Image file rename karke{" "}
+                    <strong style={{ color: "var(--color-primary)" }}>
+                      hero-image.png
+                    </strong>{" "}
+                    rakho aur{" "}
+                    <strong style={{ color: "var(--color-primary)" }}>
+                      /public/
+                    </strong>{" "}
+                    folder mein paste karo.
+                  </p>
 
-                //   <p style={styles.fbFormats}>Supported: .jpg · .png · .webp</p>
-                // </div>
-                <></>
+                  <p style={styles.fbFormats}>Supported: .jpg · .png · .webp</p>
+                </div>
               )}
             </div>
           </div>

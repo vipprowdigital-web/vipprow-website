@@ -75,13 +75,19 @@ export default function Navbar() {
           </ul>
 
           {/* CTA */}
-          <a
-            href="tel:7974718311"
-            className="btn-primary nav-cta"
-            style={styles.cta}
-          >
-            Get In Touch
-          </a>
+               <a
+          
+
+  href="tel:7974718311"
+  className="btn-primary nav-cta"
+  style={{
+    ...styles.cta,
+    background: "#ffffff !important",
+    color: "#1a1a1a", 
+  }}
+>
+  Get In Touch
+</a>
 
           {/* Hamburger */}
           <button
@@ -113,7 +119,7 @@ export default function Navbar() {
               style={styles.mobileCta}
               onClick={() => setMenuOpen(false)}
             >
-              📞 7974718311
+              +91 7974718311
             </a>
           </div>
         )}

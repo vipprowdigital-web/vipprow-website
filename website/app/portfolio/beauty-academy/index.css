@@ -3,48 +3,39 @@
    CSS Variables — controlled by theme.ts
    ============================================ */
 
-/* Fonts loaded via next/font/google in layout.tsx — no @import needed */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 :root {
   /* COLORS */
-  --color-primary: #c9a96e;
-  --color-primary-light: #e8d5b0;
-  --color-primary-dark: #a07840;
-  --color-secondary: #1a0a2e;
-  --color-secondary-light: #2d1b4e;
-  --color-accent: #ff6b9d;
-  --color-accent-alt: #b8860b;
-  --color-text: #f5f0e8;
-  --color-text-muted: #a89880;
-  --color-text-dark: #1a0a2e;
-  --color-surface: #231440;
-  --color-surface-hover: #2e1a55;
-  --color-border: rgba(201, 169, 110, 0.25);
-  --color-overlay: rgba(26, 10, 46, 0.85);
+  --color-primary: #7C4DFF;
+  --color-primary-light: #9F7AEA;
+  --color-primary-dark: #5B21B6;
+  --color-secondary: #050816;
+  --color-secondary-light: #0C1024;
+  --color-accent: #4DA8FF;
+  --color-accent-alt: #C084FC;
+  --color-text: #F8FAFC;
+  --color-text-muted: #A8B3CF;
+  --color-text-dark: #0F172A;
+  --color-surface: #10162D;
+  --color-surface-hover: #171F3F;
+  --color-border: rgba(124, 77, 255, 0.25);
+  --color-overlay: rgba(5, 8, 22, 0.85);
   --color-white: #ffffff;
   --color-black: #000000;
 
   /* GRADIENTS */
-  --gradient-hero: linear-gradient(
-    135deg,
-    #1a0a2e 0%,
-    #2d1b4e 50%,
-    #1a0a2e 100%
-  );
-  --gradient-gold: linear-gradient(90deg, #c9a96e, #e8d5b0, #c9a96e);
-  --gradient-card: linear-gradient(145deg, #231440, #2d1b4e);
-  --gradient-button: linear-gradient(90deg, #c9a96e, #a07840);
-  --gradient-overlay: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(26, 10, 46, 0.95) 100%
-  );
+  --gradient-hero: linear-gradient(135deg, #050816 0%, #0C1024 50%, #050816 100%);
+  --gradient-gold: linear-gradient(90deg, #7C4DFF, #9F7AEA, #7C4DFF);
+  --gradient-card: linear-gradient(145deg, #10162D, #0C1024);
+  --gradient-button: linear-gradient(90deg, #7C4DFF, #4DA8FF);
+  --gradient-overlay: linear-gradient(180deg, transparent 0%, rgba(5,8,22,0.96) 100%);
 
   /* FONTS */
-  --font-heading: var(--font-beauty-heading), Georgia, serif;
-  --font-body: var(--font-beauty-body), Georgia, serif;
-  --font-accent: var(--font-beauty-accent), serif;
-  --font-sans: var(--font-beauty-sans), sans-serif;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Cormorant Garamond', Georgia, serif;
+  --font-accent: 'Cinzel', serif;
+  --font-sans: 'DM Sans', sans-serif;
 
   /* FONT SIZES */
   --text-xs: 0.75rem;
@@ -86,11 +77,11 @@
   --radius-full: 9999px;
 
   /* SHADOWS */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
-  --shadow-gold: 0 4px 30px rgba(201, 169, 110, 0.3);
-  --shadow-glow: 0 0 40px rgba(201, 169, 110, 0.2);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+  --shadow-gold: 0 4px 30px rgba(124,77,255,0.3);
+  --shadow-glow: 0 0 40px rgba(124,77,255,0.2);
 
   /* TRANSITIONS */
   --transition-fast: 0.15s ease;
@@ -100,9 +91,7 @@
 }
 
 /* RESET & BASE */
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -125,16 +114,9 @@ body {
 }
 
 /* SCROLLBAR */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-secondary);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
-  border-radius: var(--radius-full);
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-secondary); }
+::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: var(--radius-full); }
 
 /* SELECTION */
 ::selection {
@@ -143,12 +125,7 @@ body {
 }
 
 /* TYPOGRAPHY HELPERS */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: var(--fw-bold);
   line-height: 1.2;
@@ -236,7 +213,7 @@ img {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 40px rgba(201, 169, 110, 0.45);
+  box-shadow: 0 8px 40px rgba(124,77,255,0.45);
 }
 
 .btn-outline {
@@ -273,59 +250,35 @@ img {
 }
 
 .card:hover {
-  border-color: rgba(201, 169, 110, 0.5);
+  border-color: rgba(124,77,255,0.5);
   box-shadow: var(--shadow-glow);
   transform: translateY(-4px);
 }
 
 /* ANIMATIONS */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes shimmer {
-  0% {
-    background-position: -200% center;
-  }
-  100% {
-    background-position: 200% center;
-  }
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
 @keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 @keyframes pulse-glow {
-  0%,
-  100% {
-    box-shadow: var(--shadow-gold);
-  }
-  50% {
-    box-shadow: 0 0 60px rgba(201, 169, 110, 0.5);
-  }
+  0%, 100% { box-shadow: var(--shadow-gold); }
+  50% { box-shadow: 0 0 60px rgba(124,77,255,0.5); }
 }
 
 .animate-fade-up {
@@ -354,6 +307,7 @@ img {
     padding: 0 var(--space-sm);
   }
 }
+
 
 /* @import "tailwindcss";
 

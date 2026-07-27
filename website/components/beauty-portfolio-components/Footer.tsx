@@ -91,7 +91,7 @@ export default function Footer() {
 
                 <div style={styles.contactInfo}>
                   <a href="tel:7974718311" style={styles.contactItem}>
-                    📞 7974718311
+                    +91 7974718311
                   </a>
 
                   <a
@@ -100,7 +100,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    🌐 Official Website
+                     Official Website
                   </a>
 
                   <a
@@ -109,7 +109,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    🚀 Croissix AI
+                     Croissix AI
                   </a>
 
                   <a

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const projects = [
   {
@@ -17,8 +17,9 @@ const projects = [
       "Admission Campaigns",
       "Coming Soon Campaigns",
     ],
-    color: "#C9A96E",
+    color: "#5B21B6",
     instagram: "https://www.instagram.com/bellezadehradun/",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147627/belleza_logo_mobile_f3rypj.jpg", // 👈 apni logo image ka path yahan daalein
   },
   {
     id: 2,
@@ -34,8 +35,9 @@ const projects = [
       "Lead Generation Messaging",
       "Portfolio Content",
     ],
-    color: "#FF6B9D",
-    instagram: "https://www.instagram.com/gauramakeupstudio/",
+    color: "#5B21B6",
+    instagram: "https://www.instagram.com/gauramakeupacademy_",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147657/GAURA_tzjcdd.png", // 👈 apni logo image ka path yahan daalein
   },
   {
     id: 3,
@@ -51,8 +53,9 @@ const projects = [
       "Student Work Promotion",
       "Course Promotion",
     ],
-    color: "#9B8EC4",
+    color: "#5B21B6",
     instagram: " https://www.instagram.com/thebigtreebeautyacademy",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147636/big_tree_logo_bxhlaz.png", // 👈 apni logo image ka path yahan daalein
   },
   {
     id: 4,
@@ -68,8 +71,9 @@ const projects = [
       "Video Ad Transcripts",
       "Premium Brand Messaging",
     ],
-    color: "#E8C4A2",
+    color: "#5B21B6",
     instagram: "https://www.instagram.com/tipsalon__/",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147981/Logo_1_kauuqo.jpg", // 👈 apni logo image ka path yahan daalein
   },
   {
     id: 5,
@@ -84,8 +88,9 @@ const projects = [
       "Skin Prep Content",
       "Local SEO Replies",
     ],
-    color: "#A8D8B9",
+    color: "#5B21B6",
     instagram: "https://www.instagram.com/allure_makeup.studio/",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147668/allure_v3utoe.jpg", // 👈 apni logo image ka path yahan daalein
   },
   {
     id: 6,
@@ -101,16 +106,82 @@ const projects = [
       "Student Testimonial Posts",
       "Reels Captions",
     ],
-    color: "#6EC4C9",
+    color: "#5B21B6",
     instagram: "https://www.instagram.com/uk_londonbeautyschoolrudrapur/",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147646/london-beuaty-school.jpg_mawryu.png", // 👈 apni logo image ka path yahan daalein
   },
+
+  {
+    id: 7,
+    name: "Athenian Salon & Academy",
+    location: "Bangalore",
+    tagline: "Standard of Excellence",
+    badge: "Multi-Branch",
+    work: [
+      "Brand Identity Content",
+      "Social Media Management",
+      "Meta Ads Campaigns",
+      "Course Launch Promotions",
+      "Student Testimonial Posts",
+      "Reels Captions",
+    ],
+    color: "#5B21B6",
+    instagram: "https://www.instagram.com/uk_londonbeautyschoolrudrapur/",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147620/Athenian_LOGO_lrqeka.jpg", // 👈 apni logo image ka path yahan daalein
+  },
+{
+  id: 8,
+  name: "A Square Makeup Academy",
+  location: "Hyderabad, Telangana",
+  tagline: "International Standard Luxury Makeup Academy",
+  badge: "Beauty Education Brand",
+  work: [
+    "Brand Identity Design",
+    "Social Media Management",
+    "Meta Ads Campaigns",
+    "Course Launch Promotions",
+    "Student Testimonial Content",
+    "Creative Reels & Video Marketing",
+  ],
+  color: "#5B21B6",
+  instagram: "https://www.instagram.com/asquaremakeupacademy/#",
+  logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147612/A_SQURE_LOGO_nhum0v.png",
+},
+
+{
+  id: 8,
+  name: "Tempus Academy",
+  location: "Sector 74, Noida",
+  tagline: "Shaping Future Beauty Professionals",
+  badge: "Standard of Excellence",
+  work: [
+    "Brand Identity Content",
+    "Professional Makeup Academy Branding",
+    "Social Media Management",
+    "Meta Ads Campaigns",
+    "Course Launch Promotions",
+    "Student Testimonial Posts",
+    "Practical Training Reels",
+    "Student Walk & Ramp Walk Videos",
+    "Portfolio Showcase Content",
+    "Admissions Campaigns",
+  ],
+  color: "#5B21B6",
+  instagram: "https://www.instagram.com/academytempus/",
+  logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147603/tempus_old_logo_h0qyue.jpg",
+}
+  
+
+
+
+
 ];
 
 // Instagram SVG Icon
 const InstagramIcon = () => (
   <svg
     width="16"
-    height="16"
+    height="12"
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -132,36 +203,103 @@ const InstagramIcon = () => (
   </svg>
 );
 
+const ArrowIcon = ({ direction }: { direction: "left" | "right" }) => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style={{
+      transform: direction === "left" ? "rotate(180deg)" : "none",
+      display: "block",
+    }}
+  >
+    <path
+      d="M9 6L15 12L9 18"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// Generates a 2-letter initials badge from the academy name
+// (works for multi-word names and single CamelCase names like "TipSalon")
+function getInitials(name: string) {
+  const clean = name.replace(/[^a-zA-Z\s]/g, "");
+  const words = clean.split(/\s+|(?=[A-Z])/).filter(Boolean);
+  const first = words[0]?.[0] || "";
+  const second = words[1]?.[0] || words[0]?.[1] || "";
+  return (first + second).toUpperCase();
+}
+
 export default function Projects() {
-  const [activeId, setActiveId] = useState<number | null>(null);
+  const [slidesPerView, setSlidesPerView] = useState(2);
+  const [index, setIndex] = useState(0);
+
+  // Responsive slides-per-view
+ useEffect(() => {
+  const updateSlides = () => {
+    if (window.innerWidth < 640) setSlidesPerView(1);
+    else setSlidesPerView(2);
+  };
+  updateSlides();
+  window.addEventListener("resize", updateSlides);
+  return () => window.removeEventListener("resize", updateSlides);
+}, []);
+
+  const maxIndex = Math.max(0, projects.length - slidesPerView);
+  const isMobile = slidesPerView === 1;
+
+  useEffect(() => {
+    setIndex((i) => Math.min(i, maxIndex));
+  }, [maxIndex]);
+
+  const goPrev = useCallback(() => {
+    setIndex((i) => Math.max(0, i - 1));
+  }, []);
+
+  const goNext = useCallback(() => {
+    setIndex((i) => Math.min(maxIndex, i + 1));
+  }, [maxIndex]);
+
+  const slideWidthPercent = 100 / slidesPerView;
 
   return (
     <>
       <style>{`
-        .projects-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1.5rem;
+        .slider-viewport {
+          overflow: hidden;
+          margin: 0 -0.75rem;
         }
 
-        @media (max-width: 1024px) {
-          .projects-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
+        .slider-track {
+          display: flex;
+          transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+          align-items: stretch;
         }
 
+        .slider-slide {
+          padding: 0 0.75rem;
+          box-sizing: border-box;
+        }
+
+       .project-card {
+  display: flex;
+  align-items: stretch;
+  height: 200px;      /* fixed height — "100%" ki jagah, isse control milega */
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 !important;
+}
         @media (max-width: 640px) {
-          .projects-grid {
-            grid-template-columns: 1fr !important;
-          }
-
-          .project-card-top {
-            justify-content: center !important;
-            gap: 0.75rem !important;
-          }
-
-          .insta-btn span {
-            display: none;
+          .project-card {
+            flex-direction: column;
+            height: auto;
+            min-height: 0;
+            border-radius: 18px;
           }
         }
 
@@ -190,6 +328,70 @@ export default function Projects() {
           color: rgba(255,255,255,0.9);
           transform: translateY(-1px);
         }
+
+        .insta-btn-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
+          border-radius: var(--radius-full);
+          border: 1px solid rgba(255,255,255,0.12);
+          background: rgba(255,255,255,0.05);
+          flex-shrink: 0;
+          transition: all 0.22s ease;
+        }
+
+        .insta-btn-icon:hover {
+          transform: translateY(-1px) scale(1.05);
+        }
+
+        .slider-arrow {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 44px;
+          height: 44px;
+          border-radius: var(--radius-full);
+          border: 1px solid var(--color-border);
+          background: var(--color-surface);
+          color: var(--color-text);
+          cursor: pointer;
+          transition: all 0.22s ease;
+        }
+
+        .slider-arrow:hover:not(:disabled) {
+          background: var(--color-primary);
+          border-color: var(--color-primary);
+          transform: translateY(-2px);
+        }
+
+        .slider-arrow:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+
+        @media (max-width: 640px) {
+          .slider-arrow {
+            width: 40px;
+            height: 40px;
+          }
+        }
+
+        .slider-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 999px;
+          background: var(--color-border);
+          border: none;
+          cursor: pointer;
+          transition: all 0.25s ease;
+        }
+
+        .slider-dot.active {
+          width: 24px;
+          background: var(--color-primary);
+        }
       `}</style>
 
       <section id="projects" className="section" style={styles.section}>
@@ -209,70 +411,164 @@ export default function Projects() {
             </p>
           </div>
 
-          <div className="projects-grid">
-            {projects.map((project) => (
-              <div
-                key={project.id}
-                className="card"
-                style={{
-                  ...styles.card,
-                  borderColor:
-                    activeId === project.id ? project.color + "66" : undefined,
-                }}
-                onMouseEnter={() => setActiveId(project.id)}
-                onMouseLeave={() => setActiveId(null)}
-              >
-                {/* Top row: badge + number */}
-                <div className="project-card-top" style={styles.cardTop}>
-                  <span
+          <div className="slider-viewport">
+            <div
+              className="slider-track"
+              style={{
+                transform: `translateX(-${index * slideWidthPercent}%)`,
+              }}
+            >
+              {projects.map((project) => (
+                <div
+                  key={project.id}
+                  className="slider-slide"
+                  style={{ flex: `0 0 ${slideWidthPercent}%` }}
+                >
+                  <div
+                    className="card project-card"
                     style={{
-                      ...styles.badge,
-                      background: project.color + "22",
-                      color: project.color,
-                      border: `1px solid ${project.color}44`,
+                      ...styles.card,
+                      minHeight: isMobile ? "auto" : "100%",
                     }}
                   >
-                    {project.badge}
-                  </span>
+                    {/* Left: Image / Logo Panel */}
+                    <div
+                      className="project-image-panel"
+                      style={{
+                        ...styles.imagePanel,
+                        width: isMobile ? "100%" : "50%",
+                        height: isMobile ? "150px" : "auto",
+                       background: project.logo
+  ? "transparent"
+  : `linear-gradient(160deg, ${project.color}, ${project.color}55)`,
+                      }}
+                    >
+                      {project.logo ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={project.logo}
+                          alt={`${project.name} logo`}
+                          style={styles.logoImage}
+                        />
+                      ) : (
+                        <span style={styles.imageInitials}>
+                          {getInitials(project.name)}
+                        </span>
+                      )}
+                    </div>
 
-                  <span style={styles.number}>
-                    {String(project.id).padStart(2, "0")}
-                  </span>
+                    {/* Right: Content */}
+                    <div
+                      style={{
+                        ...styles.contentPanel,
+                        width: isMobile ? "100%" : "50%",
+                        padding: isMobile ? "1.1rem 1.25rem 1.4rem" : "1rem 1.1rem",
+                      }}
+                    >
+                      <div style={styles.cardTop}>
+                        <span
+                          style={{
+                            ...styles.badge,
+                            background: project.color + "22",
+                            color: project.color,
+                            border: `1px solid ${project.color}44`,
+                          }}
+                        >
+                          {project.badge}
+                        </span>
+
+                        <a
+                          href={project.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="insta-btn-icon"
+                          style={{
+                            color: project.color,
+                            borderColor: project.color + "44",
+                          }}
+                          aria-label="View on Instagram"
+                        >
+                          <InstagramIcon />
+                        </a>
+                      </div>
+
+                      <h3
+                        style={{
+                          ...styles.projectName,
+                          fontSize: isMobile ? "var(--text-lg)" : "var(--text-md)",
+                        }}
+                      >
+                        {project.name}
+                      </h3>
+                      <p
+                        style={{
+                          ...styles.location,
+                          whiteSpace: isMobile ? "normal" : "nowrap",
+                        }}
+                      >
+                         {project.location}
+                      </p>
+
+                      <div
+                        style={{
+                          ...styles.workTags,
+                          marginTop: isMobile ? "0.9rem" : "auto",
+                        }}
+                      >
+                        {project.work.slice(0, 3).map((item) => (
+                          <span key={item} style={styles.workTag}>
+                            {item}
+                          </span>
+                        ))}
+                        {project.work.length > 3 && (
+                          <span
+                            style={{
+                              ...styles.workTag,
+                              color: project.color,
+                              borderColor: project.color + "33",
+                            }}
+                          >
+                            +{project.work.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              ))}
+            </div>
+          </div>
 
-                <h3 style={styles.projectName}>{project.name}</h3>
+          {/* Slider Controls */}
+          <div style={styles.controls}>
+            <button
+              className="slider-arrow"
+              onClick={goPrev}
+              disabled={index === 0}
+              aria-label="Previous"
+            >
+              <ArrowIcon direction="left" />
+            </button>
 
-                <p style={styles.location}>📍 {project.location}</p>
+            <div style={styles.dots}>
+              {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+                <button
+                  key={i}
+                  className={`slider-dot${i === index ? " active" : ""}`}
+                  onClick={() => setIndex(i)}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
+              ))}
+            </div>
 
-                <p style={styles.tagline}>&ldquo;{project.tagline}&rdquo;</p>
-
-                <div style={styles.divider} />
-
-                <p style={styles.workLabel}>Work Done:</p>
-
-                <div style={styles.workTags}>
-                  {project.work.map((item) => (
-                    <span key={item} style={styles.workTag}>
-                      {item}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Instagram Link */}
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <a
-                    href={project.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="insta-btn"
-                    style={{ color: project.color, borderColor: project.color + "44" }}
-                  >
-                    <InstagramIcon />
-                    <span>View on Instagram</span>
-                  </a>
-                </div>
-              </div>
-            ))}
+            <button
+              className="slider-arrow"
+              onClick={goNext}
+              disabled={index === maxIndex}
+              aria-label="Next"
+            >
+              <ArrowIcon direction="right" />
+            </button>
           </div>
         </div>
       </section>
@@ -289,7 +585,7 @@ const styles: Record<string, React.CSSProperties> = {
   header: {
     textAlign: "center",
     maxWidth: "600px",
-    margin: "0 auto 4rem",
+    margin: "0 auto 3.5rem",
   },
 
   heading: {
@@ -319,420 +615,112 @@ const styles: Record<string, React.CSSProperties> = {
 
   card: {
     cursor: "default",
-    position: "relative",
-    textAlign: "center",
+    minHeight: "100%",
+  },
+
+ imagePanel: {
+    flexShrink: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    height: "100%",   // "auto" ki jagah — ab parent card ki fixed height follow karega
+},
+
+  imageInitials: {
+    fontFamily: "var(--font-accent)",
+    fontSize: "var(--text-xl)",
+    fontWeight: "var(--fw-bold)",
+    color: "var(--color-white)",
+    letterSpacing: "1px",
+  },
+
+  logoImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+     padding: "0.9rem 2.5rem", 
+  },
+
+  contentPanel: {
+    width: "50%",
+    flex: "1 1 50%",
+      padding: "0.65rem 0.85rem",
+    display: "flex",
+    flexDirection: "column",
+    minWidth: 0,
   },
 
   cardTop: {
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
-    gap: "0.75rem",
-    margin: "0 0 1.25rem",
+    gap: "0.5rem",
+    margin: "0 0 0.3rem",
   },
 
   badge: {
     fontFamily: "var(--font-sans)",
-    fontSize: "var(--text-xs)",
+    fontSize: "10px",
     fontWeight: "var(--fw-semibold)",
-    letterSpacing: "1px",
+    letterSpacing: "0.6px",
     textTransform: "uppercase",
-    padding: "0.3rem 0.85rem",
+    padding: "0.2rem 0.6rem",
     borderRadius: "var(--radius-full)",
-  },
-
-  number: {
-    fontFamily: "var(--font-accent)",
-    fontSize: "var(--text-2xl)",
-    color: "rgba(201,169,110,0.15)",
-    fontWeight: "var(--fw-bold)",
-    lineHeight: 1,
   },
 
   projectName: {
     fontFamily: "var(--font-heading)",
-    fontSize: "var(--text-xl)",
+    fontSize: "var(--text-md)",
     fontWeight: "var(--fw-semibold)",
     color: "var(--color-text)",
-    margin: "0 0 0.4rem",
-    lineHeight: 1.3,
-    textAlign: "center",
+     margin: "0 0 0.15rem",   // pehle "0 0 0.2rem" tha
+    lineHeight: 1.15,
+    textAlign: "left",
   },
 
   location: {
     fontFamily: "var(--font-sans)",
-    fontSize: "var(--text-xs)",
+    fontSize: "11px",
     color: "var(--color-text-muted)",
-    margin: "0 0 0.75rem",
-    textAlign: "center",
-  },
-
-  tagline: {
-    fontFamily: "var(--font-body)",
-    fontStyle: "normal",
-    fontSize: "var(--text-base)",
-    color: "var(--color-primary)",
-    margin: 0,
-    textAlign: "center",
-  },
-
-  divider: {
-    height: "1px",
-    background: "var(--color-border)",
-    margin: "1.25rem 0",
-  },
-
-  workLabel: {
-    fontFamily: "var(--font-sans)",
-    fontSize: "var(--text-xs)",
-    fontWeight: "var(--fw-semibold)",
-    letterSpacing: "2px",
-    textTransform: "uppercase",
-    color: "var(--color-text-muted)",
-    margin: "0 0 0.75rem",
-    textAlign: "center",
+    margin: "0 0 0.35rem",
+    textAlign: "left",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
 
   workTags: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "0.5rem",
-    justifyContent: "center",
-    marginBottom: "0.25rem",
+    gap: "0.4rem",
+    justifyContent: "flex-start",
+    marginTop: "0.6rem",
   },
 
   workTag: {
     fontFamily: "var(--font-sans)",
-    fontSize: "var(--text-xs)",
+    fontSize: "9px",           // pehle "10px" tha
     color: "var(--color-text-muted)",
-    padding: "0.25rem 0.7rem",
+    padding: "0.15rem 0.45rem", // pehle "0.2rem 0.55rem" tha
     background: "rgba(255,255,255,0.04)",
     border: "1px solid rgba(255,255,255,0.08)",
     borderRadius: "var(--radius-sm)",
     textAlign: "center",
+    whiteSpace: "nowrap",
+},
+
+  controls: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "1.5rem",
+    marginTop: "2.5rem",
+  },
+
+  dots: {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
   },
 };
-
-
-
-
-
-
-// "use client";
-// import { useState } from "react";
-
-// const projects = [
-//   {
-//     id: 1,
-//     name: "Belleza Beauty School",
-//     location: "Dehradun • Haldwani • Rudrapur • Bazpur • Pune",
-//     tagline: "International-Standard Beauty Academy",
-//     badge: "Multi-City",
-//     work: [
-//       "Social Media Management",
-//       "Meta Ads Campaigns",
-//       "Landing Page Content",
-//       "Google Business Profile",
-//       "Reels Captions",
-//       "Admission Campaigns",
-//       "Coming Soon Campaigns",
-//     ],
-//     color: "#C9A96E",
-//   },
-//   // {
-//   //   id: 2,
-//   //   name: "Gaura Makeup Studio & Academy",
-//   //   location: "Dehradun",
-//   //   tagline: "Professional Makeup & Beauty Training",
-//   //   badge: "Studio + Academy",
-//   //   work: [
-//   //     "Promotional Ad Copy",
-//   //     "Meta Ads Captions",
-//   //     "Course Offer Content",
-//   //     "Brand Positioning",
-//   //     "Lead Generation Messaging",
-//   //     "Portfolio Content",
-//   //   ],
-//   //   color: "#FF6B9D",
-//   // },
-//   // {
-//   //   id: 3,
-//   //   name: "The Big Tree Beauty Academy",
-//   //   location: "Dehradun",
-//   //   tagline: "Where Artistry Meets International Luxury",
-//   //   badge: "Premium",
-//   //   work: [
-//   //     "Brand Positioning",
-//   //     "Social Media Captions",
-//   //     "Meta Ad Captions",
-//   //     "Advanced Content Calendar",
-//   //     "Student Work Promotion",
-//   //     "Course Promotion",
-//   //   ],
-//   //   color: "#9B8EC4",
-//   // },
-//   {
-//     id: 4,
-//     name: "TipSalon",
-//     location: "Jaipur",
-//     tagline: "Luxury Salon & Premium Services",
-//     badge: "Luxury",
-//     work: [
-//       "Instagram & Facebook Bio",
-//       "Social Media Captions",
-//       "Luxury Service Promotion",
-//       "Meta Ad Captions",
-//       "Video Ad Transcripts",
-//       "Premium Brand Messaging",
-//     ],
-//     color: "#E8C4A2",
-//   },
-//   {
-//     id: 5,
-//     name: "Allure Makeup Studio",
-//     location: "Dehradun",
-//     tagline: "Makeup, Beauty & Workshop Promotions",
-//     badge: "Studio",
-//     work: [
-//       "Google Business Reviews",
-//       "Social Media Captions",
-//       "Workshop Promotion",
-//       "Skin Prep Content",
-//       "Local SEO Replies",
-//     ],
-//     color: "#A8D8B9",
-//   },
-// ];
-
-// export default function Projects() {
-//   const [activeId, setActiveId] = useState<number | null>(null);
-
-//   return (
-//     <>
-//       <style>{`
-//         .projects-grid {
-//           display: grid;
-//           grid-template-columns: repeat(3, 1fr);
-//           gap: 1.5rem;
-//         }
-
-//         @media (max-width: 1024px) {
-//           .projects-grid {
-//             grid-template-columns: repeat(2, 1fr) !important;
-//           }
-//         }
-
-//         @media (max-width: 640px) {
-//           .projects-grid {
-//             grid-template-columns: 1fr !important;
-//           }
-
-//           .project-card-top {
-//             justify-content: center !important;
-//             gap: 0.75rem !important;
-//           }
-//         }
-//       `}</style>
-
-//       <section id="projects" className="section" style={styles.section}>
-//         <div className="container">
-//           <div style={styles.header}>
-//             <span className="section-label">Our Work</span>
-//             <div className="gold-line-center" />
-
-//             <h2 style={styles.heading}>
-//               Beauty Academies We've{" "}
-//               <em style={styles.headingItalic}>Transformed</em>
-//             </h2>
-
-//             <p style={styles.subtext}>
-//               Real projects. Real results. A proven track record across multiple
-//               cities.
-//             </p>
-//           </div>
-
-//           <div className="projects-grid">
-//             {projects.map((project) => (
-//               <div
-//                 key={project.id}
-//                 className="card"
-//                 style={{
-//                   ...styles.card,
-//                   borderColor:
-//                     activeId === project.id ? project.color + "66" : undefined,
-//                 }}
-//                 onMouseEnter={() => setActiveId(project.id)}
-//                 onMouseLeave={() => setActiveId(null)}
-//               >
-//                 <div className="project-card-top" style={styles.cardTop}>
-//                   <span
-//                     style={{
-//                       ...styles.badge,
-//                       background: project.color + "22",
-//                       color: project.color,
-//                       border: `1px solid ${project.color}44`,
-//                     }}
-//                   >
-//                     {project.badge}
-//                   </span>
-
-//                   <span style={styles.number}>0{project.id}</span>
-//                 </div>
-
-//                 <h3 style={styles.projectName}>{project.name}</h3>
-
-//                 <p style={styles.location}>📍 {project.location}</p>
-
-//                 <p style={styles.tagline}>"{project.tagline}"</p>
-
-//                 <div style={styles.divider} />
-
-//                 <p style={styles.workLabel}>Work Done:</p>
-
-//                 <div style={styles.workTags}>
-//                   {project.work.map((item) => (
-//                     <span key={item} style={styles.workTag}>
-//                       {item}
-//                     </span>
-//                   ))}
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </section>
-//     </>
-//   );
-// }
-
-// const styles: Record<string, React.CSSProperties> = {
-//   section: {
-//     background:
-//       "linear-gradient(180deg, var(--color-secondary) 0%, var(--color-secondary-light) 50%, var(--color-secondary) 100%)",
-//   },
-
-//   header: {
-//     textAlign: "center",
-//     maxWidth: "600px",
-//     margin: "0 auto 4rem",
-//   },
-
-//   heading: {
-//     fontFamily: "var(--font-heading)",
-//     fontSize: "var(--text-4xl)",
-//     fontWeight: "var(--fw-bold)",
-//     color: "var(--color-text)",
-//     lineHeight: 1.2,
-//     margin: "0 0 1rem",
-//     fontStyle: "normal",
-//   },
-
-//   headingItalic: {
-//     fontStyle: "normal",
-//     background: "var(--gradient-gold)",
-//     WebkitBackgroundClip: "text",
-//     WebkitTextFillColor: "transparent",
-//     backgroundClip: "text",
-//   },
-
-//   subtext: {
-//     fontFamily: "var(--font-sans)",
-//     fontSize: "var(--text-base)",
-//     color: "var(--color-text-muted)",
-//     margin: 0,
-//   },
-
-//   card: {
-//     cursor: "default",
-//     position: "relative",
-//     textAlign: "center",
-//   },
-
-//   cardTop: {
-//     display: "flex",
-//     justifyContent: "center",
-//     alignItems: "center",
-//     gap: "0.75rem",
-//     margin: "0 0 1.25rem",
-//   },
-
-//   badge: {
-//     fontFamily: "var(--font-sans)",
-//     fontSize: "var(--text-xs)",
-//     fontWeight: "var(--fw-semibold)",
-//     letterSpacing: "1px",
-//     textTransform: "uppercase",
-//     padding: "0.3rem 0.85rem",
-//     borderRadius: "var(--radius-full)",
-//   },
-
-//   number: {
-//     fontFamily: "var(--font-accent)",
-//     fontSize: "var(--text-2xl)",
-//     color: "rgba(201,169,110,0.15)",
-//     fontWeight: "var(--fw-bold)",
-//     lineHeight: 1,
-//   },
-
-//   projectName: {
-//     fontFamily: "var(--font-heading)",
-//     fontSize: "var(--text-xl)",
-//     fontWeight: "var(--fw-semibold)",
-//     color: "var(--color-text)",
-//     margin: "0 0 0.4rem",
-//     lineHeight: 1.3,
-//     textAlign: "center",
-//   },
-
-//   location: {
-//     fontFamily: "var(--font-sans)",
-//     fontSize: "var(--text-xs)",
-//     color: "var(--color-text-muted)",
-//     margin: "0 0 0.75rem",
-//     textAlign: "center",
-//   },
-
-//   tagline: {
-//     fontFamily: "var(--font-body)",
-//     fontStyle: "normal",
-//     fontSize: "var(--text-base)",
-//     color: "var(--color-primary)",
-//     margin: 0,
-//     textAlign: "center",
-//   },
-
-//   divider: {
-//     height: "1px",
-//     background: "var(--color-border)",
-//     margin: "1.25rem 0",
-//   },
-
-//   workLabel: {
-//     fontFamily: "var(--font-sans)",
-//     fontSize: "var(--text-xs)",
-//     fontWeight: "var(--fw-semibold)",
-//     letterSpacing: "2px",
-//     textTransform: "uppercase",
-//     color: "var(--color-text-muted)",
-//     margin: "0 0 0.75rem",
-//     textAlign: "center",
-//   },
-
-//   workTags: {
-//     display: "flex",
-//     flexWrap: "wrap",
-//     gap: "0.5rem",
-//     justifyContent: "center",
-//   },
-
-//   workTag: {
-//     fontFamily: "var(--font-sans)",
-//     fontSize: "var(--text-xs)",
-//     color: "var(--color-text-muted)",
-//     padding: "0.25rem 0.7rem",
-//     background: "rgba(255,255,255,0.04)",
-//     border: "1px solid rgba(255,255,255,0.08)",
-//     borderRadius: "var(--radius-sm)",
-//     textAlign: "center",
-//   },
-// };
