@@ -189,12 +189,12 @@ export default function Footer() {
                 </p>
 
                 <a
-                  href="tel:7974718311"
-                  className="btn-primary"
-                  style={{ display: "inline-flex", marginTop: "1rem" }}
-                >
-                  Start Now →
-                </a>
+                 href="tel:7974718311"
+  className="btn-primary"
+  style={{ display: "inline-flex", marginTop: "1rem", color: "#ffffff" }}
+>
+  Start Now →
+</a>
               </div>
             </div>
           </div>

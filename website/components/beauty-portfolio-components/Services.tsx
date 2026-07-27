@@ -286,11 +286,11 @@ export default function Services() {
 
               <a
                 href="tel:+917974718311"
-                className="btn-primary"
-                style={styles.detailButton}
-              >
-                Enquire About This →
-              </a>
+  className="btn-primary"
+  style={{ ...styles.detailButton, color: "#ffffff" }}
+>
+  Enquire About This →
+</a>
             </div>
           </div>
         </div>
