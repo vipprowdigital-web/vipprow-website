@@ -15,7 +15,6 @@ const projects = [
       "Google Business Profile",
       "Reels Captions",
       "Admission Campaigns",
-      "Coming Soon Campaigns",
     ],
     color: "#5B21B6",
     instagram: "https://www.instagram.com/bellezadehradun/",
@@ -28,7 +27,6 @@ const projects = [
     tagline: "Professional Makeup & Beauty Training",
     badge: "Studio + Academy",
     work: [
-      "Promotional Ad Copy",
       "Meta Ads Captions",
       "Course Offer Content",
       "Brand Positioning",
@@ -47,7 +45,6 @@ const projects = [
     badge: "Premium",
     work: [
       "Brand Positioning",
-      "Social Media Captions",
       "Meta Ad Captions",
       "Advanced Content Calendar",
       "Student Work Promotion",
@@ -64,7 +61,6 @@ const projects = [
     tagline: "Luxury Salon & Premium Services",
     badge: "Luxury",
     work: [
-      "Instagram & Facebook Bio",
       "Social Media Captions",
       "Luxury Service Promotion",
       "Meta Ad Captions",
@@ -103,7 +99,6 @@ const projects = [
       "Social Media Management",
       "Meta Ads Campaigns",
       "Course Launch Promotions",
-      "Student Testimonial Posts",
       "Reels Captions",
     ],
     color: "#5B21B6",
@@ -122,59 +117,47 @@ const projects = [
       "Social Media Management",
       "Meta Ads Campaigns",
       "Course Launch Promotions",
-      "Student Testimonial Posts",
       "Reels Captions",
     ],
     color: "#5B21B6",
     instagram: "https://www.instagram.com/uk_londonbeautyschoolrudrapur/",
     logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147620/Athenian_LOGO_lrqeka.jpg", // 👈 apni logo image ka path yahan daalein
   },
-{
-  id: 8,
-  name: "A Square Makeup Academy",
-  location: "Hyderabad, Telangana",
-  tagline: "International Standard Luxury Makeup Academy",
-  badge: "Beauty Education Brand",
-  work: [
-    "Brand Identity Design",
-    "Social Media Management",
-    "Meta Ads Campaigns",
-    "Course Launch Promotions",
-    "Student Testimonial Content",
-    "Creative Reels & Video Marketing",
-  ],
-  color: "#5B21B6",
-  instagram: "https://www.instagram.com/asquaremakeupacademy/#",
-  logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147612/A_SQURE_LOGO_nhum0v.png",
-},
+  {
+    id: 8,
+    name: "A Square Makeup Academy",
+    location: "Hyderabad, Telangana",
+    tagline: "International Standard Luxury Makeup Academy",
+    badge: "Beauty Education Brand",
+    work: [
+      "Brand Identity Design",
+      "Social Media Management",
+      "Meta Ads Campaigns",
+      "Course Launch Promotions",
+      "Creative Reels & Video Marketing",
+    ],
+    color: "#5B21B6",
+    instagram: "https://www.instagram.com/asquaremakeupacademy/#",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147612/A_SQURE_LOGO_nhum0v.png",
+  },
 
-{
-  id: 8,
-  name: "Tempus Academy",
-  location: "Sector 74, Noida",
-  tagline: "Shaping Future Beauty Professionals",
-  badge: "Standard of Excellence",
-  work: [
-    "Brand Identity Content",
-    "Professional Makeup Academy Branding",
-    "Social Media Management",
-    "Meta Ads Campaigns",
-    "Course Launch Promotions",
-    "Student Testimonial Posts",
-    "Practical Training Reels",
-    "Student Walk & Ramp Walk Videos",
-    "Portfolio Showcase Content",
-    "Admissions Campaigns",
-  ],
-  color: "#5B21B6",
-  instagram: "https://www.instagram.com/academytempus/",
-  logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147603/tempus_old_logo_h0qyue.jpg",
-}
-  
-
-
-
-
+  {
+    id: 8,
+    name: "Tempus Academy",
+    location: "Sector 74, Noida",
+    tagline: "Shaping Future Beauty Professionals",
+    badge: "Standard of Excellence",
+    work: [
+      "Brand Identity Content",
+      "Professional Makeup Academy Branding",
+      "Social Media Management",
+      "Meta Ads Campaigns",
+      "Admissions Campaigns",
+    ],
+    color: "#5B21B6",
+    instagram: "https://www.instagram.com/academytempus/",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147603/tempus_old_logo_h0qyue.jpg",
+  },
 ];
 
 // Instagram SVG Icon
@@ -198,7 +181,14 @@ const InstagramIcon = () => (
       strokeWidth="2"
       fill="none"
     />
-    <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" fill="none" />
+    <circle
+      cx="12"
+      cy="12"
+      r="4"
+      stroke="currentColor"
+      strokeWidth="2"
+      fill="none"
+    />
     <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
   </svg>
 );
@@ -240,15 +230,15 @@ export default function Projects() {
   const [index, setIndex] = useState(0);
 
   // Responsive slides-per-view
- useEffect(() => {
-  const updateSlides = () => {
-    if (window.innerWidth < 640) setSlidesPerView(1);
-    else setSlidesPerView(2);
-  };
-  updateSlides();
-  window.addEventListener("resize", updateSlides);
-  return () => window.removeEventListener("resize", updateSlides);
-}, []);
+  useEffect(() => {
+    const updateSlides = () => {
+      if (window.innerWidth < 640) setSlidesPerView(1);
+      else setSlidesPerView(2);
+    };
+    updateSlides();
+    window.addEventListener("resize", updateSlides);
+    return () => window.removeEventListener("resize", updateSlides);
+  }, []);
 
   const maxIndex = Math.max(0, projects.length - slidesPerView);
   const isMobile = slidesPerView === 1;
@@ -289,7 +279,7 @@ export default function Projects() {
        .project-card {
   display: flex;
   align-items: stretch;
-  height: 200px;      /* fixed height — "100%" ki jagah, isse control milega */
+  height: 320px;      /* fixed height — "100%" ki jagah, isse control milega */
   min-height: 0;
   overflow: hidden;
   padding: 0 !important;
@@ -438,9 +428,9 @@ export default function Projects() {
                         ...styles.imagePanel,
                         width: isMobile ? "100%" : "50%",
                         height: isMobile ? "150px" : "auto",
-                       background: project.logo
-  ? "transparent"
-  : `linear-gradient(160deg, ${project.color}, ${project.color}55)`,
+                        background: project.logo
+                          ? "transparent"
+                          : `linear-gradient(160deg, ${project.color}, ${project.color}55)`,
                       }}
                     >
                       {project.logo ? (
@@ -462,7 +452,9 @@ export default function Projects() {
                       style={{
                         ...styles.contentPanel,
                         width: isMobile ? "100%" : "50%",
-                        padding: isMobile ? "1.1rem 1.25rem 1.4rem" : "1rem 1.1rem",
+                        padding: isMobile
+                          ? "1.1rem 1.25rem 1.4rem"
+                          : "1rem 1.1rem",
                       }}
                     >
                       <div style={styles.cardTop}>
@@ -495,7 +487,9 @@ export default function Projects() {
                       <h3
                         style={{
                           ...styles.projectName,
-                          fontSize: isMobile ? "var(--text-lg)" : "var(--text-md)",
+                          fontSize: isMobile
+                            ? "var(--text-lg)"
+                            : "var(--text-md)",
                         }}
                       >
                         {project.name}
@@ -506,7 +500,7 @@ export default function Projects() {
                           whiteSpace: isMobile ? "normal" : "nowrap",
                         }}
                       >
-                         {project.location}
+                        {project.location}
                       </p>
 
                       <div
@@ -515,7 +509,7 @@ export default function Projects() {
                           marginTop: isMobile ? "0.9rem" : "auto",
                         }}
                       >
-                        {project.work.slice(0, 3).map((item) => (
+                        {project.work.slice(0, 5).map((item) => (
                           <span key={item} style={styles.workTag}>
                             {item}
                           </span>
@@ -618,14 +612,14 @@ const styles: Record<string, React.CSSProperties> = {
     minHeight: "100%",
   },
 
- imagePanel: {
+  imagePanel: {
     flexShrink: 0,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    height: "100%",   // "auto" ki jagah — ab parent card ki fixed height follow karega
-},
+    height: "100%", // "auto" ki jagah — ab parent card ki fixed height follow karega
+  },
 
   imageInitials: {
     fontFamily: "var(--font-accent)",
@@ -639,13 +633,13 @@ const styles: Record<string, React.CSSProperties> = {
     width: "100%",
     height: "100%",
     objectFit: "contain",
-     padding: "0.9rem 2.5rem", 
+    padding: "0.9rem 2.5rem",
   },
 
   contentPanel: {
     width: "50%",
     flex: "1 1 50%",
-      padding: "0.65rem 0.85rem",
+    padding: "0.65rem 0.85rem",
     display: "flex",
     flexDirection: "column",
     minWidth: 0,
@@ -674,7 +668,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: "var(--text-md)",
     fontWeight: "var(--fw-semibold)",
     color: "var(--color-text)",
-     margin: "0 0 0.15rem",   // pehle "0 0 0.2rem" tha
+    margin: "0 0 0.15rem", // pehle "0 0 0.2rem" tha
     lineHeight: 1.15,
     textAlign: "left",
   },
@@ -700,15 +694,15 @@ const styles: Record<string, React.CSSProperties> = {
 
   workTag: {
     fontFamily: "var(--font-sans)",
-    fontSize: "9px",           // pehle "10px" tha
+    fontSize: "13px", // pehle "10px" tha
     color: "var(--color-text-muted)",
-    padding: "0.15rem 0.45rem", // pehle "0.2rem 0.55rem" tha
+     padding: "0.2rem 0.35rem", // pehle "0.2rem 0.55rem" tha
     background: "rgba(255,255,255,0.04)",
     border: "1px solid rgba(255,255,255,0.08)",
     borderRadius: "var(--radius-sm)",
     textAlign: "center",
     whiteSpace: "nowrap",
-},
+  },
 
   controls: {
     display: "flex",
