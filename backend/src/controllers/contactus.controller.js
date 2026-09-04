@@ -37,6 +37,31 @@ export const createContactUs = async (req, res) => {
       });
     }
 
+    // Validate name — must be a string of reasonable length/characters
+    if (typeof name !== "string") {
+      return res.status(400).json({
+        status: "error",
+        message: "Name must be a string.",
+      });
+    }
+
+    const trimmedName = name.trim();
+
+    if (trimmedName.length < 2 || trimmedName.length > 100) {
+      return res.status(400).json({
+        status: "error",
+        message: "Name must be between 2 and 100 characters.",
+      });
+    }
+
+    if (!/^[\p{L}\p{M}.'\- ]+$/u.test(trimmedName)) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "Name can only contain letters, spaces, hyphens, apostrophes and periods.",
+      });
+    }
+
     // Enrollment-specific validation
     if (type === "Enrollment") {
       if (!course) {
@@ -77,7 +102,7 @@ export const createContactUs = async (req, res) => {
     // ---------------------------------------------
     const contact = await ContactUs.create({
       type,
-      name,
+      name: trimmedName,
       email,
       phone: phone || null,
       subject: subject || null,

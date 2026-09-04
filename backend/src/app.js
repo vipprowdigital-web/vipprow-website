@@ -13,12 +13,12 @@ import hpp from "hpp";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// 🧩 Local Imports
+// Local Imports
 import "./config/passport.js";
 // import connectDB from "./config/db.js";
 import errorHandler from "./middleware/errorHandler.js";
 
-// 🗂 Routes
+// Routes
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import appConfigRoutes from "./routes/appConfig.routes.js";
@@ -39,12 +39,23 @@ import applicantRoutes from "./routes/applicant.routes.js";
 import newsletterRoutes from "./routes/newsletter.routes.js";
 
 // ===============================================
-// 🧠 Environment Config
+// Environment Config
 // ===============================================
 dotenv.config();
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const routePrefix = "/api/v1";
+
+// ===============================================
+// Trust Proxy
+// ===============================================
+// The app runs behind a reverse proxy (nginx / load balancer), so without
+// this express-rate-limit and req.ip fall back to the proxy's IP for every
+// request — every client shares one rate-limit bucket instead of getting
+// their own. "1" trusts exactly one hop (the immediate proxy). If another
+// hop is added in front (e.g. a CDN before nginx), bump this to match the
+// number of hops so req.ip still resolves to the real client.
+app.set("trust proxy", 1);
 const allowedOrigins = [
   process.env.NEXT_FRONTEND_URL, // Next.js production site
   process.env.ADMIN_FRONTEND_URL, // Admin production site
@@ -58,7 +69,7 @@ const allowedOrigins = [
 ];
 
 // ===============================================
-// 🧱 Core Middleware
+// Core Middleware
 // ===============================================
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -72,7 +83,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 //         return callback(null, true);
 //       }
 
-//       console.log("❌ Blocked by CORS:", origin);
+//       console.log("Blocked by CORS:", origin);
 //       return callback(new Error("CORS Not Allowed: " + origin));
 //     },
 //     credentials: true,
@@ -108,11 +119,11 @@ app.use(morgan("dev"));
 app.use(hpp()); // Prevent HTTP parameter pollution
 
 // ===============================================
-// ⚡ Rate Limiting
+// Rate Limiting
 // ===============================================
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 min
-  max: 200, // Limit each IP
+  limit: 200, // Limit each IP
   standardHeaders: true,
   legacyHeaders: false,
   message: "Too many requests from this IP, please try again later.",
@@ -120,7 +131,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // ===============================================
-// 🔐 Session & Passport Config
+// Session & Passport Config
 // ===============================================
 app.use(
   session({
@@ -143,11 +154,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // ===============================================
-// 🗂️ Static Files
+// Static Files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ===============================================
-// 🚏 API Routes
+// API Routes
 // ===============================================
 app.use(`${routePrefix}/auth`, authRoutes);
 app.use(`${routePrefix}/users`, userRoutes);
@@ -169,7 +180,7 @@ app.use(`${routePrefix}/applicant`, applicantRoutes);
 app.use(`${routePrefix}/newsletter`, newsletterRoutes);
 
 // ===============================================
-// 🩵 Health Check
+// Health Check
 // ===============================================
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -181,7 +192,7 @@ app.get("/", (req, res) => {
 });
 
 // ===============================================
-// 🧰 Global Error Handler
+// Global Error Handler
 // ===============================================
 app.use(errorHandler);
 

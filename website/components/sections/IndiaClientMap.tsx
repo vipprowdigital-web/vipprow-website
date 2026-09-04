@@ -535,7 +535,7 @@ export default function IndiaClientMap() {
                       key={`intro-${origin.id}`}
                       d={d}
                       fill="none"
-                      stroke="#22d3ee"
+                      stroke="#2563eb"
                       strokeWidth="1.4"
                       strokeLinecap="round"
                       style={

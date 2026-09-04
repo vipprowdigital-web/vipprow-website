@@ -1,5 +1,9 @@
 import { Router } from "express";
 import { ensureAuth } from "../middleware/authMiddleware.js";
+import {
+  contactBurstLimiter,
+  contactFormLimiter,
+} from "../middleware/rateLimiter.js";
 
 import {
   createContactUs,
@@ -15,7 +19,8 @@ const router = Router();
 
 /* ---------------------- PUBLIC ROUTE ---------------------- */
 // Create new contact message (Public)
-router.post("/", createContactUs);
+// Rate limited: burst (same IP within seconds) + sustained (per 15 min)
+router.post("/", contactBurstLimiter, contactFormLimiter, createContactUs);
 
 /* ---------------------- ADMIN ROUTES ---------------------- */
 

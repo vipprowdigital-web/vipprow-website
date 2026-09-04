@@ -279,7 +279,7 @@ export default function Hero() {
                 </a>
 
                 <a href="tel:+917974718311" className="btn-outline">
-                  📞 7974718311
+                   7974718311
                 </a>
               </div>
 

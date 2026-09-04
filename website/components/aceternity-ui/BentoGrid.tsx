@@ -41,6 +41,7 @@ const features = [
     cta: "Learn more",
     className: "col-span-3 lg:col-span-1",
     background: (
+      // <AutoSaveAnimation className="absolute inset-0 h-full w-full scale-95 transition-all duration-300 ease-out group-hover:scale-100" />
       <ChatDemoLoop className="absolute top-0 right-2 h-100 w-full scale-100 border-none mask-[linear-gradient(to_top,transparent_5%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-100" />
       // <AnimatedListDemo className="absolute top-4 right-2 h-[450px] w-full scale-100 border-none [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-90" />
     ),
@@ -56,6 +57,7 @@ const features = [
     background: (
       // <OrbitingCirclesDemo />
       <OrbitingCirclesDemo className="absolute inset-0 h-full w-full scale-85 md:scale-100 border-none mask-[linear-gradient(to_top,transparent_10%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-100" />
+      // <GrowthAlertAnimation className="absolute inset-0 h-full w-full scale-95 transition-all duration-300 ease-out group-hover:scale-100" />
     ),
   },
   {
@@ -68,17 +70,19 @@ const features = [
     className: "col-span-3 lg:col-span-1",
     background: (
       <AreaChartSection className="absolute top-4 right-0 h-112.5 w-full scale-100 border-none mask-[linear-gradient(to_top,transparent_0%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-100" />
+      // <AnalyticsAnimation className="absolute inset-0 h-full w-full scale-95 transition-all duration-300 ease-out group-hover:scale-100" />
     ),
   },
   {
     Icon: CalendarIcon,
     name: "Client Revenue Report",
-    description: "Revenue we have genrated for clients.",
+    description: "Revenue we have generated for clients.",
     className: "col-span-3 lg:col-span-1",
     href: "#",
     cta: "Learn more",
     background: (
       <ChartBarLabelSection className="absolute top-4 right-0 h-112.5 w-full scale-100 border-none mask-[linear-gradient(to_top,transparent_10%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-100" />
+      // <RevenueReportAnimation className="absolute inset-0 h-full w-full scale-95 transition-all duration-300 ease-out group-hover:scale-100" />
     ),
   },
 ];
