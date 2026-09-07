@@ -225,9 +225,12 @@ export default function WhyUs() {
             </div>
 
             <div className="whyus-cta-actions" style={styles.ctaActions}>
-              <a href="tel:+917974718311" className="btn-primary">
-                Call Us Now →
-              </a>
+              <a href="tel:+917974718311"
+  className="btn-primary"
+  style={{ color: "#ffffff" }}
+>
+  Call Us Now →
+</a>
 
               <a
                 href="https://vipprow.com/portfolio"

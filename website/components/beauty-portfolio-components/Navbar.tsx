@@ -191,11 +191,12 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: "pointer",
   },
 
-  cta: {
-    flexShrink: 0,
-    padding: "0.6rem 1.25rem",
-    fontSize: "0.75rem",
-  },
+ cta: {
+  flexShrink: 0,
+  padding: "0.6rem 1.25rem",
+  fontSize: "0.75rem",
+  color: "#ffffff",   // 👈 add kiya
+},
 
   hamburger: {
     background: "none",
@@ -235,9 +236,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   mobileCta: {
-    margin: "0.75rem 0 0",
-    textAlign: "center",
-    justifyContent: "center",
-    width: "100%",
-  },
+  margin: "0.75rem 0 0",
+  textAlign: "center",
+  justifyContent: "center",
+  width: "100%",
+  color: "#ffffff",   // 👈 add kiya
+},
 };
