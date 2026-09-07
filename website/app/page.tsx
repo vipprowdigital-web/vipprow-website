@@ -8,6 +8,7 @@ import PrimaryHeading from "@/components/ui/heading/PrimaryHeading";
 
 import ClientServiceCardGrid from "@/components/client-sections/ClientServiceCardGrid";
 import { ClientLogosConveyor } from "@/components/ui/client-logos-conveyor";
+import Services from "@/components/beauty-portfolio-components/Services";
 
 // Dynamic — below the fold; deferred so their JS bundles don't block LCP paint.
 // Each import becomes a separate chunk that the browser fetches after first paint.
@@ -24,8 +25,21 @@ const ClientCTA = dynamic(
 );
 
 export const metadata: Metadata = {
-  title: "VIPPROW",
-  description: "VIPPROW",
+  title: "Vipprow | Digital Marketing, SEO, AI Automation & SaaS Solutions",
+  description:
+    "Vipprow is a digital growth agency providing SEO, performance marketing, web development, software solutions, AI automation, and lead generation services for startups, local businesses, beauty academies, salons, and solar companies across India.",
+  keywords: [
+    "Digital Marketing Agency India",
+    "Performance Marketing Agency",
+    "AI Automation Company",
+    "SaaS Development Company",
+    "Software Development Company",
+    "Web Development Company",
+    "SEO Agency India",
+    "Lead Generation Agency",
+    "CRM Automation Services",
+    "Marketing Automation Services",
+  ],
 };
 
 export default function Home() {

@@ -5,6 +5,7 @@ import FlipCardGrid from "@/components/sections/FlipCardGrid";
 import ClientCaseStudyGridScroller from "@/components/ui/cards/ClientCaseStudyGridScroller";
 import ClientMain from "@/components/ui/cards/ClientMain";
 import PrimaryHeading from "@/components/ui/heading/PrimaryHeading";
+import { Metadata } from "next";
 
 const educationSectorClients = [
   {
@@ -250,6 +251,27 @@ const otherClients = [
     tag: "Other",
   },
 ];
+
+export const metadata: Metadata = {
+  keywords: [
+    "Solar Marketing Agency",
+    "Digital Marketing for Solar Companies",
+    "Solar Lead Generation Agency",
+    "Solar SEO Services",
+    "Beauty Academy Marketing Agency",
+    "Beauty Salon Marketing Agency",
+    "Digital Marketing for Beauty Academies",
+    "Beauty Academy Lead Generation",
+    "Local SEO Agency",
+    "Google Business Profile Optimization",
+    "Local Business Lead Generation",
+    "Digital Marketing for Local Businesses",
+    "SaaS Marketing Agency",
+    "SaaS Lead Generation",
+    "SaaS SEO Agency",
+    "SaaS Growth Marketing",
+  ],
+};
 
 export default function ClientCaseStudyPage() {
   return (

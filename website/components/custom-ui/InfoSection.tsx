@@ -10,7 +10,7 @@ export default function InfoSection() {
     <>
       <div className="bg-transparent">
         <section className="relative py-12 sm:py-16 lg:pb-40">
-          <div className="absolute bottom-0 right-0 overflow-hidden">
+          <div className="absolute bottom-0 right-0 hidden overflow-hidden lg:block">
             <motion.div
               className="w-full cursor-pointer"
               animate={{
@@ -34,13 +34,13 @@ export default function InfoSection() {
 
           <div className="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 gap-y-4 lg:items-center lg:grid-cols-2 xl:grid-cols-2">
-              <div className="text-center xl:col-span-1 lg:text-left md:px-16 lg:px-0 xl:pr-20">
+              <div className="text-center xl:col-span-1 lg:text-left md:px-16 lg:px-0 xl:pr-20 flex flex-col justify-center items-center sm:items-start">
                 <h1 className=" text-3xl font-semibold leading-tighter text-zinc-900 dark:text-white sm:text-4xl md:text-5xl font-heading">
-                  A smarter way to market and scale your business..
+                  A smarter way to market and scale your business.
                 </h1>
                 <p className="mt-2 text-lg text-gray-200 sm:mt-6 font-inter">
                   Data-backed digital strategies that drive visibility, leads,
-                  and long-term growth—without guesswork..
+                  and long-term growth—without guesswork.
                 </p>
 
                 <div className="mt-10 flex flex-row gap-4">

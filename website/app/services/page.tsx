@@ -5,6 +5,22 @@ import FaqSection from "@/components/mvpblock-ui/FAQSection";
 import ServiceGridScroller from "@/components/ui/cards/ServiceGridScroller";
 import PrimaryHeading from "@/components/ui/heading/PrimaryHeading";
 import ServiceCardGrid from "@/components/ui/ServiceCardGrid";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  keywords: [
+    "Google Ads Management",
+  "Meta Ads Management",
+  "Local SEO Services",
+  "WhatsApp Automation",
+  "AI Business Automation",
+  "CRM Development",
+  "SaaS Product Development",
+  "Custom Software Development",
+  "Website Development Services",
+  "AI-Powered Marketing",
+  ],
+};
 
 export default function ServicesPage() {
   return (

@@ -6,11 +6,18 @@ import {
 } from "../services/email.service.js";
 import Subscriber from "../models/subscriber.model.js";
 
+// Keep in sync with the Subscriber model's email pattern.
+const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
 export const subscribeToNewsletter = async (req, res) => {
   try {
     const { email } = req.body;
 
-    if (!email || typeof email !== "string" || !email.includes("@")) {
+    if (
+      !email ||
+      typeof email !== "string" ||
+      !EMAIL_REGEX.test(email.trim())
+    ) {
       return res.status(400).json({
         success: false,
         message: "Please provide a valid email address.",
@@ -19,29 +26,44 @@ export const subscribeToNewsletter = async (req, res) => {
 
     const targetEmail = email.trim().toLowerCase();
 
-    // 1. Save or Update the Subscriber in MongoDB
+    // 1. Check current state BEFORE upserting, so we know whether this is
+    // a genuinely new subscription or a resubmission of an already active one.
+    const existing = await Subscriber.findOne({ email: targetEmail }).lean();
+    const alreadySubscribed = existing?.subscribed === true;
+
+    // 2. Save or Update the Subscriber in MongoDB
     // If they exist, ensure 'subscribed: true' updates their preference.
-    const subscriber = await Subscriber.findOneAndUpdate(
+    await Subscriber.findOneAndUpdate(
       { email: targetEmail },
       { $set: { subscribed: true, subscribedAt: new Date() } },
       { upsert: true, new: true },
     );
 
-    // 2. Call the Resend email service
+    // 3. Only send the welcome email for a genuinely new subscription.
+    // Without this guard, anyone could resubmit an already-subscribed
+    // address over and over to spam that inbox with "welcome" emails
+    // (and burn the Resend quota) — rate limiting alone only slows down
+    // a single attacker IP, not a distributed one targeting one victim.
+    if (alreadySubscribed) {
+      return res.status(200).json({
+        success: true,
+        message: "You're already subscribed to the newsletter.",
+      });
+    }
+
     const emailResult = await sendNewsletterSubscriptionEmail({
       email: targetEmail,
     });
 
-    // 3. Handle service failures (e.g., API keys down, invalid domain restriction)
+    // 4. Handle service failures (e.g., API keys down, invalid domain restriction)
     if (!emailResult.success) {
       return res.status(500).json({
         success: false,
         message: "Failed to process email subscription delivery.",
-        error: emailResult.error,
       });
     }
 
-    // 4. Return success response to the frontend
+    // 5. Return success response to the frontend
     return res.status(200).json({
       success: true,
       message: "Successfully subscribed to the newsletter! 🎉",

@@ -23,7 +23,7 @@ export default function DigitalMarketingHeroSection() {
                   Build, Scale, and Convert with Intelligent Digital Marketing.
                 </p>
 
-                <div className="mt-10 flex flex-row gap-4">
+                <div className="mt-10 flex flex-row justify-start gap-4">
                   <PrimaryGlowButton
                     heading="Get Started Now"
                     onClick={() => router.push("/contact")}
