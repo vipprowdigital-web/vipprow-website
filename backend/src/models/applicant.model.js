@@ -6,11 +6,13 @@ const ApplicantSchema = new mongoose.Schema(
       type: String,
       required: [true, "Name is required"],
       trim: true,
+      maxlength: [100, "Name is too long"],
     },
     jobTitle: {
       type: String,
       required: [true, "Job title is required"],
       trim: true,
+      maxlength: [150, "Job title is too long"],
     },
     resume: {
       url: {

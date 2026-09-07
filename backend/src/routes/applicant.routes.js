@@ -4,14 +4,29 @@ import {
   getApplications,
   deleteApplication,
 } from "../controllers/applicant.controller.js";
-import upload from "../config/multer.js";
+import { resumeUpload, handleResumeUploadErrors } from "../config/multer.js";
 import { ensureAuth } from "../middleware/authMiddleware.js";
+import {
+  applicantBurstLimiter,
+  applicantUploadLimiter,
+} from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
-const applicantUpload = upload.fields([{ name: "resume", maxCount: 1 }]);
+const applicantUpload = resumeUpload.fields([{ name: "resume", maxCount: 1 }]);
 
-router.post("/", applicantUpload, submitApplication);
+// Public: rate limiters run BEFORE multer so throttled requests never write
+// a file to disk. handleResumeUploadErrors turns multer/filter errors into
+// clean 400s instead of leaking to the global error handler.
+router.post(
+  "/",
+  applicantBurstLimiter,
+  applicantUploadLimiter,
+  applicantUpload,
+  handleResumeUploadErrors,
+  submitApplication,
+);
+
 router.get("/", ensureAuth, getApplications);
 router.delete("/:id", ensureAuth, deleteApplication);
 

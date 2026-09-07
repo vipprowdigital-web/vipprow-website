@@ -1,44 +1,107 @@
+import fs from "node:fs";
 import Applicant from "../models/applicant.model.js";
 import {
   uploadToCloudinary,
   destroyFromCloudinary,
 } from "../utils/cloudinaryService.js";
 
+const NAME_MAX = 100;
+const JOB_TITLE_MAX = 150;
+
+/**
+ * Authoritative file-type check: read the first bytes of the uploaded file
+ * and confirm they match an allowed document signature. This catches files
+ * that were simply renamed to .pdf/.docx (the extension and client MIME
+ * type can't be trusted).
+ */
+const hasAllowedResumeSignature = (filePath) => {
+  let fd;
+  try {
+    fd = fs.openSync(filePath, "r");
+    const buf = Buffer.alloc(8);
+    const bytesRead = fs.readSync(fd, buf, 0, 8, 0);
+    if (bytesRead < 4) return false;
+
+    // %PDF-
+    if (buf.slice(0, 5).toString("latin1") === "%PDF-") return true;
+    // ZIP-based (DOCX and other OOXML): "PK\x03\x04" / "PK\x05\x06" / "PK\x07\x08"
+    if (buf[0] === 0x50 && buf[1] === 0x4b) return true;
+    // Legacy OLE2 (.doc): D0 CF 11 E0 A1 B1 1A E1
+    if (
+      buf[0] === 0xd0 &&
+      buf[1] === 0xcf &&
+      buf[2] === 0x11 &&
+      buf[3] === 0xe0
+    ) {
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  } finally {
+    if (fd !== undefined) {
+      try {
+        fs.closeSync(fd);
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+};
+
+const safeUnlink = (filePath) => {
+  if (filePath && fs.existsSync(filePath)) {
+    fs.unlink(filePath, () => {});
+  }
+};
+
 // @desc    Submit application (Create)
 // @route   POST /api/applicants
 export const submitApplication = async (req, res) => {
+  const tempPath = req.files?.resume?.[0]?.path || null;
+  let uploadAttempted = false;
+
   try {
-    const { name, jobTitle } = req.body;
+    const name = typeof req.body?.name === "string" ? req.body.name.trim() : "";
+    const jobTitle =
+      typeof req.body?.jobTitle === "string" ? req.body.jobTitle.trim() : "";
 
-    if (!name?.trim())
-      return res.status(400).json({ message: "Name is required." });
-    if (!jobTitle?.trim())
+    if (!name) return res.status(400).json({ message: "Name is required." });
+    if (name.length > NAME_MAX)
+      return res
+        .status(400)
+        .json({ message: `Name must be at most ${NAME_MAX} characters.` });
+
+    if (!jobTitle)
       return res.status(400).json({ message: "Job title is required." });
+    if (jobTitle.length > JOB_TITLE_MAX)
+      return res.status(400).json({
+        message: `Job title must be at most ${JOB_TITLE_MAX} characters.`,
+      });
 
-    let resumeUrl = null;
-    let cloudinaryId = null;
-
-    if (req.files?.resume?.[0]?.path) {
-      const upload = await uploadToCloudinary(
-        req.files.resume[0].path,
-        "applicants/resumes",
-      );
-      resumeUrl = upload.secure_url;
-      cloudinaryId = upload.public_id;
-    } else {
+    if (!tempPath) {
       return res.status(400).json({ message: "Resume file is required." });
     }
 
+    if (!hasAllowedResumeSignature(tempPath)) {
+      return res.status(400).json({
+        message: "Resume must be a valid PDF or Word document.",
+      });
+    }
+
+    uploadAttempted = true;
+    const upload = await uploadToCloudinary(tempPath, "applicants/resumes");
+    const resumeUrl = upload.secure_url;
+    const cloudinaryId = upload.public_id;
+
     const applicant = await Applicant.create({
-      name: name.trim(),
-      jobTitle: jobTitle.trim(),
+      name,
+      jobTitle,
       resume: {
         url: resumeUrl,
         cloudinaryId: cloudinaryId,
       },
     });
-
-    // console.log("Applicant: ", applicant);
 
     res.status(201).json({
       success: true,
@@ -50,8 +113,12 @@ export const submitApplication = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
-      error: error.message,
     });
+  } finally {
+    // Safety net for the paths that never reach Cloudinary (early 400s,
+    // validation throws). Once uploadToCloudinary is called it owns the
+    // temp-file cleanup itself, so skip it here to avoid a double unlink.
+    if (!uploadAttempted) safeUnlink(tempPath);
   }
 };
 

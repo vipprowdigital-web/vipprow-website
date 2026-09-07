@@ -80,3 +80,40 @@ export const newsletterFormLimiter = rateLimit({
       "Too many newsletter requests from this IP. Please try again later.",
     ),
 });
+
+// ===============================================
+// Applicant / careers upload rate limiters (keyed by client IP)
+// ===============================================
+// This endpoint accepts a file upload written to disk, so it must be
+// throttled BEFORE multer runs — otherwise a bot can fill the disk with
+// junk uploads. Job applications are rare, so the limits are tight.
+
+/**
+ * Burst limiter — blocks rapid-fire uploads from the same IP.
+ */
+export const applicantBurstLimiter = rateLimit({
+  windowMs: 30 * 1000, // 30 seconds
+  limit: 2, // max 2 uploads per IP per 30s
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) =>
+    tooMany(
+      res,
+      "You're submitting too quickly. Please wait a moment and try again.",
+    ),
+});
+
+/**
+ * Sustained limiter — caps applications from a single IP over an hour.
+ */
+export const applicantUploadLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  limit: 6, // max 6 applications per IP per hour
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) =>
+    tooMany(
+      res,
+      "Too many application submissions from this IP. Please try again later.",
+    ),
+});
