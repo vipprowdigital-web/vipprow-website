@@ -17,6 +17,7 @@ import { fileURLToPath } from "url";
 import "./config/passport.js";
 // import connectDB from "./config/db.js";
 import errorHandler from "./middleware/errorHandler.js";
+import sanitizeMongo from "./middleware/sanitizeMongo.js";
 
 // Routes
 import authRoutes from "./routes/auth.routes.js";
@@ -37,6 +38,8 @@ import contatUsRoutes from "./routes/contactus.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
 import applicantRoutes from "./routes/applicant.routes.js";
 import newsletterRoutes from "./routes/newsletter.routes.js";
+import caseStudyRoutes from "./routes/caseStudy.routes.js";
+import caseStudyCategoryRoutes from "./routes/caseStudyCategory.routes.js";
 
 // ===============================================
 // Environment Config
@@ -73,6 +76,10 @@ const allowedOrigins = [
 // ===============================================
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// Strip MongoDB operator keys ($..., dotted) from request bodies before
+// they can reach any controller / query.
+app.use(sanitizeMongo);
 
 // app.use(
 //   cors({
@@ -178,6 +185,8 @@ app.use(`${routePrefix}/contact`, contatUsRoutes);
 app.use(`${routePrefix}/upload`, uploadRoutes);
 app.use(`${routePrefix}/applicant`, applicantRoutes);
 app.use(`${routePrefix}/newsletter`, newsletterRoutes);
+app.use(`${routePrefix}/case-study-category`, caseStudyCategoryRoutes);
+app.use(`${routePrefix}/case-study`, caseStudyRoutes);
 
 // ===============================================
 // Health Check

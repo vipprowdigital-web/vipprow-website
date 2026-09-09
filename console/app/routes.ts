@@ -31,6 +31,8 @@ export default [
       ...createCrudRoutes("support"),
       ...createCrudRoutes("contact"),
       ...createCrudRoutes("domains"),
+      ...createCrudRoutes("case-study"),
+      ...createCrudRoutes("case-study-category"),
 
       // Single Routes -> Model / Pop Form / Chat Box / AI Agents / Etc.
 

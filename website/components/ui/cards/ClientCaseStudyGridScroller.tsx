@@ -53,6 +53,7 @@ interface ClientItem {
   subtitle?: string;
   tag: string;
   bgColor?: string;
+  href?: string;
 }
 
 export default function ClientCaseStudyGridScroller({
@@ -82,7 +83,7 @@ export default function ClientCaseStudyGridScroller({
         >
           {clients.map((client, index) => (
             <SwiperSlide key={index} className="w-65! md:w-70!">
-              <GlassBottomCard href="#" {...client} />
+              <GlassBottomCard {...client} href={client.href ?? "#"} />
             </SwiperSlide>
           ))}
         </Swiper>

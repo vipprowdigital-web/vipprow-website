@@ -174,7 +174,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Case Studies",
         url: "/admin/case-study",
         icon: Layers,
-        isActive: isActive("/admin/case-study"),
+        isActive:
+          isActive("/admin/case-study") &&
+          !isActive("/admin/case-study-category"),
+      },
+      {
+        title: "Case Study Sectors",
+        url: "/admin/case-study-category",
+        icon: ChartBarStacked,
+        isActive: isActive("/admin/case-study-category"),
       },
     ],
 

@@ -56,6 +56,14 @@ import { userCertificateApi } from "~/features/user-certificate/data/user-certif
 import contactReducer from "~/features/contact/data/contactSlice";
 import { contactApi } from "~/features/contact/data/contactApi";
 
+// 🗂 Case Study Feature
+import caseStudyReducer from "~/features/case-study/data/caseStudySlice";
+import { caseStudyApi } from "~/features/case-study/data/caseStudyApi";
+
+// 🗂 Case Study Category (Sector) Feature
+import caseStudyCategoryReducer from "~/features/case-study-category/data/caseStudyCategorySlice";
+import { caseStudyCategoryApi } from "~/features/case-study-category/data/caseStudyCategoryApi";
+
 export const store = configureStore({
   reducer: {
     // ✅ App Configuration state + API
@@ -112,6 +120,14 @@ export const store = configureStore({
     // ✅ Contact state + API
     contact: contactReducer,
     [contactApi.reducerPath]: contactApi.reducer,
+
+    // ✅ Case Study state + API
+    caseStudy: caseStudyReducer,
+    [caseStudyApi.reducerPath]: caseStudyApi.reducer,
+
+    // ✅ Case Study Category (Sector) state + API
+    caseStudyCategory: caseStudyCategoryReducer,
+    [caseStudyCategoryApi.reducerPath]: caseStudyCategoryApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -128,6 +144,8 @@ export const store = configureStore({
       certificateApi.middleware,
       userCertificateApi.middleware,
       contactApi.middleware,
+      caseStudyApi.middleware,
+      caseStudyCategoryApi.middleware,
     ),
 });
 

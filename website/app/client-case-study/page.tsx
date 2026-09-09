@@ -1,5 +1,6 @@
 import ClientCTA from "@/components/client-sections/ClientCTA";
 import ClientCaseStudyHeroSection from "@/components/custom-ui/ClientCaseStudyHeroSection";
+import ClientCaseStudyList from "@/components/custom-ui/ClientCaseStudyList";
 import FaqSection from "@/components/mvpblock-ui/FAQSection";
 import FlipCardGrid from "@/components/sections/FlipCardGrid";
 import ClientCaseStudyGridScroller from "@/components/ui/cards/ClientCaseStudyGridScroller";
@@ -290,6 +291,10 @@ Our systems are built to deliver measurable results and sustainable growth."
       <ClientMain />
 
       {/* Top 3 Pointers End */}
+
+      {/* In-depth Case Studies (managed from the backend) Start */}
+      <ClientCaseStudyList />
+      {/* In-depth Case Studies End */}
 
       {/* Client Category A Grid Start. */}
       <div className="pt-20 max-w-7xl mx-auto">
