@@ -14,7 +14,7 @@ import ClientCTA from "@/components/client-sections/ClientCTA";
 import FaqSection from "@/components/mvpblock-ui/FAQSection";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
-const FALLBACK_LOGO = "/assets/images/articals/1x1.webp";
+const FALLBACK_LOGO = "/assets/images/backgrounds/b2.jpg";
 
 function getCategoryId(c: CaseStudy): string {
   if (typeof c.category === "object" && c.category) return c.category._id;
@@ -81,7 +81,8 @@ function CaseStudyCard({ study }: { study: CaseStudy }) {
               src={study.clientLogo || FALLBACK_LOGO}
               alt={study.clientName}
               fill
-              className="object-contain p-1"
+              className="object-cover"
+              sizes="5vw"
             />
           </div>
           <div>
@@ -95,7 +96,7 @@ function CaseStudyCard({ study }: { study: CaseStudy }) {
         </div>
 
         {/* Title */}
-        <h3 className="text-base font-bold text-white leading-snug group-hover:text-blue-300 transition-colors">
+        <h3 className="text-base sm:text-xl font-bold text-white leading-snug group-hover:text-blue-300 transition-colors">
           {study.title}
         </h3>
 
@@ -106,15 +107,24 @@ function CaseStudyCard({ study }: { study: CaseStudy }) {
           </p>
         )}
 
+        {/* Tags row */}
+        {study.industry && (
+          <div className="flex flex-wrap gap-1.5">
+            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] text-white/50">
+              {study.industry}
+            </span>
+          </div>
+        )}
+
         {/* Metrics preview */}
         {hasMetrics && (
           <div className="grid grid-cols-2 gap-2">
             {study.metrics!.slice(0, 2).map((m, i) => (
               <div
                 key={i}
-                className="rounded-xl border border-white/8 bg-white/5 px-3 py-2 text-center"
+                className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-center"
               >
-                <p className="text-base font-bold text-blue-300">
+                <p className="text-base font-bold text-white">
                   {m.prefix}{m.value}{m.suffix}
                 </p>
                 <p className="text-[10px] text-white/40 mt-0.5 leading-tight truncate">
@@ -125,14 +135,6 @@ function CaseStudyCard({ study }: { study: CaseStudy }) {
           </div>
         )}
 
-        {/* Tags row */}
-        {study.industry && (
-          <div className="flex flex-wrap gap-1.5">
-            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] text-white/50">
-              {study.industry}
-            </span>
-          </div>
-        )}
 
         {/* CTA */}
         <Link
@@ -285,7 +287,7 @@ export default function CaseStudiesPage() {
           <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:60px_60px]" />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-7xl px-4 py-28 md:py-36 text-center">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 pt-28 pb-10 sm:py-28 md:py-36 text-center">
           {/* Pill */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -302,7 +304,7 @@ export default function CaseStudiesPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="font-heading text-4xl md:text-6xl font-bold text-white leading-tight tracking-tight"
+            className="font-heading text-4xl md:text-6xl font-semibold text-white leading-tight tracking-tight"
           >
             Real Results.{" "}
             <span className="bg-gradient-to-r from-blue-400 to-blue-200 bg-clip-text text-transparent">
@@ -344,7 +346,7 @@ export default function CaseStudiesPage() {
       </div>
 
       {/* ── MAIN CONTENT ── */}
-      <div className="mx-auto max-w-7xl px-4 py-16">
+      <div className="mx-auto max-w-7xl px-4 sm:py-16">
 
         {/* Search + category filter */}
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -462,12 +464,12 @@ export default function CaseStudiesPage() {
       </div>
 
       {/* FAQ */}
-      <div className="pt-10 max-w-7xl mx-auto px-4">
+      <div className="pt-10 max-w-7xl mx-auto sm:px-4">
         <FaqSection />
       </div>
 
       {/* CTA */}
-      <div className="pt-20 max-w-7xl mx-auto px-4 pb-20">
+      <div className="pt-10 sm:pt-20 max-w-7xl mx-auto sm:px-4 sm:pb-20">
         <ClientCTA />
       </div>
     </>

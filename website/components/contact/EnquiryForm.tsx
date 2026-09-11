@@ -47,6 +47,7 @@ export default function EnquiryForm() {
   const [loading, setLoading] = useState(false);
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [phoneError, setPhoneError] = useState("");
 
   const [form, setForm] = useState({
     name: "",
@@ -82,13 +83,42 @@ export default function EnquiryForm() {
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >,
   ) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+
+    if (name === "phone") {
+      // Only allow digits, max 10
+      const digits = value.replace(/\D/g, "").slice(0, 10);
+      setForm((prev) => ({ ...prev, phone: digits }));
+
+      if (digits.length > 0 && digits.length < 10) {
+        setPhoneError("Phone number must be 10 digits.");
+      } else if (digits.length === 10 && !/^[6-9]/.test(digits)) {
+        setPhoneError("Enter a valid Indian mobile number (starts with 6–9).");
+      } else {
+        setPhoneError("");
+      }
+      return;
+    }
+
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setErrorMessage("");
+
+    // Phone guard before hitting the API
+    const digits = form.phone.replace(/\D/g, "");
+    if (digits.length !== 10) {
+      setPhoneError("Phone number must be exactly 10 digits.");
+      return;
+    }
+    if (!/^[6-9]/.test(digits)) {
+      setPhoneError("Enter a valid Indian mobile number (starts with 6–9).");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const payload = {
@@ -209,10 +239,24 @@ export default function EnquiryForm() {
               type="tel"
               value={form.phone}
               onChange={handleChange}
-              placeholder="00000 00000"
+              placeholder="98765 43210"
               required
-              className="w-full bg-white/[0.04] border border-input rounded-md px-4 py-3 text-sm text-foreground font-sans outline-none placeholder-muted-foreground/30 transition-all duration-200 focus:border-blue-700/50"
+              maxLength={10}
+              inputMode="numeric"
+              className={`w-full bg-white/[0.04] border rounded-md px-4 py-3 text-sm text-foreground font-sans outline-none placeholder-muted-foreground/30 transition-all duration-200 ${
+                phoneError
+                  ? "border-red-500/70 focus:border-red-500"
+                  : "border-input focus:border-blue-700/50"
+              }`}
             />
+            {phoneError && (
+              <p className="mt-1.5 text-xs text-red-400 flex items-center gap-1">
+                <svg className="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10A8 8 0 1 1 2 10a8 8 0 0 1 16 0zm-7 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-1-9a1 1 0 0 0-1 1v4a1 1 0 1 0 2 0V6a1 1 0 0 0-1-1z" clipRule="evenodd" />
+                </svg>
+                {phoneError}
+              </p>
+            )}
           </div>
         </div>
 

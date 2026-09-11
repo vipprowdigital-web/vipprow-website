@@ -152,7 +152,7 @@ export default function ClientCaseStudyDetails() {
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="pt-16 max-w-5xl mx-auto px-6"
+        className="pt-16 max-w-5xl mx-auto px-2 sm:px-6"
       >
         {/* Quick facts */}
         {facts.length > 0 && (

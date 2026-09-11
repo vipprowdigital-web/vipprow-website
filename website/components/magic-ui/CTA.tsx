@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 export default function CTA() {
   const router = useRouter();
   return (
-    <section className="w-full px-6 py-0">
+    <section className="w-full px-3 sm:px-6 py-0">
       <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-white/10 bg-[#050816] px-6 py-16 md:px-12">
         {/* 🔥 Axioma Style Diagonal Glow */}
         <div className="absolute inset-0">
