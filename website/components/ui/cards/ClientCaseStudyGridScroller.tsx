@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import GlassBottomCard from "./GlassBottomCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
@@ -62,6 +63,25 @@ export default function ClientCaseStudyGridScroller({
   clients: ClientItem[];
 }) {
   const shouldLoop = clients.length >= 6;
+  // For small sets, just center them with flex — no Swiper needed
+  const useGrid = clients.length < 6;
+
+  if (useGrid) {
+    return (
+      <section className="relative py-10 bg-black max-w-7xl mx-auto">
+        <div
+          className="flex justify-center gap-6 px-6 md:px-16 overflow-x-auto [&::-webkit-scrollbar]:hidden"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" } as React.CSSProperties}
+        >
+          {clients.map((client, index) => (
+            <div key={index} className="w-[260px] md:w-[280px] shrink-0">
+              <GlassBottomCard {...client} href={client.href ?? "#"} />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative py-20 bg-black overflow-hidden max-w-7xl mx-auto min-h-120">
@@ -71,7 +91,6 @@ export default function ClientCaseStudyGridScroller({
           slidesPerView="auto"
           spaceBetween={30}
           grabCursor
-          centeredSlides={clients.length < 4}
           loop={shouldLoop}
           autoplay={
             shouldLoop
