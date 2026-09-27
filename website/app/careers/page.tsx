@@ -267,8 +267,8 @@ export default function CareersPage() {
             Build the Future With Us
           </h1>
           <p className="text-gray-400 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-            Join an agile engineering and market operations team focused on
-            scaling highly optimized micro platforms.
+            We believe good work comes from people who are given room to think,
+            build, experiment, and take ownership.
           </p>
         </div>
       </section>

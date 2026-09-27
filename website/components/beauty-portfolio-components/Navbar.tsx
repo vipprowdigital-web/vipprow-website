@@ -113,7 +113,7 @@ export default function Navbar() {
               style={styles.mobileCta}
               onClick={() => setMenuOpen(false)}
             >
-              📞 7974718311
+               7974718311
             </a>
           </div>
         )}

@@ -54,7 +54,8 @@ export default function ClientCaseStudyHeroSection() {
             <Image
               width={1000}
               height={1000}
-              src="https://i.postimg.cc/0yk8Vz7t/dashboard.webp"
+              // src="https://i.postimg.cc/0yk8Vz7t/dashboard.webp"
+              src="/assets/images/backgrounds/dashboard.png"
               className="w-full rounded-lg border shadow-lg"
               alt="Vipprow Dashboard"
               priority

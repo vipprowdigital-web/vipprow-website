@@ -117,3 +117,43 @@ export const applicantUploadLimiter = rateLimit({
       "Too many application submissions from this IP. Please try again later.",
     ),
 });
+
+// ===============================================
+// Website AI chat rate limiters (keyed by client IP)
+// ===============================================
+// Every /chat/message call costs an LLM request, so it's throttled in
+// layers, same pattern as the contact form:
+//   - a burst limiter (blocks a tight scripted loop within seconds)
+//   - a sustained limiter (caps total cost per IP even if a bot paces
+//     itself just under the burst limit)
+// A per-session cooldown + hard message cap in chatSession.service.js adds
+// a third layer that isn't fooled by a bot spreading requests across many
+// sessions or IPs — see MIN_MESSAGE_INTERVAL_MS / MAX_MESSAGES_PER_SESSION
+// there. The app-wide limiter in app.js (200 req / 15 min per IP) also
+// applies on top of all of these.
+
+export const chatMessageBurstLimiter = rateLimit({
+  windowMs: 10 * 1000, // 10 seconds
+  limit: 4, // max 4 messages per IP per 10s
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) =>
+    tooMany(res, "You're sending messages too quickly. Please slow down."),
+});
+
+export const chatMessageSustainedLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  limit: 30, // max 30 messages per IP per 5 min
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) =>
+    tooMany(res, "Too many chat messages from this IP. Please try again later."),
+});
+
+export const chatEndLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => tooMany(res, "Too many requests. Please try again later."),
+});

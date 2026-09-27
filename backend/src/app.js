@@ -38,6 +38,7 @@ import contatUsRoutes from "./routes/contactus.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
 import applicantRoutes from "./routes/applicant.routes.js";
 import newsletterRoutes from "./routes/newsletter.routes.js";
+import chatRoutes from "./routes/chat.routes.js";
 import caseStudyRoutes from "./routes/caseStudy.routes.js";
 import caseStudyCategoryRoutes from "./routes/caseStudyCategory.routes.js";
 
@@ -64,7 +65,7 @@ const allowedOrigins = [
   process.env.ADMIN_FRONTEND_URL, // Admin production site
   process.env.REACT_NATIVE_FRONTEND_URL, // React Native local
   process.env.VIPPROW_LANDING_PAGE_URL,
-  "http://192.168.29.175:3000",
+  // "http://192.168.29.175:3000",
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:5173",
@@ -185,6 +186,7 @@ app.use(`${routePrefix}/contact`, contatUsRoutes);
 app.use(`${routePrefix}/upload`, uploadRoutes);
 app.use(`${routePrefix}/applicant`, applicantRoutes);
 app.use(`${routePrefix}/newsletter`, newsletterRoutes);
+app.use(`${routePrefix}/chat`, chatRoutes);
 app.use(`${routePrefix}/case-study-category`, caseStudyCategoryRoutes);
 app.use(`${routePrefix}/case-study`, caseStudyRoutes);
 

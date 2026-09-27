@@ -8,7 +8,7 @@ export default function CTA() {
   return (
     <section className="w-full px-3 sm:px-6 py-0">
       <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-white/10 bg-[#050816] px-6 py-16 md:px-12">
-        {/* 🔥 Axioma Style Diagonal Glow */}
+        {/* Axioma Style Diagonal Glow */}
         <div className="absolute inset-0">
           <div className="absolute -left-40 top-0 h-125 w-125 rotate-45 bg-blue-600/40 blur-[120px]" />
           <div className="absolute bottom-0 right-0 h-100 w-100 bg-purple-600/30 blur-[140px]" />

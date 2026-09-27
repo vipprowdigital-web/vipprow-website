@@ -18,6 +18,10 @@ const PortfolioNavbar = dynamic(
 const Footer = dynamic(() => import("@/app/components/ui/Footer"), {
   ssr: false,
 });
+const ChatWidget = dynamic(
+  () => import("@/components/custom-ui/ChatWidget"),
+  { ssr: false },
+);
 import AppConfigLoader from "@/providers/AppConfigLoader";
 import { usePathname } from "next/navigation";
 
@@ -48,6 +52,10 @@ export default function ClinetLayout({
             <Footer />
           )}
           <Toaster position="bottom-center" />
+
+          {/* Vipprow's own AI assistant — kept off the white-labeled client
+              portfolio demos, which run their own nav/footer branding. */}
+          {isBeautyAcademy || isPortfolio ? null : <ChatWidget />}
         </QueryProvider>
       </ReduxProvider>
     </>

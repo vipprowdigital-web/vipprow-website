@@ -70,6 +70,62 @@ export async function sendNewArticleNotificationEmail({
   }
 }
 
+/**
+ * Notifies the internal team about a chat-widget lead — sent on every
+ * completed conversation, whether the lead saved to the leads endpoint
+ * fine (a heads-up) or it didn't (down, rejected the payload, etc., in
+ * which case this is also the backup so nothing gets silently lost).
+ * Includes everything captured plus the AI's one-line summary of the whole
+ * conversation — not the full transcript, which gets long fast.
+ * @param {Object} params
+ * @param {Object} params.intent - extracted lead intent (name, contactPhone, summary, ...)
+ * @param {string} params.sessionId
+ * @param {string} params.reason - why the session ended ("inactivity" | "closed")
+ * @param {boolean} params.saved - whether the leads endpoint accepted it
+ * @param {string} [params.error] - the leads endpoint's failure message, when `saved` is false
+ */
+export async function sendLeadNotificationEmail({
+  intent = {},
+  sessionId,
+  reason,
+  saved,
+  error,
+}) {
+  const to = process.env.LEAD_ALERT_EMAIL;
+  if (!to) {
+    console.warn(
+      "[email] LEAD_ALERT_EMAIL is not set — skipping lead notification email.",
+    );
+    return { success: false, error: "LEAD_ALERT_EMAIL not configured" };
+  }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  try {
+    const who = intent.name || intent.contactPhone || "unnamed visitor";
+    const subject = saved
+      ? `New lead landed — ${who}`
+      : `⚠️ Lead landed but wasn't saved automatically — ${who}`;
+
+    const { data, error: sendError } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject,
+      html: buildLeadNotificationTemplate({ intent, sessionId, reason, saved, error }),
+    });
+
+    if (sendError) {
+      console.error("Resend error (lead notification):", sendError);
+      return { success: false, error: sendError };
+    }
+
+    console.log("✅ Lead notification email sent:", data?.id);
+    return { success: true, id: data?.id };
+  } catch (err) {
+    console.error("Email service error (lead notification):", err.message);
+    return { success: false, error: err.message };
+  }
+}
+
 // ─── HTML TEMPLATE: SUBSCRIPTION CONFIRMATION ─────────────────────────────────
 function buildNewsletterTemplate({ email }) {
   return `
@@ -258,6 +314,109 @@ function buildNewArticleTemplate({ articleTitle, category, articleUrl }) {
             </td>
           </tr>
 
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// ─── HTML TEMPLATE: LEAD NOTIFICATION ──────────────────────────────────────────
+function buildLeadNotificationTemplate({
+  intent = {},
+  sessionId,
+  reason,
+  saved,
+  error,
+}) {
+  const row = (label, value) =>
+    value
+      ? `<tr>
+           <td style="padding:8px 12px; color:#858585; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.4px; white-space:nowrap; vertical-align:top;">${label}</td>
+           <td style="padding:8px 12px; color:#ffffff; font-size:14px;">${escapeHtml(value)}</td>
+         </tr>`
+      : "";
+
+  const detailsRows = [
+    row("Name", intent.name),
+    row("Phone", intent.contactPhone),
+    row("Email", intent.contactEmail),
+    row("Business", intent.business),
+    row("Service Interested", intent.serviceInterested),
+    row("Urgency", intent.urgency),
+    row("Status", intent.status),
+    row("Request", intent.request),
+    row("Summary", intent.summary),
+  ].join("");
+
+  const heading = saved
+    ? "A new lead landed on the website"
+    : "A website chat lead couldn't be saved automatically";
+  const intro = saved
+    ? "The chat widget captured a lead and it's already saved to the leads system. Here's everything that was captured, for a heads-up before you follow up."
+    : "The chat widget captured a lead but the leads system rejected the submission or couldn't be reached. Everything captured is below — please follow up manually.";
+
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>${saved ? "New Website Chat Lead" : "Website Chat Lead — Save Failed"}</title>
+</head>
+<body style="margin:0; padding:0; background-color:#252525; font-family: 'Poppins', 'Inter', Helvetica, Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#252525; padding: 40px 0;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #353535; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+          <tr>
+            <td style="padding: 32px 40px 16px 40px;">
+              <span style="color:#ffffff; font-size:18px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;">VIPPROW</span>
+              <h1 style="margin: 16px 0 4px 0; color:${saved ? "#4ade80" : "#ffb020"}; font-size:20px; font-weight:600;">${heading}</h1>
+              <p style="margin:0; color:#b5b5b5; font-size:13px; line-height:1.6;">
+                ${intro}
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding: 0 40px 8px 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#2b2b2b; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
+                ${detailsRows || `<tr><td style="padding:12px; color:#858585; font-size:13px;">No contact details were captured.</td></tr>`}
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding: 16px 40px 8px 40px;">
+              <p style="margin:0; color:#707070; font-size:12px; line-height:1.6;">
+                Session ended by: <strong style="color:#b5b5b5;">${escapeHtml(reason || "unknown")}</strong> &middot;
+                Session ID: <strong style="color:#b5b5b5;">${escapeHtml(sessionId || "unknown")}</strong>
+              </p>
+              ${
+                saved
+                  ? `<p style="margin:6px 0 0 0; color:#4ade80; font-size:12px; line-height:1.6;">Saved to the leads system successfully.</p>`
+                  : `<p style="margin:6px 0 0 0; color:#707070; font-size:12px; line-height:1.6;">Save error: <span style="color:#ff8080;">${escapeHtml(error || "unknown error")}</span></p>`
+              }
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background-color: #2b2b2b; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 40px;">
+              <p style="margin:0; color:#5f5f5f; font-size:12px;">&copy; ${new Date().getFullYear()} Vipprow. Automated lead-capture alert.</p>
+            </td>
+          </tr>
         </table>
       </td>
     </tr>
