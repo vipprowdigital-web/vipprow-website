@@ -100,7 +100,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noreferrer"
                   >
-                     Official Website
+                    Official Website
                   </a>
 
                   <a
@@ -109,7 +109,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noreferrer"
                   >
-                     Croissix AI
+                    Croissix AI
                   </a>
 
                   <a
@@ -167,8 +167,8 @@ export default function Footer() {
                 <ul style={styles.list}>
                   {[
                     "Belleza Beauty School",
-                    "Gaura Makeup Studio",
-                    "The Big Tree Beauty Academy",
+                    // "Gaura Makeup Studio",
+                    // "The Big Tree Beauty Academy",
                     "TipSalon",
                     "Allure Makeup Studio",
                   ].map((c) => (
@@ -189,12 +189,16 @@ export default function Footer() {
                 </p>
 
                 <a
-                 href="tel:7974718311"
-  className="btn-primary"
-  style={{ display: "inline-flex", marginTop: "1rem", color: "#ffffff" }}
->
-  Start Now →
-</a>
+                  href="tel:7974718311"
+                  className="btn-primary"
+                  style={{
+                    display: "inline-flex",
+                    marginTop: "1rem",
+                    color: "#ffffff",
+                  }}
+                >
+                  Start Now →
+                </a>
               </div>
             </div>
           </div>
