@@ -20,40 +20,40 @@ const projects = [
     instagram: "https://www.instagram.com/bellezadehradun/",
     logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147627/belleza_logo_mobile_f3rypj.jpg", // 👈 apni logo image ka path yahan daalein
   },
-  {
-    id: 2,
-    name: "Gaura Makeup Studio & Academy",
-    location: "Dehradun",
-    tagline: "Professional Makeup & Beauty Training",
-    badge: "Studio + Academy",
-    work: [
-      "Meta Ads Captions",
-      "Course Offer Content",
-      "Brand Positioning",
-      "Lead Generation Messaging",
-      "Portfolio Content",
-    ],
-    color: "#5B21B6",
-    instagram: "https://www.instagram.com/gauramakeupacademy_",
-    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147657/GAURA_tzjcdd.png", // 👈 apni logo image ka path yahan daalein
-  },
-  {
-    id: 3,
-    name: "The Big Tree Beauty Academy",
-    location: "Dehradun",
-    tagline: "Where Artistry Meets International Luxury",
-    badge: "Premium",
-    work: [
-      "Brand Positioning",
-      "Meta Ad Captions",
-      "Advanced Content Calendar",
-      "Student Work Promotion",
-      "Course Promotion",
-    ],
-    color: "#5B21B6",
-    instagram: " https://www.instagram.com/thebigtreebeautyacademy",
-    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147636/big_tree_logo_bxhlaz.png", // 👈 apni logo image ka path yahan daalein
-  },
+  // {
+  //   id: 2,
+  //   name: "Gaura Makeup Studio & Academy",
+  //   location: "Dehradun",
+  //   tagline: "Professional Makeup & Beauty Training",
+  //   badge: "Studio + Academy",
+  //   work: [
+  //     "Meta Ads Captions",
+  //     "Course Offer Content",
+  //     "Brand Positioning",
+  //     "Lead Generation Messaging",
+  //     "Portfolio Content",
+  //   ],
+  //   color: "#5B21B6",
+  //   instagram: "https://www.instagram.com/gauramakeupacademy_",
+  //   logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147657/GAURA_tzjcdd.png", // 👈 apni logo image ka path yahan daalein
+  // },
+  // {
+  //   id: 3,
+  //   name: "The Big Tree Beauty Academy",
+  //   location: "Dehradun",
+  //   tagline: "Where Artistry Meets International Luxury",
+  //   badge: "Premium",
+  //   work: [
+  //     "Brand Positioning",
+  //     "Meta Ad Captions",
+  //     "Advanced Content Calendar",
+  //     "Student Work Promotion",
+  //     "Course Promotion",
+  //   ],
+  //   color: "#5B21B6",
+  //   instagram: " https://www.instagram.com/thebigtreebeautyacademy",
+  //   logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147636/big_tree_logo_bxhlaz.png", // 👈 apni logo image ka path yahan daalein
+  // },
   {
     id: 4,
     name: "TipSalon",
@@ -696,7 +696,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: "var(--font-sans)",
     fontSize: "13px", // pehle "10px" tha
     color: "var(--color-text-muted)",
-     padding: "0.2rem 0.35rem", // pehle "0.2rem 0.55rem" tha
+    padding: "0.2rem 0.35rem", // pehle "0.2rem 0.55rem" tha
     background: "rgba(255,255,255,0.04)",
     border: "1px solid rgba(255,255,255,0.08)",
     borderRadius: "var(--radius-sm)",
