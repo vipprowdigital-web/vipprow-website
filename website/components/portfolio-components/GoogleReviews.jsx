@@ -190,7 +190,7 @@ const GoogleReviews = () => {
         <div className="flex flex-wrap items-center justify-center gap-8 p-8 mb-9 glass-card-2-2 rounded-2xl">
           <div className="flex flex-col items-center min-w-20">
             <div className="text-5xl font-semibold font-sora violet-gradient-text-2 leading-none">
-              {averageRating}
+              {Number(averageRating).toFixed(1)}
             </div>
             <div className="flex gap-0.75 my-2 text-[#f59e0b]">
               {/* {[...Array(averageRating)].map((_, i) => (

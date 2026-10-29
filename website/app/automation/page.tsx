@@ -1,5 +1,6 @@
 import ClientCTA from "@/components/client-sections/ClientCTA";
 import ClientTestimonialMarquee from "@/components/client-sections/ClientTestimonialMarquee";
+import AutomationAgentsSection from "@/components/custom-ui/AutomationAgentsSection";
 import AutomationBentoGridSection from "@/components/custom-ui/AutomationBentoGridSection";
 import AutomationHeroSection from "@/components/custom-ui/AutomationHeroSection";
 // import InfoSection from "@/components/custom-ui/InfoSection";
@@ -25,6 +26,16 @@ export default function AutomationPage() {
         <AutomationFeatures />
       </div>
       {/* Automation Feature End */}
+
+      {/* AI Agents Start */}
+      <div className="pt-20 max-w-7xl mx-auto">
+        <PrimaryHeading
+          heading="Meet Your AI Agents"
+          des="A team of always-on AI agents that handle the repetitive work so your people don't have to."
+        />
+        <AutomationAgentsSection />
+      </div>
+      {/* AI Agents End */}
 
       {/* AutomationBentoGridSection Feature Start */}
       <div className="pt-20 max-w-7xl mx-auto">

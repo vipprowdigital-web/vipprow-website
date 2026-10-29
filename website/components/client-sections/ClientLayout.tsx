@@ -31,14 +31,16 @@ export default function ClinetLayout({
   const pathName = usePathname();
 
   const isBeautyAcademy = pathName.startsWith("/portfolio/beauty-academy");
+  const isSolar = pathName.startsWith("/portfolio/solar");
   const isPortfolio = pathName.startsWith("/portfolio");
+  const hasOwnChrome = isBeautyAcademy || isSolar;
 
   return (
     <>
       <ReduxProvider>
         <QueryProvider>
           <AppConfigLoader />
-          {isBeautyAcademy ? null : isPortfolio ? (
+          {hasOwnChrome ? null : isPortfolio ? (
             <PortfolioNavbar />
           ) : (
             <NavbarMenu />
@@ -46,7 +48,7 @@ export default function ClinetLayout({
 
           {children}
 
-          {isBeautyAcademy ? null : isPortfolio ? (
+          {hasOwnChrome ? null : isPortfolio ? (
             <PortfolioFooter />
           ) : (
             <Footer />
@@ -55,7 +57,7 @@ export default function ClinetLayout({
 
           {/* Vipprow's own AI assistant — kept off the white-labeled client
               portfolio demos, which run their own nav/footer branding. */}
-          {isBeautyAcademy || isPortfolio ? null : <ChatWidget />}
+          {hasOwnChrome || isPortfolio ? null : <ChatWidget />}
         </QueryProvider>
       </ReduxProvider>
     </>

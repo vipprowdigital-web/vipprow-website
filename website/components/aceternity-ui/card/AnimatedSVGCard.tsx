@@ -10,7 +10,8 @@ import { Icon } from "lucide-react";
 type ServiceType =
   | "business-automation"
   | "digital-marketing"
-  | "software-development";
+  | "software-development"
+  | "croissix";
 
 interface AnimatedSVGCardProp {
   href: string;

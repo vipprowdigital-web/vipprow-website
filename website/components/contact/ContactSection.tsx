@@ -31,17 +31,31 @@ export default function ContactSection() {
           </p>
 
           {/* INFO */}
-          <div className="mt-10 space-y-6">
-            <InfoItem
-              icon={<Mail />}
-              title="Email"
-              value={`${appConfig?.email}`}
-            />
-            <InfoItem
-              icon={<Phone />}
-              title="Phone"
-              value={`${appConfig?.phoneNumber}`}
-            />
+          <div className="mt-10 space-y-8">
+            <div className="space-y-4">
+              <p className="text-xs font-semibold tracking-wide text-neutral-500 uppercase">
+                General Inquiries
+              </p>
+              <InfoItem
+                icon={<Mail />}
+                title="Email"
+                value="vipprowcontact@gmail.com"
+              />
+              <InfoItem icon={<Phone />} title="Phone" value="9669932121" />
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-xs font-semibold tracking-wide text-neutral-500 uppercase">
+                Technical Inquiries
+              </p>
+              <InfoItem
+                icon={<Mail />}
+                title="Email"
+                value="vipprowdigital@gmail.com"
+              />
+              <InfoItem icon={<Phone />} title="Phone" value="9669933660" />
+            </div>
+
             <InfoItem
               icon={<MapPin />}
               title="Location"

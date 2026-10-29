@@ -23,6 +23,10 @@ export function NavbarMenu() {
       name: "Company",
       link: "/company",
     },
+    // {
+    //   name: "Founder",
+    //   link: "/founder",
+    // },
     {
       name: "Services",
       link: "/services",

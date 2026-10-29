@@ -104,13 +104,19 @@ export async function sendLeadNotificationEmail({
     const who = intent.name || intent.contactPhone || "unnamed visitor";
     const subject = saved
       ? `New lead landed — ${who}`
-      : `⚠️ Lead landed but wasn't saved automatically — ${who}`;
+      : `Lead landed but wasn't saved automatically — ${who}`;
 
     const { data, error: sendError } = await resend.emails.send({
       from: FROM_EMAIL,
       to,
       subject,
-      html: buildLeadNotificationTemplate({ intent, sessionId, reason, saved, error }),
+      html: buildLeadNotificationTemplate({
+        intent,
+        sessionId,
+        reason,
+        saved,
+        error,
+      }),
     });
 
     if (sendError) {
@@ -335,6 +341,7 @@ function escapeHtml(value) {
 // ─── HTML TEMPLATE: LEAD NOTIFICATION ──────────────────────────────────────────
 function buildLeadNotificationTemplate({
   intent = {},
+  history = [],
   sessionId,
   reason,
   saved,
@@ -359,6 +366,18 @@ function buildLeadNotificationTemplate({
     row("Request", intent.request),
     row("Summary", intent.summary),
   ].join("");
+
+  const transcript = history
+    .map(
+      (m) => `
+        <div style="margin-bottom:10px;">
+          <div style="color:#858585; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:2px;">
+            ${m.role === "user" ? "Visitor" : "Assistant"}
+          </div>
+          <div style="color:#d5d5d5; font-size:13px; line-height:1.5;">${escapeHtml(m.content)}</div>
+        </div>`,
+    )
+    .join("");
 
   const heading = saved
     ? "A new lead landed on the website"
@@ -411,6 +430,17 @@ function buildLeadNotificationTemplate({
               }
             </td>
           </tr>
+
+          ${
+            history.length
+              ? `<tr>
+                   <td style="padding: 16px 40px 32px 40px; border-top:1px solid rgba(255,255,255,0.05);">
+                     <div style="color:#858585; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:12px; padding-top:16px;">Conversation</div>
+                     ${transcript}
+                   </td>
+                 </tr>`
+              : ""
+          }
 
           <tr>
             <td style="background-color: #2b2b2b; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 40px;">
