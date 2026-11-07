@@ -1,4 +1,4 @@
-import { Sora } from "next/font/google";
+import localFont from "next/font/local";
 import Hero from "../../components/portfolio-components/Hero";
 import Divider from "../../components/portfolio-components/Divider";
 import About from "../../components/portfolio-components/About";
@@ -13,9 +13,10 @@ import { clientLogos } from "../../seeds/clientLogos";
 import { FAQS_PAGE_1 } from "../../seeds/FAQs";
 import "./index.css";
 
-const sora = Sora({
-  subsets: ["latin"],
-  weight: ["600"],
+// Same Sora face, self-hosted (app/fonts) so the production build does not depend on downloading it from Google
+const sora = localFont({
+  src: "../fonts/sora.woff2",
+  weight: "100 800",
   variable: "--font-portfolio-sora",
   display: "swap",
 });

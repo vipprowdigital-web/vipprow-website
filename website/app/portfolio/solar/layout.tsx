@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { Sora, Manrope } from "next/font/google";
+import localFont from "next/font/local";
 import "./solar.css";
 
-const sora = Sora({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
+// Self-hosted (app/fonts), so the production build never has to download fonts from Google
+const sora = localFont({
+  src: "../../fonts/sora.woff2",
+  weight: "100 800",
   variable: "--font-solar-display",
   display: "swap",
 });
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
+const manrope = localFont({
+  src: "../../fonts/manrope.woff2",
+  weight: "200 800",
   variable: "--font-solar-body",
   display: "swap",
 });

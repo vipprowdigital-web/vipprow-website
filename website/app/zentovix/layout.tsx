@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { Outfit, Figtree } from "next/font/google";
+import localFont from "next/font/local";
 import "./zentovix.css";
 
-const outfit = Outfit({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
+// Self-hosted (app/fonts), so the production build never has to download fonts from Google
+const outfit = localFont({
+  src: "../fonts/outfit.woff2",
+  weight: "100 900",
   variable: "--font-zx-display",
   display: "swap",
 });
 
-const figtree = Figtree({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
+const figtree = localFont({
+  src: "../fonts/figtree.woff2",
+  weight: "300 900",
   variable: "--font-zx-body",
   display: "swap",
 });
