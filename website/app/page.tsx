@@ -15,14 +15,29 @@ import Services from "@/components/beauty-portfolio-components/Services";
 const IndiaClientMap = dynamic(
   () => import("@/components/sections/IndiaClientMap"),
 );
+const WhyUsStats = dynamic(() => import("@/components/sections/WhyUsStats"));
+const HowWeWork = dynamic(() => import("@/components/sections/HowWeWork"));
 const ClientBentoGridSection = dynamic(
   () => import("@/components/client-sections/ClientBentoGridSection"),
+);
+const HomeCaseStudies = dynamic(
+  () => import("@/components/sections/HomeCaseStudies"),
 );
 const EditorialGrid = dynamic(() => import("@/components/ui/EditorialGrid"));
 const FaqSection = dynamic(() => import("@/components/mvpblock-ui/FAQSection"));
 const ClientCTA = dynamic(
   () => import("@/components/client-sections/ClientCTA"),
 );
+
+// The home page conveyor shows only these clients; every other page shows all logos
+const HOME_LOGOS = [
+  "Solar Square",
+  "UK International London Beauty School",
+  "VLCC",
+  "Dental Square",
+  "Bindu Electrical's",
+  "Samdareeya Hotels",
+];
 
 export const metadata: Metadata = {
   title: "Vipprow | Digital Marketing, SEO, AI Automation & SaaS Solutions",
@@ -63,6 +78,18 @@ export default function Home() {
           <IndiaClientMap />
         </div>
 
+        {/* Why Us Start */}
+        <div className="pt-20">
+          <WhyUsStats />
+        </div>
+        {/* Why Us End */}
+
+        {/* How Vipprow works with brands Start */}
+        <div className="pt-20">
+          <HowWeWork />
+        </div>
+        {/* How Vipprow works with brands End */}
+
         {/* Bento Grid Start */}
         <div className="pt-20">
           <PrimaryHeading
@@ -88,7 +115,7 @@ export default function Home() {
             heading="Brands That Trust Us"
             des="A growing family of businesses that chose Vipprow to build, grow, and scale their digital presence."
           />
-          <ClientLogosConveyor />
+          <ClientLogosConveyor only={HOME_LOGOS} />
         </div>
 
         {/* Editorial Grid Start */}
@@ -103,9 +130,15 @@ export default function Home() {
         </div>
         {/* Editorial Grid End */}
 
+        {/* Client Case Studies Start */}
+        <div className="pt-20">
+          <HomeCaseStudies />
+        </div>
+        {/* Client Case Studies End */}
+
         {/* FAQ Start */}
         <div className="pt-20 max-w-7xl mx-auto">
-          <FaqSection />
+          <FaqSection page="home" />
         </div>
         {/* FAQ End */}
 

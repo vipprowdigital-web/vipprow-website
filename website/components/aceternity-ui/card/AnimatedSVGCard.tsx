@@ -11,7 +11,8 @@ type ServiceType =
   | "business-automation"
   | "digital-marketing"
   | "software-development"
-  | "croissix";
+  | "croissix"
+  | "zentovix";
 
 interface AnimatedSVGCardProp {
   href: string;

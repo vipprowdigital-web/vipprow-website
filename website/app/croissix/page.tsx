@@ -1,30 +1,12 @@
-import ClientCTA from "@/components/client-sections/ClientCTA";
-import CroissixHeroSection from "@/components/custom-ui/CroissixHeroSection";
-import CroissixPlatformSection from "@/components/custom-ui/CroissixPlatformSection";
-import PrimaryHeading from "@/components/ui/heading/PrimaryHeading";
+import type { Metadata } from "next";
+import CroissixPage from "@/components/croissix-components/CroissixPage";
 
-export default function CroissixPage() {
-  return (
-    <>
-      {/* Croissix Hero Section Start */}
-      <CroissixHeroSection />
-      {/* Croissix Hero Section End */}
+export const metadata: Metadata = {
+  title: "Croissix AI | AI-Powered Local Marketing Automation Tool",
+  description:
+    "Dominate Google Business Profile with AI. Automate reviews, posts, photos, and analytics, so you can focus on running your business, not marketing it.",
+};
 
-      {/* Connected Channels Start */}
-      <div className="pt-20 max-w-7xl mx-auto">
-        <PrimaryHeading
-          heading="One Dashboard, Every Channel"
-          des="Croissix connects your Google Business Profile, Facebook, and Instagram so you manage your entire local presence from one place."
-        />
-        <CroissixPlatformSection />
-      </div>
-      {/* Connected Channels End */}
-
-      {/* CTA Start */}
-      <div className="pt-20 max-w-7xl mx-auto">
-        <ClientCTA />
-      </div>
-      {/* CTA End */}
-    </>
-  );
+export default function Page() {
+  return <CroissixPage />;
 }

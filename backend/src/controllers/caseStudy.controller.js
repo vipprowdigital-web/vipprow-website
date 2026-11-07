@@ -9,6 +9,23 @@ import {
 
 const LOGO_FOLDER = "case-study/logos";
 const HERO_FOLDER = "case-study/hero";
+const RESULTS_FOLDER = "case-study/results";
+
+// Upload every file sent under `resultImages`; captions arrive as a JSON array
+// in the same order as the files.
+const uploadResultImages = async (files = [], captionsRaw) => {
+  const captions = parseJSON(captionsRaw, []);
+  const out = [];
+  for (let i = 0; i < files.length; i++) {
+    const up = await uploadToCloudinary(files[i].path, RESULTS_FOLDER);
+    out.push({
+      url: up.secure_url,
+      caption: String(captions[i] || "").slice(0, 200),
+      publicId: up.public_id,
+    });
+  }
+  return out;
+};
 
 // Multipart form fields arrive as strings — arrays/objects need parsing.
 const parseJSON = (value, fallback) => {
@@ -224,7 +241,7 @@ export const getAllCaseStudies = async (req, res) => {
 };
 
 export const createCaseStudy = async (req, res) => {
-  const uploaded = { logo: null, hero: null };
+  const uploaded = { logo: null, hero: null, results: [] };
 
   try {
     const { title, clientName, category } = req.body;
@@ -274,6 +291,12 @@ export const createCaseStudy = async (req, res) => {
       uploaded.hero = up.public_id;
     }
 
+    const resultUploads = await uploadResultImages(
+      req.files?.resultImages,
+      req.body.resultImageCaptions
+    );
+    uploaded.results = resultUploads.map((r) => r.publicId);
+
     const caseStudy = await CaseStudy.create({
       title,
       slug,
@@ -289,6 +312,7 @@ export const createCaseStudy = async (req, res) => {
       approach: parseJSON(req.body.approach, []),
       results: req.body.results,
       metrics: parseJSON(req.body.metrics, []),
+      resultImages: resultUploads.map(({ url, caption }) => ({ url, caption })),
       seo: parseJSON(req.body.seo, undefined),
       order: req.body.order,
       isActive: req.body.isActive,
@@ -302,6 +326,7 @@ export const createCaseStudy = async (req, res) => {
 
     if (uploaded.logo) destroyFromCloudinary(uploaded.logo);
     if (uploaded.hero) destroyFromCloudinary(uploaded.hero);
+    uploaded.results.forEach((pid) => destroyFromCloudinary(pid));
 
     if (err.name === "ValidationError") {
       return res
@@ -369,6 +394,41 @@ export const updateCaseStudy = async (req, res) => {
       const pid = publicIdFromUrl(caseStudy.heroImage);
       if (pid) await destroyFromCloudinary(pid);
       caseStudy.heroImage = null;
+    }
+
+    // Result images: `existingResultImages` is the list the admin chose to
+    // keep (with edited captions); anything missing from it is deleted. New
+    // files are appended after the kept ones.
+    if (
+      req.body.existingResultImages !== undefined ||
+      req.files?.resultImages?.length
+    ) {
+      const current = caseStudy.resultImages || [];
+      const kept =
+        req.body.existingResultImages !== undefined
+          ? parseJSON(req.body.existingResultImages, [])
+              .filter((r) => r?.url && current.some((c) => c.url === r.url))
+              .map((r) => ({
+                url: r.url,
+                caption: String(r.caption || "").slice(0, 200),
+              }))
+          : current.map((c) => ({ url: c.url, caption: c.caption }));
+
+      for (const old of current) {
+        if (!kept.some((k) => k.url === old.url)) {
+          const pid = publicIdFromUrl(old.url);
+          if (pid) await destroyFromCloudinary(pid);
+        }
+      }
+
+      const added = await uploadResultImages(
+        req.files?.resultImages,
+        req.body.resultImageCaptions
+      );
+      caseStudy.resultImages = [
+        ...kept,
+        ...added.map(({ url, caption }) => ({ url, caption })),
+      ];
     }
 
     if (title) {
@@ -483,7 +543,11 @@ export const destroyCaseStudyById = async (req, res) => {
     }
 
     // Remove uploaded images
-    for (const url of [caseStudy.clientLogo, caseStudy.heroImage]) {
+    for (const url of [
+      caseStudy.clientLogo,
+      caseStudy.heroImage,
+      ...(caseStudy.resultImages || []).map((r) => r.url),
+    ]) {
       if (!url) continue;
       const pid = publicIdFromUrl(url);
       if (pid) {

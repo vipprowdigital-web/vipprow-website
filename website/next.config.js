@@ -62,6 +62,7 @@ const nextConfig = {
     }
     return config;
   },
+  allowedDevOrigins: ["http://192.168.29.15:3000"],
 };
 
 module.exports = nextConfig;

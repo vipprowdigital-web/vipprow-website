@@ -3,6 +3,7 @@
 import { AvatarCirclesRow } from "@/components/magic-ui/AvatarCircles";
 // import { HeroCTA } from "@/components/ui/HeroCTA";
 import Image from "next/image";
+import Link from "next/link";
 import dynamic from "next/dynamic";
 import { HeroCTA } from "./HeroCTA";
 
@@ -24,13 +25,48 @@ export default function HeroSection() {
         {/* 🎯 Hero Content */}
         <section className="relative z-10 flex min-h-[85vh] flex-col items-center justify-center px-6 text-center">
           {/* Social Proof */}
-          <div className="mb-6 flex flex-col items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400 sm:flex-row">
+          {/* <div className="mb-6 flex flex-col items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400 sm:flex-row">
             <AvatarCirclesRow />
             <span className="whitespace-nowrap">
               Join{" "}
               <strong className="text-zinc-800 dark:text-zinc-200">99+</strong>{" "}
               other loving clients
             </span>
+          </div> */}
+
+          {/* Our products: the two logos stacked as circles, the text beside them */}
+          <div className="mb-6 flex items-center justify-center gap-3">
+            <div className="flex -space-x-3">
+              <Link
+                href="/zentovix"
+                aria-label="Zentovix"
+                className="relative z-10 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-neutral-800 ring-2 ring-black transition-transform duration-200 hover:z-30 hover:scale-110"
+              >
+                <Image
+                  src="/assets/images/zentovix/logo-mark.png"
+                  alt="Zentovix"
+                  width={699}
+                  height={495}
+                  className="h-auto w-6"
+                />
+              </Link>
+              <Link
+                href="/croissix"
+                aria-label="Croissix AI"
+                className="relative z-20 block h-10 w-10 overflow-hidden rounded-full ring-2 ring-black transition-transform duration-200 hover:z-30 hover:scale-110"
+              >
+                <Image
+                  src="/assets/images/croissix/logo-square.png"
+                  alt="Croissix AI"
+                  width={128}
+                  height={128}
+                  className="h-full w-full object-cover"
+                />
+              </Link>
+            </div>
+            <p className="text-left font-heading text-sm font-medium text-zinc-600 dark:text-zinc-300">
+              Explore our products
+            </p>
           </div>
 
           {/* Heading */}

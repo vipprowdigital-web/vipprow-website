@@ -1,258 +1,176 @@
 "use client";
 
-import { useEffect, useRef, useState, CSSProperties } from "react";
-import { motion } from "framer-motion";
-import LaserFlow from "../LaserFlow";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Bot,
-  MessageCircle,
-  Mail,
-  Database,
-  Receipt,
-} from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
-const AGENTS = [
+type Task = { name: string; desc: string; product: "Croissix AI" | "Zentovix" };
+
+// Real automations from Vipprow's own products, Croissix AI and Zentovix.
+const TASKS: Task[] = [
   {
-    icon: MessageCircle,
-    name: "WhatsApp Reply Agent",
-    blurb: "Answers customer chats instantly, 24/7",
-    angle: -90,
+    name: "AI Auto-Review Reply Engine",
+    desc: "Reads each review and writes a personalized, brand-aligned reply instantly.",
+    product: "Croissix AI",
   },
   {
-    icon: Mail,
-    name: "Email Triage Agent",
-    blurb: "Sorts, drafts, and routes inbox replies",
-    angle: 0,
+    name: "AI Post Creation & One-Click Publishing",
+    desc: "Upload media and AI writes the post, optimized for local search.",
+    product: "Croissix AI",
   },
   {
-    icon: Receipt,
-    name: "Invoice Agent",
-    blurb: "Generates and sends invoices automatically",
-    angle: 90,
+    name: "GBP Optimization Score Card",
+    desc: "A live score out of 1000 shows exactly what to fix to climb rankings.",
+    product: "Croissix AI",
   },
   {
-    icon: Database,
-    name: "CRM Sync Agent",
-    blurb: "Keeps leads and records up to date",
-    angle: 180,
+    name: "Scribble it. Zentovix files it.",
+    desc: "A quick note becomes a lead, tracked from Enquiry to Admitted.",
+    product: "Zentovix",
+  },
+  {
+    name: "Zentovix Assistant",
+    desc: "Answers questions about your academy, its admissions and leads.",
+    product: "Zentovix",
   },
 ];
 
-const RADIUS = 130;
+const STEP_MS = 2200;
 
-function AgentOrbit() {
-  const [activeIdx, setActiveIdx] = useState(0);
+function AgentBoard() {
+  const reduce = useReducedMotion();
+  // which row is running; one extra step rests before the loop restarts
+  const [step, setStep] = useState(reduce ? TASKS.length : 0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIdx((i) => (i + 1) % AGENTS.length);
-    }, 1800);
-    return () => clearInterval(interval);
-  }, []);
+    if (reduce) {
+      setStep(TASKS.length);
+      return;
+    }
+    const id = setInterval(() => setStep((s) => (s + 1) % (TASKS.length + 1)), STEP_MS);
+    return () => clearInterval(id);
+  }, [reduce]);
 
   return (
-    <div className="relative mx-auto h-80 w-80 shrink-0 sm:h-90 sm:w-90">
-      {/* Connector lines */}
-      <svg className="absolute inset-0 h-full w-full" viewBox="-180 -180 360 360">
-        {AGENTS.map((agent, idx) => {
-          const rad = (agent.angle * Math.PI) / 180;
-          const x = Math.cos(rad) * RADIUS;
-          const y = Math.sin(rad) * RADIUS;
+    <div
+      className="w-full max-w-xl rounded-3xl bg-white/5 p-4 sm:p-6"
+      role="img"
+      aria-label="Automations from Croissix AI and Zentovix: review replies, post publishing, a profile score card, lead filing and an assistant"
+    >
+      <p className="px-2 pb-3 font-heading text-sm font-semibold text-white/60">
+        Running now in Croissix AI and Zentovix
+      </p>
+
+      <ul className="grid gap-2">
+        {TASKS.map((t, i) => {
+          const done = step > i;
+          const running = step === i;
           return (
-            <line
-              key={agent.name}
-              x1={0}
-              y1={0}
-              x2={x}
-              y2={y}
-              stroke={idx === activeIdx ? "#22d3ee" : "#2a3340"}
-              strokeWidth={idx === activeIdx ? 1.5 : 1}
-              strokeDasharray="4 4"
-              opacity={idx === activeIdx ? 0.9 : 0.4}
-            />
+            <li
+              key={t.name}
+              className={`relative overflow-hidden rounded-2xl px-4 py-4 transition-colors duration-300 ${
+                running ? "bg-blue-600" : "bg-white/5"
+              }`}
+            >
+              <div className="relative z-10 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-heading text-sm font-semibold leading-snug text-white sm:text-base">
+                    {t.name}
+                  </p>
+                  <p className={`mt-0.5 text-xs leading-snug sm:text-sm ${running ? "text-white/85" : "text-white/50"}`}>
+                    {t.desc}
+                  </p>
+                </div>
+                <span
+                  className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors duration-300 ${
+                    running
+                      ? "bg-white text-blue-700"
+                      : done
+                        ? "bg-blue-600/25 text-blue-300"
+                        : "bg-white/10 text-white/55"
+                  }`}
+                >
+                  {t.product}
+                </span>
+              </div>
+
+              {/* progress for the row that is running */}
+              {running && !reduce && (
+                <motion.span
+                  key={`bar-${i}-${step}`}
+                  aria-hidden="true"
+                  className="absolute inset-y-0 left-0 bg-white/15"
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: STEP_MS / 1000, ease: "linear" }}
+                />
+              )}
+            </li>
           );
         })}
-      </svg>
-
-      {/* Center AI core */}
-      <div className="absolute top-1/2 left-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-cyan-400/40 bg-cyan-400/10">
-        <motion.div
-          animate={{ scale: [1, 1.4, 1], opacity: [0.5, 0, 0.5] }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute h-full w-full rounded-full border border-cyan-400/40"
-        />
-        <Bot className="h-8 w-8 text-cyan-300" />
-      </div>
-
-      {/* Satellite agents */}
-      {AGENTS.map((agent, idx) => {
-        const rad = (agent.angle * Math.PI) / 180;
-        const x = Math.cos(rad) * RADIUS;
-        const y = Math.sin(rad) * RADIUS;
-        const active = idx === activeIdx;
-        const Icon = agent.icon;
-        return (
-          <div
-            key={agent.name}
-            className="absolute top-1/2 left-1/2 flex w-28 flex-col items-center gap-2 text-center"
-            style={{ transform: `translate(-50%, -50%) translate(${x}px, ${y}px)` }}
-          >
-            <motion.div
-              animate={{
-                scale: active ? 1.12 : 1,
-                boxShadow: active
-                  ? "0 0 22px rgba(34,211,238,0.45)"
-                  : "0 0 0px rgba(34,211,238,0)",
-              }}
-              transition={{ duration: 0.4 }}
-              className="flex h-12 w-12 items-center justify-center rounded-full border bg-[#0a0f14]"
-              style={{
-                borderColor: active ? "#22d3ee" : "rgba(255,255,255,0.12)",
-              }}
-            >
-              <Icon
-                className="h-5 w-5"
-                style={{ color: active ? "#67e8f9" : "#8b97a3" }}
-              />
-            </motion.div>
-            <span
-              className="font-heading text-[11px] leading-tight transition-colors duration-300"
-              style={{ color: active ? "#e5f6fb" : "#6b7680" }}
-            >
-              {agent.name}
-            </span>
-          </div>
-        );
-      })}
+      </ul>
     </div>
   );
 }
 
 export default function AutomationHeroSection() {
-  const revealImgRef = useRef<HTMLImageElement>(null);
-  const rectRef = useRef<DOMRect | null>(null);
-
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        position: "relative",
-        overflow: "hidden",
-        backgroundColor: "#000",
-      }}
-      onMouseEnter={(e) => {
-        rectRef.current = e.currentTarget.getBoundingClientRect();
-      }}
-      onMouseMove={(e) => {
-        const rect = rectRef.current;
-        if (!rect) return;
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const el = revealImgRef.current;
-        if (el) {
-          el.style.setProperty("--mx", `${x}px`);
-          el.style.setProperty("--my", `${y + rect.height * 0.5}px`);
-        }
-      }}
-      onMouseLeave={() => {
-        const el = revealImgRef.current;
-        if (el) {
-          el.style.setProperty("--mx", "-9999px");
-          el.style.setProperty("--my", "-9999px");
-        }
-      }}
-    >
-      <LaserFlow
-        horizontalBeamOffset={0.2}
-        verticalBeamOffset={0.0}
-        color="#7a94e1"
-        horizontalSizing={0.2}
-        verticalSizing={20}
-        wispDensity={1}
-        wispSpeed={15}
-        wispIntensity={5}
-        flowSpeed={0.35}
-        flowStrength={0.11}
-        fogIntensity={0.73}
-        fogScale={0.22}
-        fogFallSpeed={1.76}
-        decay={2.6}
-        falloffStart={1.6}
-      />
-
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center gap-14 px-6 py-24 lg:flex-row lg:justify-between lg:gap-10 lg:py-0">
-        {/* Left: copy */}
-        <div className="flex max-w-xl flex-col items-center gap-6 text-center lg:items-start lg:text-left">
-          <span className="inline-flex items-center rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-medium text-cyan-200">
-            Business Automation (A.I)
-          </span>
-
-          <h1 className="font-heading text-4xl leading-tight font-semibold text-white sm:text-5xl md:text-6xl">
+    <section className="relative bg-black px-4 pb-20 pt-32 md:px-6 md:pb-28 md:pt-40">
+      <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+        <div className="flex flex-col items-start">
+          <motion.h1
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="font-heading text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl"
+          >
             Your AI workforce,
             <br />
             always on.
-          </h1>
+          </motion.h1>
 
-          <p className="font-heading max-w-md text-sm text-neutral-300 sm:text-base">
-            From instant WhatsApp replies to invoice generation and CRM
-            sync, Vipprow&apos;s AI agents handle the repetitive work around
-            the clock — so your team only steps in when it actually matters.
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-2 lg:justify-start">
-            {AGENTS.map((agent) => (
-              <span
-                key={agent.name}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-neutral-300"
-              >
-                <agent.icon className="h-3.5 w-3.5 text-cyan-300" />
-                {agent.name}
-              </span>
-            ))}
-          </div>
-
-          <Link
-            href="/contact"
-            className="group mt-2 inline-flex items-center gap-2 rounded-full bg-linear-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-medium text-white shadow-[0_4px_20px_rgba(34,211,238,0.25)] transition-all duration-300 hover:shadow-[0_8px_32px_rgba(34,211,238,0.4)]"
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.12, ease: "easeOut" }}
+            className="mt-6 max-w-lg text-base leading-relaxed text-white/65 sm:text-lg"
           >
-            Talk to an Automation Expert
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
+            From instant WhatsApp replies to invoice generation and CRM sync, Vipprow&apos;s AI agents handle the
+            repetitive work around the clock, so your team only steps in when it actually matters.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.24, ease: "easeOut" }}
+            className="mt-9 flex w-full flex-col gap-3 sm:w-auto sm:flex-row"
+          >
+            <Link
+              href="/contact"
+              className="group inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-blue-500 active:scale-95"
+            >
+              Talk to an Automation Expert
+              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+            </Link>
+            <a
+              href="#industries"
+              className="inline-flex items-center justify-center rounded-full bg-white/10 px-7 py-3.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/15 active:scale-95"
+            >
+              See it by industry
+            </a>
+          </motion.div>
         </div>
 
-        {/* Right: AI agent orbit */}
-        <AgentOrbit />
+        <motion.div
+          initial={{ opacity: 0, y: 36 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+          className="flex justify-center lg:justify-end"
+        >
+          <AgentBoard />
+        </motion.div>
       </div>
-
-      <Image
-        height={1000}
-        width={1000}
-        ref={revealImgRef}
-        src="/assets/images/backgrounds/automationherobg.webp"
-        alt="Reveal effect"
-        style={
-          {
-            position: "absolute",
-            width: "100%",
-            top: "-50%",
-            zIndex: 1,
-            mixBlendMode: "lighten",
-            opacity: 0.25,
-            pointerEvents: "none",
-            "--mx": "-9999px",
-            "--my": "-9999px",
-            WebkitMaskImage:
-              "radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,1) 0px, rgba(255,255,255,0.95) 60px, rgba(255,255,255,0.6) 120px, rgba(255,255,255,0.25) 180px, rgba(255,255,255,0) 240px)",
-            maskImage:
-              "radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,1) 0px, rgba(255,255,255,0.95) 60px, rgba(255,255,255,0.6) 120px, rgba(255,255,255,0.25) 180px, rgba(255,255,255,0) 240px)",
-            WebkitMaskRepeat: "no-repeat",
-            maskRepeat: "no-repeat",
-          } as CSSProperties
-        }
-      />
-    </div>
+    </section>
   );
 }

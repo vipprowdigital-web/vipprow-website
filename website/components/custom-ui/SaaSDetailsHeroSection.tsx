@@ -8,8 +8,10 @@ import Image from "next/image";
 export interface SaaSDetailsHeroSectionProps {
   heading: string;
   domain: string;
-  image: string;
+  image?: string | null;
 }
+
+const FALLBACK_IMAGE = "https://i.postimg.cc/FKKY5fRB/lunexa-db.webp";
 
 export default function SaaSDetailsHeroSection({
   heading,
@@ -71,7 +73,8 @@ export default function SaaSDetailsHeroSection({
             </div>
             <div className="relative z-10 mx-auto max-w-5xl overflow-hidden rounded-lg shadow-[0_0_50px_rgba(30,78,200,0.2)]">
               <Image
-                src={image ?? "https://i.postimg.cc/FKKY5fRB/lunexa-db.webp"}
+                // `||` so an empty string from the API also falls back (`??` only caught null)
+                src={image || FALLBACK_IMAGE}
                 alt="Lunexa Dashboard"
                 width={1920}
                 height={1080}

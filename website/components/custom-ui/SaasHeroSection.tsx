@@ -249,7 +249,8 @@ export default function SaasHeroSection() {
         >
           <Image
             src="https://i.postimg.cc/fLptvwMg/nexus.webp"
-            alt="Nexus Platform 3D Visualization"
+            alt=""
+            aria-hidden="true"
             width={1000}
             height={500}
             className="h-full w-full object-contain drop-shadow-[0_0_35px_#3358ea85] transition-all duration-1000 hover:scale-110"

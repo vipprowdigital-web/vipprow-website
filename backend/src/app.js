@@ -41,6 +41,7 @@ import newsletterRoutes from "./routes/newsletter.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
 import caseStudyRoutes from "./routes/caseStudy.routes.js";
 import caseStudyCategoryRoutes from "./routes/caseStudyCategory.routes.js";
+import faqRoutes from "./routes/faq.routes.js";
 
 // ===============================================
 // Environment Config
@@ -189,6 +190,7 @@ app.use(`${routePrefix}/newsletter`, newsletterRoutes);
 app.use(`${routePrefix}/chat`, chatRoutes);
 app.use(`${routePrefix}/case-study-category`, caseStudyCategoryRoutes);
 app.use(`${routePrefix}/case-study`, caseStudyRoutes);
+app.use(`${routePrefix}/faq`, faqRoutes);
 
 // ===============================================
 // Health Check

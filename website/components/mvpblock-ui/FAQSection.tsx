@@ -13,8 +13,10 @@ import { Webhook } from "lucide-react";
 import { BorderBeam } from "@/components/ui/border-beam";
 import PrimaryHeading from "../ui/heading/PrimaryHeading";
 import { useRouter } from "next/navigation";
+import { usePublicFaqs } from "@/app/features/faq/hook/useFaq";
 
-const data = [
+// Shown when no FAQs have been added for the page from the console
+const defaultData = [
   {
     id: "1",
     question: "How does Vipprow help improve brand credibility online?",
@@ -65,8 +67,21 @@ const data = [
   },
 ];
 
-export default function FaqSection() {
+export default function FaqSection({
+  page,
+  hideWhenEmpty = false,
+}: {
+  page?: string;
+  /** Pages without default questions render nothing until FAQs are added in the console */
+  hideWhenEmpty?: boolean;
+}) {
   const [openItems, setOpenItems] = useState<string[]>([]);
+
+  // FAQs added from the console for this page; fall back to the default set
+  const { data: apiData } = usePublicFaqs(page);
+  const data = apiData?.data?.length
+    ? apiData.data.map((f) => ({ id: f._id, question: f.question, answer: f.answer }))
+    : defaultData;
 
   const handleValueChange = (value: string[]) => {
     setOpenItems(value);
@@ -94,6 +109,8 @@ export default function FaqSection() {
       },
     },
   };
+
+  if (hideWhenEmpty && !apiData?.data?.length) return null;
 
   return (
     <section className="relative flex w-full flex-col items-center justify-center py-5">

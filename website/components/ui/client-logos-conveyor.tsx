@@ -4,10 +4,16 @@ import Image from "next/image";
 import { Marquee } from "@/components/ui/marquee";
 import { clientLogos } from "@/seeds/clientLogos";
 
-export function ClientLogosConveyor() {
-  const half = Math.ceil(clientLogos.length / 2);
-  const row1 = clientLogos.slice(0, half);
-  const row2 = clientLogos.slice(half);
+export function ClientLogosConveyor({ only }: { only?: string[] }) {
+  // `only` limits the conveyor to the named clients; without it every logo is shown
+  const logos = only
+    ? clientLogos.filter((c) => only.includes(c.name.trim()))
+    : clientLogos;
+  // a hand-picked list runs as one row; the full list is split over two rows
+  const singleRow = !!only;
+  const half = singleRow ? logos.length : Math.ceil(logos.length / 2);
+  const row1 = logos.slice(0, half);
+  const row2 = logos.slice(half);
 
   return (
     <div className="relative w-full overflow-hidden py-4">
@@ -15,17 +21,19 @@ export function ClientLogosConveyor() {
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-linear-to-r from-background to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-linear-to-l from-background to-transparent" />
 
-      <Marquee pauseOnHover className="[--gap:1rem] [--duration:35s] mb-3">
+      <Marquee pauseOnHover className={`[--gap:1rem] [--duration:35s] ${singleRow ? "" : "mb-3"}`}>
         {row1.map((client) => (
           <LogoCard key={client.name} client={client} />
         ))}
       </Marquee>
 
-      <Marquee pauseOnHover reverse className="[--gap:1rem] [--duration:40s]">
-        {row2.map((client) => (
-          <LogoCard key={client.name} client={client} />
-        ))}
-      </Marquee>
+      {!singleRow && (
+        <Marquee pauseOnHover reverse className="[--gap:1rem] [--duration:40s]">
+          {row2.map((client) => (
+            <LogoCard key={client.name} client={client} />
+          ))}
+        </Marquee>
+      )}
     </div>
   );
 }

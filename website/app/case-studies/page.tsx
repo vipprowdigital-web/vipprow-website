@@ -53,7 +53,7 @@ function CaseStudyCard({ study }: { study: CaseStudy }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="group flex flex-col rounded-2xl border border-white/8 bg-gradient-to-b from-white/5 to-white/[0.02] transition-all duration-300 hover:border-blue-500/30 hover:shadow-[0_0_30px_rgba(59,130,246,0.08)] overflow-hidden"
+      className="group relative flex cursor-pointer flex-col rounded-2xl border focus-within:border-blue-500/50 border-white/8 bg-gradient-to-b from-white/5 to-white/[0.02] transition-all duration-300 hover:border-blue-500/30 hover:shadow-[0_0_30px_rgba(59,130,246,0.08)] overflow-hidden"
     >
       {/* Hero image strip */}
       {study.heroImage && (
@@ -139,7 +139,8 @@ function CaseStudyCard({ study }: { study: CaseStudy }) {
         {/* CTA */}
         <Link
           href={`/client-case-study/details/${study._id}`}
-          className="mt-auto flex items-center gap-1.5 text-sm font-semibold text-blue-400 transition-colors hover:text-blue-300 group/link"
+          aria-label={`Read case study: ${study.title}`}
+          className="mt-auto flex items-center gap-1.5 text-sm font-semibold text-blue-400 transition-colors hover:text-blue-300 group/link after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
         >
           Read Case Study
           <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover/link:translate-x-1" />
@@ -465,7 +466,7 @@ export default function CaseStudiesPage() {
 
       {/* FAQ */}
       <div className="pt-10 max-w-7xl mx-auto sm:px-4">
-        <FaqSection />
+        <FaqSection page="case-studies" />
       </div>
 
       {/* CTA */}

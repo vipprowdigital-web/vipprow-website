@@ -5,6 +5,7 @@ import GlassBottomCard from "./GlassBottomCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
+import { Marquee } from "@/components/ui/marquee";
 
 /* ------------------ DATA ------------------ */
 
@@ -66,18 +67,42 @@ export default function ClientCaseStudyGridScroller({
   // For small sets, just center them with flex — no Swiper needed
   const useGrid = clients.length < 6;
 
+  // A single logo has nothing to slide past, so it just sits centred
+  if (clients.length === 1) {
+    return (
+      <section className="relative py-10 bg-black max-w-7xl mx-auto">
+        <div className="flex justify-center px-6">
+          <div className="w-[260px] md:w-[280px] shrink-0">
+            <GlassBottomCard {...clients[0]} href={clients[0].href ?? "#"} />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   if (useGrid) {
     return (
       <section className="relative py-10 bg-black max-w-7xl mx-auto">
-        <div
-          className="flex justify-center gap-6 px-6 md:px-16 overflow-x-auto [&::-webkit-scrollbar]:hidden"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" } as React.CSSProperties}
-        >
+        {/* Large screens: a few cards fit, so they sit still and centred */}
+        <div className="hidden justify-center gap-6 px-16 lg:flex">
           {clients.map((client, index) => (
-            <div key={index} className="w-[260px] md:w-[280px] shrink-0">
+            <div key={index} className="w-[280px] shrink-0">
               <GlassBottomCard {...client} href={client.href ?? "#"} />
             </div>
           ))}
+        </div>
+
+        {/* Phones and tablets: not all of them fit, so the row keeps sliding to the right */}
+        <div className="relative overflow-hidden lg:hidden">
+          <Marquee reverse pauseOnHover className="[--gap:1.5rem] [--duration:28s]">
+            {clients.map((client, index) => (
+              <div key={index} className="w-[260px] shrink-0 md:w-[280px]">
+                <GlassBottomCard {...client} href={client.href ?? "#"} />
+              </div>
+            ))}
+          </Marquee>
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-linear-to-r from-black to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-linear-to-l from-black to-transparent" />
         </div>
       </section>
     );

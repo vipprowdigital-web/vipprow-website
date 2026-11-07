@@ -8,6 +8,7 @@ import { AnimatedBeamDemo } from "@/components/ui/animated-beam-demo";
 import { BusinessAutomationSkeleton } from "@/components/ui/BusinessAutomationSkeleton";
 import { SoftwareDevSkeleton } from "./SoftwareDevSkeleton";
 import { CroissixSkeleton } from "./CroissixSkeleton";
+import { ZentovixSkeleton } from "./ZentovixSkeleton";
 
 const SERVICES = [
   {
@@ -34,14 +35,22 @@ const SERVICES = [
     serviceType: "business-automation" as const,
     skeletonContent: <BusinessAutomationSkeleton />,
   },
-  // {
-  //   href: "/croissix",
-  //   title: "Croissix",
-  //   description:
-  //     "AI-powered local marketing automation that manages your Google Business Profile, Facebook, and Instagram in one place.",
-  //   serviceType: "croissix" as const,
-  //   skeletonContent: <CroissixSkeleton />,
-  // },
+  {
+    href: "/zentovix",
+    title: "Zentovix",
+    description:
+      "Lead and admission management software for academies. Track every lead, follow-up and fee, from first call to first class.",
+    serviceType: "zentovix" as const,
+    skeletonContent: <ZentovixSkeleton />,
+  },
+  {
+    href: "/croissix",
+    title: "Croissix AI",
+    description:
+      "AI-powered local marketing automation that manages your Google Business Profile, Facebook, and Instagram in one place.",
+    serviceType: "croissix" as const,
+    skeletonContent: <CroissixSkeleton />,
+  },
 ];
 
 export default function ServiceCardGrid() {

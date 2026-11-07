@@ -1,6 +1,7 @@
 import { BackgroundRippleEffect } from "@/components/aceternity-ui/BackgroundRippleEffec";
 import CompanyStory from "@/components/aceternity-ui/sections/CompanyStory";
 import ClientCTA from "@/components/client-sections/ClientCTA";
+import FaqSection from "@/components/mvpblock-ui/FAQSection";
 import ClientPartnerBrandMarquee from "@/components/client-sections/ClientPartnerBrandMarquee";
 import Journey from "@/components/ui/cards/Journey";
 import MissionSection from "@/components/ui/cards/MissionSection";
@@ -60,6 +61,12 @@ export default function CompanyPage() {
         <WhyChooseUs />
       </div>
       {/* Why Choose Us End */}
+
+      {/* FAQ Start (only when FAQs are added for this page in the console) */}
+      <div className="pt-20 max-w-7xl mx-auto">
+        <FaqSection page="company" hideWhenEmpty />
+      </div>
+      {/* FAQ End */}
 
       {/* CTA Start */}
       <div className="pt-20 max-w-7xl mx-auto">

@@ -14,7 +14,12 @@ import Link from "next/link";
 import { useState } from "react";
 
 export function NavbarMenu() {
-  const navItems = [
+  // `dropdown` is optional: items without one are plain links
+  const navItems: {
+    name: string;
+    link: string;
+    dropdown?: { name: string; link: string; description?: string }[];
+  }[] = [
     {
       name: "Home",
       link: "/",
@@ -23,33 +28,21 @@ export function NavbarMenu() {
       name: "Company",
       link: "/company",
     },
-    // {
-    //   name: "Founder",
-    //   link: "/founder",
-    // },
+    {
+      name: "Founder",
+      link: "/founder",
+    },
     {
       name: "Services",
       link: "/services",
     },
     {
-      name: "Our Clients",
+      name: "Brands",
       link: "/client-case-study",
-      dropdown: [
-        {
-          name: "Our Clients",
-          link: "/client-case-study",
-          description: "See the brands we've worked with",
-        },
-        {
-          name: "Client Case Studies",
-          link: "/case-studies",
-          description: "In-depth results & success stories",
-        },
-      ],
     },
     {
-      name: "Articles",
-      link: "/articles",
+      name: "Client Case Studies",
+      link: "/case-studies",
     },
     {
       name: "Careers",

@@ -29,6 +29,8 @@ import { RichTextEditor } from "~/components/crud/RichTextEditor";
 import { Combobox } from "~/components/crud/Combobox";
 
 type ApproachStep = { title: string; description: string };
+type ResultImage = { url: string; caption: string };
+const MAX_RESULT_IMAGES = 12;
 type Metric = {
   label: string;
   value: string;
@@ -49,6 +51,7 @@ const emptyValues = {
   results: "",
   approach: [] as ApproachStep[],
   metrics: [] as Metric[],
+  resultImages: [] as ResultImage[],
   seo: { metaTitle: "", metaDescription: "", metaKeywords: "" },
   order: 0,
   isActive: true,
@@ -127,6 +130,10 @@ export default function CaseStudyForm({
           suffix: m.suffix || "",
           description: m.description || "",
         })),
+        resultImages: (s.resultImages || []).map((r: any) => ({
+          url: r.url || "",
+          caption: r.caption || "",
+        })),
         seo: {
           metaTitle: s.seo?.metaTitle || "",
           metaDescription: s.seo?.metaDescription || "",
@@ -150,6 +157,18 @@ export default function CaseStudyForm({
     { files: heroFiles, isDragging: heroDrag, errors: heroErrors },
     heroHandlers,
   ] = useFileUpload({ accept: "image/*", maxSize: 4 * 1024 * 1024 });
+
+  // New result images picked in this session (existing ones live in values.resultImages)
+  const [
+    { files: resultFiles, isDragging: resultDrag, errors: resultErrors },
+    resultHandlers,
+  ] = useFileUpload({
+    accept: "image/*",
+    maxSize: 5 * 1024 * 1024,
+    multiple: true,
+    maxFiles: MAX_RESULT_IMAGES,
+  });
+  const [newCaptions, setNewCaptions] = useState<Record<string, string>>({});
 
   const logoPreview = logoFiles?.[0]?.preview || values.clientLogo || null;
   const heroPreview = heroFiles?.[0]?.preview || values.heroImage || null;
@@ -205,8 +224,26 @@ export default function CaseStudyForm({
       metrics: p.metrics.filter((_, idx) => idx !== i),
     }));
 
+  const updateResultCaption = (i: number, caption: string) =>
+    setValues((p) => ({
+      ...p,
+      resultImages: p.resultImages.map((r, idx) =>
+        idx === i ? { ...r, caption } : r,
+      ),
+    }));
+  const removeResultImage = (i: number) =>
+    setValues((p) => ({
+      ...p,
+      resultImages: p.resultImages.filter((_, idx) => idx !== i),
+    }));
+
   const handleSubmit = async (e: React.FormEvent, actionType = "save") => {
     e.preventDefault();
+
+    if (values.resultImages.length + resultFiles.length > MAX_RESULT_IMAGES) {
+      toast.error(`You can add up to ${MAX_RESULT_IMAGES} result images.`);
+      return;
+    }
 
     const newErrors = validate(values);
     if (Object.keys(newErrors).length > 0) {
@@ -271,6 +308,23 @@ export default function CaseStudyForm({
         }),
       );
 
+      if (isEdit) {
+        fd.append(
+          "existingResultImages",
+          JSON.stringify(
+            values.resultImages.map((r) => ({
+              url: r.url,
+              caption: r.caption.trim(),
+            })),
+          ),
+        );
+      }
+      resultFiles.forEach((f) => fd.append("resultImages", f.file as Blob));
+      fd.append(
+        "resultImageCaptions",
+        JSON.stringify(resultFiles.map((f) => (newCaptions[f.id] || "").trim())),
+      );
+
       if (logoFiles.length > 0)
         fd.append("clientLogo", logoFiles[0].file as Blob);
       else if (isEdit && !values.clientLogo)
@@ -294,6 +348,8 @@ export default function CaseStudyForm({
         toast.success("✅ Case study created successfully!");
         if (actionType === "create_another") {
           setValues({ ...emptyValues });
+          resultHandlers.clearFiles();
+          setNewCaptions({});
           setErrors({});
           setIsSubmitting(false);
           return;
@@ -590,6 +646,120 @@ export default function CaseStudyForm({
                 >
                   <Plus className="h-4 w-4 mr-1" /> Add Metric
                 </Button>
+              </CardContent>
+            </Card>
+
+            {/* RESULT IMAGES */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Result Images</CardTitle>
+                <CardDescription>
+                  Extra images that show the results (screenshots, reports,
+                  dashboards). They appear as a gallery under the Results
+                  section, up to {MAX_RESULT_IMAGES}.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {(values.resultImages.length > 0 || resultFiles.length > 0) && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {values.resultImages.map((img, i) => (
+                      <div key={img.url} className="rounded-lg border p-3 space-y-2">
+                        <div className="relative">
+                          <img
+                            src={img.url}
+                            alt={img.caption || `Result image ${i + 1}`}
+                            className="h-36 w-full rounded-md object-cover bg-muted"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeResultImage(i)}
+                            className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full hover:bg-black/80"
+                            aria-label="Remove image"
+                          >
+                            <XIcon className="h-4 w-4" />
+                          </button>
+                        </div>
+                        <Input
+                          value={img.caption}
+                          maxLength={200}
+                          placeholder="Caption (optional)"
+                          onChange={(e) => updateResultCaption(i, e.target.value)}
+                        />
+                      </div>
+                    ))}
+                    {resultFiles.map((f) => (
+                      <div key={f.id} className="rounded-lg border border-primary/40 p-3 space-y-2">
+                        <div className="relative">
+                          <img
+                            src={f.preview}
+                            alt="New result image"
+                            className="h-36 w-full rounded-md object-cover bg-muted"
+                          />
+                          <span className="absolute top-2 left-2 rounded bg-primary px-1.5 py-0.5 text-[10px] text-primary-foreground">
+                            New
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              resultHandlers.removeFile(f.id);
+                              setNewCaptions((p) => {
+                                const next = { ...p };
+                                delete next[f.id];
+                                return next;
+                              });
+                            }}
+                            className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full hover:bg-black/80"
+                            aria-label="Remove image"
+                          >
+                            <XIcon className="h-4 w-4" />
+                          </button>
+                        </div>
+                        <Input
+                          value={newCaptions[f.id] || ""}
+                          maxLength={200}
+                          placeholder="Caption (optional)"
+                          onChange={(e) =>
+                            setNewCaptions((p) => ({
+                              ...p,
+                              [f.id]: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div
+                  onDragEnter={resultHandlers.handleDragEnter}
+                  onDragLeave={resultHandlers.handleDragLeave}
+                  onDragOver={resultHandlers.handleDragOver}
+                  onDrop={resultHandlers.handleDrop}
+                  className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-6 transition-all ${
+                    resultDrag ? "bg-accent border-primary" : "border-border"
+                  }`}
+                >
+                  <input {...resultHandlers.getInputProps()} className="sr-only" />
+                  <ImageIcon className="h-6 w-6 opacity-70 mb-2" />
+                  <p className="text-sm text-muted-foreground">
+                    Drop images here or select several at once
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="mt-2"
+                    disabled={
+                      values.resultImages.length + resultFiles.length >=
+                      MAX_RESULT_IMAGES
+                    }
+                    onClick={resultHandlers.openFileDialog}
+                  >
+                    <UploadIcon className="h-4 w-4 mr-2" /> Add Images
+                  </Button>
+                </div>
+                {resultErrors[0] && (
+                  <p className="text-xs text-red-500">{resultErrors[0]}</p>
+                )}
               </CardContent>
             </Card>
 

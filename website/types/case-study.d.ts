@@ -28,6 +28,11 @@ export interface CaseStudyMetric {
   description?: string;
 }
 
+export interface CaseStudyResultImage {
+  url: string;
+  caption?: string;
+}
+
 export interface CaseStudy {
   _id?: string;
   title: string;
@@ -45,6 +50,7 @@ export interface CaseStudy {
   approach?: CaseStudyApproachStep[];
   results?: string;
   metrics?: CaseStudyMetric[];
+  resultImages?: CaseStudyResultImage[];
 
   seo?: CaseStudySEO;
   order?: number;

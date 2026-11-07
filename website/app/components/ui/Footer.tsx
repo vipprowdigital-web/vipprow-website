@@ -76,7 +76,8 @@ export default function Footer() {
     navigation: {
       product: [
         // { name: "Features", href: "/services" },
-        { name: "Croissix AI", href: "https://ai.croissix.com" },
+        { name: "Croissix AI", href: "https://croissix.com" },
+        { name: "Zentovix", href: "https://zentovix.vipprow.com" },
         { name: "CRM", href: "#" },
         { name: "Vexabill", href: "#" },
         { name: "Inventory", href: "#" },
@@ -84,7 +85,8 @@ export default function Footer() {
       ],
       company: [
         { name: "About", href: "/company" },
-        { name: "Blog", href: "/articles" },
+        { name: "Founder", href: "/founder" },
+        { name: "Articles", href: "/articles" },
         { name: "Careers", href: "/careers" },
         { name: "Contact", href: "/contact" },
         { name: "Portfolio", href: "/portfolio" },

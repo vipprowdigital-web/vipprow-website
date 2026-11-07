@@ -26,6 +26,7 @@ import { CertificateMultiDeleteDialog } from "~/features/certificate/components/
 import { UserCertificateMultiDeleteDialog } from "~/features/user-certificate/components/user-certificate-multi-delete-dialog";
 import { CaseStudyMultiDeleteDialog } from "~/features/case-study/components/case-study-multi-delete-dialog";
 import { CaseStudyCategoryMultiDeleteDialog } from "~/features/case-study-category/components/case-study-category-multi-delete-dialog";
+import { FaqMultiDeleteDialog } from "~/features/faq/components/faq-multi-delete-dialog";
 // You can add more in the future like:
 // import { UserMultiDeleteDialog } from "~/features/user/components/user-multi-delete-dialog";
 
@@ -145,6 +146,15 @@ export function BulkActions<TData>({
       case "case-study-category":
         return (
           <CaseStudyCategoryMultiDeleteDialog
+            open={showDeleteConfirm}
+            onOpenChange={setShowDeleteConfirm}
+            table={table}
+          />
+        );
+
+      case "faq":
+        return (
+          <FaqMultiDeleteDialog
             open={showDeleteConfirm}
             onOpenChange={setShowDeleteConfirm}
             table={table}

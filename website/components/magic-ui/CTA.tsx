@@ -3,7 +3,7 @@
 import PrimaryGlowButton from "../ui/buttons/primary-glow-button";
 import { useRouter } from "next/navigation";
 
-export default function CTA() {
+export default function CTA({ blueOnly = false }: { blueOnly?: boolean }) {
   const router = useRouter();
   return (
     <section className="w-full px-3 sm:px-6 py-0">
@@ -11,7 +11,9 @@ export default function CTA() {
         {/* Axioma Style Diagonal Glow */}
         <div className="absolute inset-0">
           <div className="absolute -left-40 top-0 h-125 w-125 rotate-45 bg-blue-600/40 blur-[120px]" />
-          <div className="absolute bottom-0 right-0 h-100 w-100 bg-purple-600/30 blur-[140px]" />
+          <div
+            className={`absolute bottom-0 right-0 h-100 w-100 blur-[140px] ${blueOnly ? "bg-blue-600/30" : "bg-purple-600/30"}`}
+          />
         </div>
 
         {/* Content */}

@@ -301,15 +301,15 @@ export default function ContactForm({
           </Card>
 
           {/* RIGHT SECTION */}
-          <div className="flex flex-col gap-6 w-full">
+          <div className="flex flex-col gap-6 w-full min-w-0">
             {/* META INFO */}
             {isEdit && (
-              <Card>
+              <Card className="min-w-0 overflow-hidden">
                 <CardHeader>
                   <CardTitle>Meta Info</CardTitle>
                   <CardDescription>Technical details</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2 text-sm text-muted-foreground">
+                <CardContent className="space-y-2 text-sm text-muted-foreground [overflow-wrap:anywhere]">
                   <p>IP: {c?.ipAddress || "-"}</p>
                   <p>User Agent: {c?.userAgent || "-"}</p>
                   <p>

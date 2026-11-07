@@ -115,7 +115,7 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
         boxShadow: visible
           ? "0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset"
           : "none",
-        width: visible ? "40%" : "100%",
+        width: visible ? "56%" : "100%",
         y: visible ? 20 : 0,
       }}
       transition={{
@@ -124,7 +124,8 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
         damping: 50,
       }}
       style={{
-        minWidth: "900px",
+        // wide enough that the logo and button never run into the links, never wider than the screen
+        minWidth: "min(1060px, 96vw)",
       }}
       className={cn(
         "relative z-60 mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-4 py-2 lg:flex dark:bg-transparent",
@@ -161,7 +162,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
             onMouseEnter={() => { setHovered(idx); setOpenDropdown(idx); }}
             onMouseLeave={() => { setHovered(null); setOpenDropdown(null); }}
           >
-            <button className="relative flex items-center gap-1 px-4 py-2 text-neutral-600 dark:text-zinc-100">
+            <button className="relative flex items-center gap-1 px-3 py-2 text-neutral-600 xl:px-4 dark:text-zinc-100">
               {hovered === idx && (
                 <motion.div
                   layoutId="hovered"
@@ -216,7 +217,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
             key={`link-${idx}`}
             onMouseEnter={() => { setHovered(idx); setOpenDropdown(null); }}
             onClick={onItemClick}
-            className="relative px-4 py-2 text-neutral-600 dark:text-zinc-100"
+            className="relative px-3 py-2 text-neutral-600 xl:px-4 dark:text-zinc-100"
             href={item.link}
           >
             {hovered === idx && (

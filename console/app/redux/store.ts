@@ -64,6 +64,10 @@ import { caseStudyApi } from "~/features/case-study/data/caseStudyApi";
 import caseStudyCategoryReducer from "~/features/case-study-category/data/caseStudyCategorySlice";
 import { caseStudyCategoryApi } from "~/features/case-study-category/data/caseStudyCategoryApi";
 
+// ❓ FAQ Feature (per-page FAQs)
+import faqReducer from "~/features/faq/data/faqSlice";
+import { faqApi } from "~/features/faq/data/faqApi";
+
 export const store = configureStore({
   reducer: {
     // ✅ App Configuration state + API
@@ -128,6 +132,10 @@ export const store = configureStore({
     // ✅ Case Study Category (Sector) state + API
     caseStudyCategory: caseStudyCategoryReducer,
     [caseStudyCategoryApi.reducerPath]: caseStudyCategoryApi.reducer,
+
+    // ✅ FAQ state + API
+    faq: faqReducer,
+    [faqApi.reducerPath]: faqApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -146,6 +154,7 @@ export const store = configureStore({
       contactApi.middleware,
       caseStudyApi.middleware,
       caseStudyCategoryApi.middleware,
+      faqApi.middleware,
     ),
 });
 

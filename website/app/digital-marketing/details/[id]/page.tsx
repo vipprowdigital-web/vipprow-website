@@ -136,7 +136,7 @@ export default function SaasArticleDetails() {
 
       {/* FAQ Start */}
       <div className="pt-20 max-w-7xl mx-auto">
-        <FaqSection />
+        <FaqSection page="digital-marketing" />
       </div>
       {/* FAQ End */}
 

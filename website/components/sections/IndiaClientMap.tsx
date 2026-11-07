@@ -39,6 +39,15 @@ const CLUSTERS: ClusterDef[] = [
     ],
   },
   {
+    id: "uttar-pradesh",
+    label: "Uttar Pradesh",
+    cities: [
+      { name: "Moradabad", lat: 28.8386, lng: 78.7733 },
+      { name: "Bareilly", lat: 28.367, lng: 79.4304 },
+      { name: "Puranpur", lat: 28.5106, lng: 80.1473 },
+    ],
+  },
+  {
     id: "madhya-pradesh",
     label: "Madhya Pradesh",
     cities: [
@@ -62,6 +71,9 @@ const STANDALONES: StandaloneCity[] = [
   { id: "pune", name: "Pune", lat: 18.5204, lng: 73.8567 },
   { id: "surat", name: "Surat", lat: 21.1702, lng: 72.8311 },
   { id: "kamareddy", name: "Kamareddy", lat: 18.322, lng: 78.34 },
+  { id: "varanasi", name: "Varanasi", lat: 25.3176, lng: 82.9739 },
+  { id: "patna", name: "Patna", lat: 25.5941, lng: 85.1376 },
+  { id: "nagpur", name: "Nagpur", lat: 21.1458, lng: 79.0882 },
 ];
 
 // ─── PROJECTION ───────────────────────────────────────────────────────────────
@@ -363,7 +375,7 @@ export default function IndiaClientMap() {
                 1}{" "}
               cities
             </span>{" "}
-            and <span className="text-white font-medium">10 states</span>,
+            and <span className="text-white font-medium">11 states</span>,
             Vipprow serves as a trusted technology and growth partner,
             delivering scalable solutions that drive measurable business
             success.
@@ -376,7 +388,7 @@ export default function IndiaClientMap() {
                 value: `${STANDALONES.length + CLUSTERS.reduce((s, c) => s + c.cities.length, 0)}+`,
                 label: "Client Cities",
               },
-              { value: "10", label: "States Covered" },
+              { value: "11", label: "States Covered" },
               // { value: "1",   label: "Jabalpur" },
             ].map(({ value, label }) => (
               <div

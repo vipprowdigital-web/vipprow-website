@@ -16,6 +16,7 @@ const router = Router();
 const imageFields = upload.fields([
   { name: "clientLogo", maxCount: 1 },
   { name: "heroImage", maxCount: 1 },
+  { name: "resultImages", maxCount: 12 },
 ]);
 
 /* ================================

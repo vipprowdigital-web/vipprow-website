@@ -51,7 +51,7 @@ export default function ServicesPage() {
 
       {/* FAQ Start */}
       <div className="pt-20 max-w-7xl mx-auto">
-        <FaqSection />
+        <FaqSection page="services" />
       </div>
       {/* FAQ End */}
 

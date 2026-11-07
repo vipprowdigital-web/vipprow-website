@@ -156,11 +156,11 @@ export default function AppHero() {
       {/* Background effects */}
       <div className="absolute inset-0 z-0">
         {/* Radial gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900/30 via-black/70 to-gray-950 blur-3xl"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-indigo-900/30 via-black/70 to-gray-950 blur-3xl"></div>
 
         {/* Grid pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="h-full w-full bg-[linear-gradient(to_right,rgba(255,255,255,0.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.2)_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+          <div className="h-full w-full bg-[linear-gradient(to_right,rgba(255,255,255,0.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.2)_1px,transparent_1px)] bg-size-[4rem_4rem]"></div>
         </div>
 
         {/* Enhanced glow spots */}
@@ -200,7 +200,7 @@ export default function AppHero() {
         </div>
       </div>
 
-      <div className="fadein-blur relative z-0 mx-auto mb-10 h-[300px] w-[300px] lg:absolute lg:top-1/2 lg:right-1/2 lg:mx-0 lg:mb-0 lg:h-[500px] lg:w-[500px] lg:translate-x-1/2 lg:-translate-y-2/3">
+      <div className="fadein-blur relative z-0 mx-auto mb-10 h-75 w-75 lg:absolute lg:top-1/2 lg:right-1/2 lg:mx-0 lg:mb-0 lg:h-125 lg:w-125 lg:translate-x-1/2 lg:-translate-y-2/3">
         <img
           src="https://i.postimg.cc/fLptvwMg/nexus.webp"
           alt="Nexus Platform 3D Visualization"
@@ -248,7 +248,7 @@ export default function AppHero() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="relative z-10 mb-10 flex w-full max-w-[1450px] flex-grow flex-col items-center justify-center px-4 text-center sm:px-8 lg:mb-0 lg:items-start lg:justify-end lg:text-left"
+        className="relative z-10 mb-10 flex w-full max-w-362.5 grow flex-col items-center justify-center px-4 text-center sm:px-8 lg:mb-0 lg:items-start lg:justify-end lg:text-left"
       >
         <motion.div className="flex w-full flex-col items-center justify-between lg:flex-row lg:items-start">
           <div className="w-full lg:w-auto">
@@ -264,10 +264,10 @@ export default function AppHero() {
 
             <motion.h1
               variants={itemVariants}
-              className="mb-6 bg-gradient-to-r from-white/70 via-white to-slate-500/80 bg-clip-text text-3xl leading-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl"
+              className="mb-6 bg-linear-to-r from-white/70 via-white to-slate-500/80 bg-clip-text text-3xl leading-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl"
             >
               The Bridge Between <br className="hidden sm:inline" />
-              <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-purple-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
                 AI and Web3
               </span>
             </motion.h1>
@@ -338,7 +338,7 @@ export default function AppHero() {
               className="mb-8 flex flex-col flex-wrap gap-4 sm:flex-row lg:justify-end"
             >
               <Button
-                className="group rounded-full border-t border-purple-400 bg-gradient-to-b from-purple-700 to-slate-950/80 px-6 py-6 text-white shadow-lg shadow-purple-600/20 transition-all hover:shadow-purple-600/40"
+                className="group rounded-full border-t border-purple-400 bg-linear-to-b from-purple-700 to-slate-950/80 px-6 py-6 text-white shadow-lg shadow-purple-600/20 transition-all hover:shadow-purple-600/40"
                 size="lg"
               >
                 Start Building
@@ -365,7 +365,7 @@ export default function AppHero() {
                     key={i}
                     className="h-6 w-6 overflow-hidden rounded-full border-2 border-slate-900 bg-slate-800"
                   >
-                    <div className="h-full w-full bg-gradient-to-br from-purple-500 to-blue-600 opacity-80"></div>
+                    <div className="h-full w-full bg-linear-to-br from-purple-500 to-blue-600 opacity-80"></div>
                   </div>
                 ))}
               </div>

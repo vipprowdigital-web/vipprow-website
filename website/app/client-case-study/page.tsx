@@ -364,7 +364,7 @@ Our systems are built to deliver measurable results and sustainable growth."
 
       {/* FAQ Start */}
       <div className="pt-0 max-w-7xl mx-auto">
-        <FaqSection />
+        <FaqSection page="client-case-study" />
       </div>
       {/* FAQ End */}
 

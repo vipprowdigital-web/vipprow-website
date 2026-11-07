@@ -29,7 +29,10 @@ export default function GlassBottomCard({
           alt={title}
           width={800}
           height={800}
-          className={`w-full ${fromServices ? "h-80 object-cover" : "h-70 object-contain"} rounded-4xl bg-black p-10`}
+          className={`w-full rounded-4xl bg-black ${
+            // services: the picture fills the whole card; brand logos stay contained with space around them
+            fromServices ? "h-80 object-cover" : "h-70 object-contain p-10"
+          }`}
         />
 
         {/* GLASS BOTTOM OVERLAY */}

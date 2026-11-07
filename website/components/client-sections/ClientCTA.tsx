@@ -13,6 +13,6 @@ const CTA = dynamic(() => import("@/components/magic-ui/CTA"), {
   ),
 });
 
-export default function ClientCTA() {
-  return <CTA />;
+export default function ClientCTA({ blueOnly = false }: { blueOnly?: boolean }) {
+  return <CTA blueOnly={blueOnly} />;
 }

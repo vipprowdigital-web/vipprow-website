@@ -4,12 +4,14 @@ import { useCaseStudyById } from "@/app/features/case-study/hook/useCaseStudy";
 import ClientCTA from "@/components/client-sections/ClientCTA";
 import ClientCaseStudyDetailsHeroSection from "@/components/custom-ui/ClientCaseStudyDetailsHeroSection";
 import FaqSection from "@/components/mvpblock-ui/FAQSection";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { CaseStudyResultImage } from "@/types/case-study";
 
 const RICH_TEXT_CLASS = `
   space-y-4
-  text-sm leading-7 text-white/80
+  text-[15px] leading-[1.65] text-white/80
 
   [&_h1]:font-heading [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:text-white [&_h1]:mt-8 [&_h1]:mb-3
   [&_h2]:font-heading [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-white [&_h2]:mt-7 [&_h2]:mb-2
@@ -18,11 +20,11 @@ const RICH_TEXT_CLASS = `
   [&_h5]:text-sm [&_h5]:font-semibold [&_h5]:text-white/80 [&_h5]:mt-3
   [&_h6]:text-xs [&_h6]:font-semibold [&_h6]:text-white/70 [&_h6]:uppercase [&_h6]:tracking-wider [&_h6]:mt-3
 
-  [&_p]:text-white/75 [&_p]:leading-7
+  [&_p]:text-white/75 [&_p]:leading-[1.65]
 
   [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1.5
   [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-1.5
-  [&_li]:text-white/70 [&_li]:leading-6
+  [&_li]:text-white/70 [&_li]:leading-[1.6]
   [&_li>ul]:mt-1.5 [&_li>ol]:mt-1.5
 
   [&_a]:text-blue-400 [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-blue-300
@@ -55,7 +57,7 @@ const RICH_TEXT_CLASS = `
   [&_figure]:my-4
   [&_figcaption]:mt-1.5 [&_figcaption]:text-xs [&_figcaption]:text-white/40 [&_figcaption]:text-center
 
-  [&_div]:leading-7
+  [&_div]:leading-[1.65]
 `;
 
 // Unescape HTML entities so content saved as escaped text renders correctly.
@@ -86,9 +88,124 @@ function RichSection({ title, html }: { title: string; html?: string }) {
         {title}
       </h2>
       <div
-        className={`mt-4 ${RICH_TEXT_CLASS}`}
+        className={`mt-4 max-w-3xl ${RICH_TEXT_CLASS}`}
         dangerouslySetInnerHTML={{ __html: unescaped }}
       />
+    </section>
+  );
+}
+
+function ResultGallery({ images }: { images?: CaseStudyResultImage[] }) {
+  const [active, setActive] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (active === null || !images) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActive(null);
+      if (e.key === "ArrowRight") setActive((a) => (a === null ? a : (a + 1) % images.length));
+      if (e.key === "ArrowLeft")
+        setActive((a) => (a === null ? a : (a - 1 + images.length) % images.length));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [active, images]);
+
+  if (!images || images.length === 0) return null;
+  const current = active !== null ? images[active] : null;
+
+  return (
+    <section className="pt-12">
+      <h2 className="font-heading text-xl md:text-2xl font-semibold text-white">
+        Results in Pictures
+      </h2>
+      <div className="mt-6 columns-1 gap-4 sm:columns-2">
+        {images.map((img, i) => (
+          <figure key={img.url} className="mb-4 break-inside-avoid">
+            <button
+              type="button"
+              onClick={() => setActive(i)}
+              className="group block w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+              aria-label={`Open image ${i + 1}${img.caption ? `: ${img.caption}` : ""}`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={img.url}
+                alt={img.caption || `Result ${i + 1}`}
+                loading="lazy"
+                decoding="async"
+                className="h-auto w-full transition-transform duration-500 group-hover:scale-[1.03]"
+              />
+            </button>
+            {img.caption && (
+              <figcaption className="mt-2 px-1 text-xs leading-5 text-white/55">
+                {img.caption}
+              </figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
+
+      <AnimatePresence>
+        {current && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/90 p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Result image viewer"
+            onClick={() => setActive(null)}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={current.url}
+              alt={current.caption || "Result image"}
+              className="max-h-[80vh] max-w-full rounded-xl object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+            {current.caption && (
+              <p className="mt-4 max-w-2xl text-center text-sm text-white/70">
+                {current.caption}
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={() => setActive(null)}
+              className="absolute right-4 top-4 rounded-full bg-white/10 px-3 py-1.5 text-sm text-white hover:bg-white/20"
+            >
+              Close
+            </button>
+            {images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActive((active! - 1 + images.length) % images.length);
+                  }}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/10 px-3 py-2 text-white hover:bg-white/20"
+                  aria-label="Previous image"
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActive((active! + 1) % images.length);
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/10 px-3 py-2 text-white hover:bg-white/20"
+                  aria-label="Next image"
+                >
+                  ›
+                </button>
+              </>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
@@ -230,11 +347,12 @@ export default function ClientCaseStudyDetails() {
         )}
 
         <RichSection title="The Results" html={item.results} />
+        <ResultGallery images={item.resultImages} />
       </motion.main>
 
       {/* FAQ Start */}
       <div className="pt-20 max-w-7xl mx-auto">
-        <FaqSection />
+        <FaqSection page="case-studies" />
       </div>
       {/* FAQ End */}
 

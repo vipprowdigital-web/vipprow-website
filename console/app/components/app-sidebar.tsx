@@ -25,6 +25,7 @@ import {
   Table2,
   Globe,
   UserCircle,
+  CircleHelp,
 } from "lucide-react";
 import { NavMain } from "~/components/nav-main";
 import { NavProjects } from "~/components/nav-projects";
@@ -229,6 +230,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ],
 
     appSettingsNav: [
+      {
+        title: "FAQs",
+        url: "/admin/faq",
+        icon: CircleHelp,
+        isActive: isActive("/admin/faq"),
+      },
       {
         title: "App Configuration",
         url: "/admin/app-configuration",

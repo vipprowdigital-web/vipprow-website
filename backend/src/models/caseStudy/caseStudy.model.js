@@ -38,6 +38,15 @@ const metricSchema = new mongoose.Schema(
   { _id: false }
 );
 
+// An extra image shown in the "Results in pictures" gallery of the detail page
+const resultImageSchema = new mongoose.Schema(
+  {
+    url: { type: String, required: true, validate: imageUrlValidator },
+    caption: { type: String, trim: true, default: "", maxlength: 200 },
+  },
+  { _id: false }
+);
+
 const caseStudySchema = new mongoose.Schema(
   {
     /* ---------------- Identity ---------------- */
@@ -87,6 +96,7 @@ const caseStudySchema = new mongoose.Schema(
     approach: { type: [approachStepSchema], default: [] },
     results: { type: String, trim: true, default: "" },
     metrics: { type: [metricSchema], default: [] },
+    resultImages: { type: [resultImageSchema], default: [] },
 
     /* ---------------- Meta ---------------- */
     seo: seoSchema,

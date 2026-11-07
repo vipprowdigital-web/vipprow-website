@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import FaqSection from "@/components/mvpblock-ui/FAQSection";
 import {
   Briefcase,
   Upload,
@@ -498,6 +499,10 @@ export default function CareersPage() {
           </form>
         </div>
       </section>
+
+      <div className="pt-20 max-w-7xl mx-auto">
+        <FaqSection page="careers" hideWhenEmpty />
+      </div>
     </div>
   );
 }

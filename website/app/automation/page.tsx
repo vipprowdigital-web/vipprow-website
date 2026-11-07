@@ -1,5 +1,6 @@
 import ClientCTA from "@/components/client-sections/ClientCTA";
 import ClientTestimonialMarquee from "@/components/client-sections/ClientTestimonialMarquee";
+import AutomationIndustries from "@/components/custom-ui/AutomationIndustries";
 import AutomationAgentsSection from "@/components/custom-ui/AutomationAgentsSection";
 import AutomationBentoGridSection from "@/components/custom-ui/AutomationBentoGridSection";
 import AutomationHeroSection from "@/components/custom-ui/AutomationHeroSection";
@@ -27,14 +28,19 @@ export default function AutomationPage() {
       </div>
       {/* Automation Feature End */}
 
+      {/* How Vipprow helps brands automate — by industry */}
+      <div id="industries" className="pt-20 scroll-mt-20">
+        <AutomationIndustries />
+      </div>
+
       {/* AI Agents Start */}
-      <div className="pt-20 max-w-7xl mx-auto">
+      {/* <div className="pt-20 max-w-7xl mx-auto">
         <PrimaryHeading
           heading="Meet Your AI Agents"
           des="A team of always-on AI agents that handle the repetitive work so your people don't have to."
         />
         <AutomationAgentsSection />
-      </div>
+      </div> */}
       {/* AI Agents End */}
 
       {/* AutomationBentoGridSection Feature Start */}
@@ -59,13 +65,13 @@ export default function AutomationPage() {
 
       {/* FAQ Start */}
       <div className="pt-20 max-w-7xl mx-auto">
-        <FaqSection />
+        <FaqSection page="business-automation" />
       </div>
       {/* FAQ End */}
 
       {/* CTA Start */}
       <div className="pt-20 max-w-7xl mx-auto">
-        <ClientCTA />
+        <ClientCTA blueOnly />
       </div>
       {/* CTA End */}
     </>

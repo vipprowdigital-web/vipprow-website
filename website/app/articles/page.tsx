@@ -1,6 +1,7 @@
 import EditorialCard from "@/components/ui/cards/EditorialCard";
 import { ArticlesClient } from "./ArticlesClient";
 import ClientCTA from "@/components/client-sections/ClientCTA";
+import FaqSection from "@/components/mvpblock-ui/FAQSection";
 import PrimaryHeading from "@/components/ui/heading/PrimaryHeading";
 import { fetchPublicArticles } from "../features/articles/services/article.api";
 
@@ -71,6 +72,10 @@ export default async function ArticlesPage({
           totalPages={data?.pagination?.totalPages ?? 1}
         />
       </section>
+
+      <div className="pt-20 max-w-7xl mx-auto">
+        <FaqSection page="articles" hideWhenEmpty />
+      </div>
 
       <div className="pt-20 max-w-7xl mx-auto">
         <ClientCTA />
