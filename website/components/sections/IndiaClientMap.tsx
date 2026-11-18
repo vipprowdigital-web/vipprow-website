@@ -45,6 +45,7 @@ const CLUSTERS: ClusterDef[] = [
       { name: "Moradabad", lat: 28.8386, lng: 78.7733 },
       { name: "Bareilly", lat: 28.367, lng: 79.4304 },
       { name: "Puranpur", lat: 28.5106, lng: 80.1473 },
+      { name: "Prayagraj", lat: 25.4358, lng: 81.8463 },
     ],
   },
   {
@@ -160,9 +161,55 @@ function LocationPin({
 }
 
 // ─── COMPONENT ───────────────────────────────────────────────────────────────
-export default function IndiaClientMap() {
+// Colour themes. "blue" is the main website; "purple" matches the portfolio page.
+export type MapTheme = "blue" | "purple";
+
+const THEMES = {
+  blue: {
+    ambientA: "#0d1a3a",
+    ambientB: "#060810",
+    land: ["#12264d", "#0a1530", "#060c1e"],
+    depth: ["#050a18", "#0a1830", "#10264a"],
+    border: "#1e3a5f",
+    accent: "#2563eb", // country outline + intro lines
+    hq: "#3b82f6",
+    hqHover: "#60a5fa",
+    glowPool: "bg-blue-600/25",
+    legendHq: "bg-blue-500 shadow-[0_0_6px_#3b82f6]",
+    legendState: "bg-indigo-500 shadow-[0_0_6px_#6366f1]",
+    statCell:
+      "bg-gray-200/10 border border-slate-400/40 rounded-xl",
+    statValue: "text-white",
+    headingAccent: "",
+  },
+  purple: {
+    ambientA: "#1a0a2e",
+    ambientB: "#050508",
+    land: ["#2a1650", "#170b30", "#0c0618"],
+    depth: ["#06030c", "#100820", "#1d1038"],
+    border: "#6d4fc4",
+    accent: "#8b5cf6",
+    hq: "#8b5cf6",
+    hqHover: "#c084fc",
+    glowPool: "bg-violet-600/25",
+    legendHq: "bg-violet-500 shadow-[0_0_6px_#8b5cf6]",
+    legendState: "bg-violet-700 shadow-[0_0_6px_#6d28d9]",
+    statCell:
+      "rounded-xl border border-violet-500/25 bg-violet-950/20 hover:bg-purple-900/20 transition-colors duration-300",
+    statValue:
+      "bg-gradient-to-br from-[#8B5CF6] to-[#c084fc] bg-clip-text text-transparent",
+    headingAccent:
+      "bg-gradient-to-br from-[#8B5CF6] to-[#c084fc] bg-clip-text text-transparent",
+  },
+} as const;
+
+export default function IndiaClientMap({
+  theme = "blue",
+}: {
+  theme?: MapTheme;
+}) {
+  const t = THEMES[theme];
   const [mounted, setMounted] = useState(false);
-  const [hoveredCluster, setHoveredCluster] = useState<string | null>(null);
   const [hoveredStandalone, setHoveredStandalone] = useState<string | null>(
     null,
   );
@@ -185,6 +232,7 @@ export default function IndiaClientMap() {
   const containerRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const containerWidthRef = useRef<number>(0);
+  const tiltRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleSetMounted = () => setMounted(true);
@@ -239,35 +287,41 @@ export default function IndiaClientMap() {
 
   if (!mounted) return null;
 
-  function svgToContainer(svgX: number, svgY: number) {
-    const svg = svgRef.current,
-      container = containerRef.current;
-    if (!svg || !container) return { x: 0, y: 0 };
-    const pt = svg.createSVGPoint();
-    pt.x = svgX;
-    pt.y = svgY;
-    const sp = pt.matrixTransform(svg.getScreenCTM()!);
-    const rc = container.getBoundingClientRect();
-    return { x: sp.x - rc.left, y: sp.y - rc.top };
-  }
-
-  function handleClusterEnter(id: string, cx: number, cy: number) {
-    // Set hovered state immediately (no layout read)
-    setHoveredCluster(id);
-    // Defer the geometry reads to after the browser has painted — avoids forced reflow
+  // The map is tilted in 3D, which getScreenCTM() can't see, so position the
+  // tooltip from the pin's real on-screen bounding box instead.
+  function handleCityEnter(id: string, group: SVGGElement) {
+    setHoveredStandalone(id);
+    // Defer geometry reads until after paint to avoid forced reflow
     requestAnimationFrame(() => {
-      const pos = svgToContainer(cx + 18, cy - 10);
+      const container = containerRef.current;
+      const pin = group.querySelector("path");
+      if (!container || !pin) return;
+      const rc = container.getBoundingClientRect();
+      const rp = pin.getBoundingClientRect();
       setCardPos({
-        ...pos,
-        containerWidth:
-          containerWidthRef.current ||
-          containerRef.current?.offsetWidth ||
-          9999,
+        x: rp.left + rp.width / 2 - rc.left,
+        y: rp.top - rc.top - 4,
+        containerWidth: 0,
       });
     });
   }
-  function handleClusterLeave() {
-    setHoveredCluster(null);
+
+  // Tilt the map toward the cursor (direct style writes: no re-renders)
+  const REST_TILT = "perspective(1400px) rotateX(18deg) rotateY(0deg)";
+  function handleTilt(e: React.MouseEvent<HTMLDivElement>) {
+    const el = tiltRef.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    el.style.transform = `perspective(1400px) rotateX(${18 - py * 10}deg) rotateY(${px * 14}deg)`;
+  }
+  function handleTiltReset() {
+    if (tiltRef.current) tiltRef.current.style.transform = REST_TILT;
+  }
+  function handleCityLeave() {
+    setHoveredStandalone(null);
     setCardPos(null);
   }
 
@@ -276,16 +330,20 @@ export default function IndiaClientMap() {
     ...cl,
     center: centroid(cl.cities),
   }));
-  const standaloneData = STANDALONES.map((s) => ({
-    ...s,
-    ...project(s.lat, s.lng),
-  }));
+  // One pin per client city (standalones + every city inside a state cluster)
+  const standaloneData = [
+    ...STANDALONES,
+    ...CLUSTERS.flatMap((cl) =>
+      cl.cities.map((c) => ({ ...c, id: `${cl.id}-${c.name.toLowerCase()}` })),
+    ),
+  ].map((s) => ({ ...s, ...project(s.lat, s.lng) }));
 
   // All origin points for the intro lines (standalones + cluster centroids)
-  const introOrigins = [
-    ...standaloneData.map((s) => ({ id: s.id, x: s.x, y: s.y })),
-    ...clusterData.map((cl) => ({ id: cl.id, x: cl.center.x, y: cl.center.y })),
-  ];
+  const introOrigins = standaloneData.map((s) => ({
+    id: s.id,
+    x: s.x,
+    y: s.y,
+  }));
 
   return (
     <div className="relative w-full select-none font-sans px-3 sm:px-10">
@@ -344,6 +402,14 @@ export default function IndiaClientMap() {
           transform-box: fill-box; transform-origin: center;
         }
         .tooltip-fade { animation: indiaFadeIn 0.18s ease-out both; }
+        @keyframes mapFloat {
+          0%, 100% { transform: translateY(0); }
+          50%      { transform: translateY(-10px); }
+        }
+        .map-float { animation: mapFloat 7s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) {
+          .map-float { animation: none; }
+        }
         .city-pop {
           animation: cityPopIn 0.22s cubic-bezier(0.34,1.56,0.64,1) both;
           transform-box: fill-box; transform-origin: center;
@@ -358,7 +424,12 @@ export default function IndiaClientMap() {
         <div className="flex flex-col justify-center gap-6 px-2 lg:px-0 order-1">
           {/* heading */}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
-            Serving Clients Across India
+            Serving Clients{" "}
+            {t.headingAccent ? (
+              <span className={t.headingAccent}>Across India</span>
+            ) : (
+              "Across India"
+            )}
           </h2>
 
           {/* description */}
@@ -393,9 +464,9 @@ export default function IndiaClientMap() {
             ].map(({ value, label }) => (
               <div
                 key={label}
-                className="flex flex-col items-center px-6 sm:px-10 sm:w-60 py-2.5 rounded-xl bg-gray-200/10 border border-slate-400/40 min-w-20"
+                className={`flex flex-col items-center px-6 sm:px-10 sm:w-60 py-2.5 min-w-20 ${t.statCell}`}
               >
-                <span className="text-xl sm:text-2xl font-bold text-white">
+                <span className={`text-xl sm:text-2xl font-bold ${t.statValue}`}>
                   {value}
                 </span>
                 <span className="text-xs text-slate-500 mt-0.5 font-mono tracking-wide whitespace-nowrap">
@@ -408,7 +479,7 @@ export default function IndiaClientMap() {
           {/* legend */}
           <div className="flex gap-5 text-sm text-slate-500">
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_6px_#3b82f6] shrink-0" />
+              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${t.legendHq}`} />
               Vipprow
             </span>
             <span className="flex items-center gap-1.5">
@@ -416,7 +487,7 @@ export default function IndiaClientMap() {
               Client Location
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_6px_#6366f1] shrink-0" />
+              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${t.legendState}`} />
               State
             </span>
           </div>
@@ -426,495 +497,441 @@ export default function IndiaClientMap() {
         <div
           ref={containerRef}
           className="relative w-full order-2 flex justify-center"
+          onMouseMove={handleTilt}
+          onMouseLeave={handleTiltReset}
         >
-          <svg
-            ref={svgRef}
-            viewBox="-40 -40 760 860"
-            className="w-full"
-            style={{ display: "block" }}
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <filter
-                id="borderGlow"
-                x="-20%"
-                y="-20%"
-                width="140%"
-                height="140%"
+          {/* glow pool under the map */}
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute bottom-[4%] left-1/2 h-24 w-3/4 -translate-x-1/2 rounded-full blur-3xl ${t.glowPool}`}
+          />
+          <div className="map-float w-full">
+            <div
+              ref={tiltRef}
+              className="w-full"
+              style={{
+                transform: REST_TILT,
+                transformOrigin: "50% 60%",
+                transition: "transform 0.35s ease-out",
+                willChange: "transform",
+              }}
+            >
+              <svg
+                ref={svgRef}
+                viewBox="-40 -40 760 860"
+                className="w-full"
+                style={{ display: "block" }}
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <feGaussianBlur
-                  in="SourceGraphic"
-                  stdDeviation="1.5"
-                  result="blur"
+                <defs>
+                  <filter
+                    id="borderGlow"
+                    x="-20%"
+                    y="-20%"
+                    width="140%"
+                    height="140%"
+                  >
+                    <feGaussianBlur
+                      in="SourceGraphic"
+                      stdDeviation="1.5"
+                      result="blur"
+                    />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                  <filter
+                    id="pinGlow"
+                    x="-50%"
+                    y="-50%"
+                    width="200%"
+                    height="200%"
+                  >
+                    <feGaussianBlur
+                      in="SourceGraphic"
+                      stdDeviation="2.5"
+                      result="blur"
+                    />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                  <filter
+                    id="hqGlow"
+                    x="-60%"
+                    y="-60%"
+                    width="220%"
+                    height="220%"
+                  >
+                    <feGaussianBlur
+                      in="SourceGraphic"
+                      stdDeviation="4"
+                      result="blur"
+                    />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                  <radialGradient id="mapAmbient" cx="45%" cy="50%" r="55%">
+                    <stop offset="0%" stopColor={t.ambientA} stopOpacity="0.9" />
+                    <stop offset="100%" stopColor={t.ambientB} stopOpacity="0" />
+                  </radialGradient>
+                  <clipPath id="mapClip">
+                    <rect x="-40" y="-40" width="780" height="860" />
+                  </clipPath>
+                  <linearGradient id="landTop" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor={t.land[0]} />
+                    <stop offset="55%" stopColor={t.land[1]} />
+                    <stop offset="100%" stopColor={t.land[2]} />
+                  </linearGradient>
+                  <filter
+                    id="landShadow"
+                    x="-20%"
+                    y="-20%"
+                    width="140%"
+                    height="140%"
+                  >
+                    <feGaussianBlur stdDeviation="14" />
+                  </filter>
+                  {/* land silhouette, reused for the extruded layers + top face */}
+                  <g id="land-shape">
+                    {mapData.allPaths.map((d, i) => (
+                      <path key={`shape-${i}`} d={d} />
+                    ))}
+                  </g>
+                </defs>
+
+                <rect
+                  x="-40"
+                  y="-40"
+                  width="780"
+                  height="860"
+                  fill="url(#mapAmbient)"
                 />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              <filter id="pinGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur
-                  in="SourceGraphic"
-                  stdDeviation="2.5"
-                  result="blur"
-                />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              <filter id="hqGlow" x="-60%" y="-60%" width="220%" height="220%">
-                <feGaussianBlur
-                  in="SourceGraphic"
-                  stdDeviation="4"
-                  result="blur"
-                />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              <radialGradient id="mapAmbient" cx="45%" cy="50%" r="55%">
-                <stop offset="0%" stopColor="#0d1a3a" stopOpacity="0.9" />
-                <stop offset="100%" stopColor="#060810" stopOpacity="0" />
-              </radialGradient>
-              <clipPath id="mapClip">
-                <rect x="-40" y="-40" width="780" height="860" />
-              </clipPath>
-            </defs>
 
-            <rect
-              x="-40"
-              y="-40"
-              width="780"
-              height="860"
-              fill="url(#mapAmbient)"
-            />
-
-            {/* ── INDIA MAP ── */}
-            <g id="india-map" clipPath="url(#mapClip)">
-              {mapData.allPaths.map((d, i) => (
-                <path key={`fill-${i}`} d={d} fill="#040710ff" stroke="none" />
-              ))}
-              {mapData.allPaths.map((d, i) => (
-                <path
-                  key={`border-${i}`}
-                  d={d}
-                  fill="none"
-                  stroke="#1e3a5f"
-                  strokeWidth="0.7"
-                  strokeLinejoin="round"
-                  filter="url(#borderGlow)"
-                  opacity={0.75}
-                />
-              ))}
-              <path
-                d={mapData.allPaths[0]}
-                fill="none"
-                stroke="#2563eb"
-                strokeWidth="1.2"
-                strokeLinejoin="round"
-                opacity={0.45}
-              />
-            </g>
-
-            {/* ── ONE-TIME INTRO LINES ── */}
-            {linePhase !== "idle" && linePhase !== "done" && (
-              <g
-                id="intro-lines"
-                style={{
-                  opacity: linePhase === "fading" ? 0 : 1,
-                  transition:
-                    linePhase === "fading" ? "opacity 1.5s ease" : undefined,
-                }}
-              >
-                {introOrigins.map((origin, i) => {
-                  // Arc starts at client, ends at HQ → stroke-dashoffset reveal
-                  // travels from the client pin toward Vipprow HQ
-                  const d = arcPath(origin.x, origin.y, hq.x, hq.y);
-                  const dx = origin.x - hq.x,
-                    dy = origin.y - hq.y;
-                  const len = Math.round(Math.sqrt(dx * dx + dy * dy) * 1.35);
-
-                  // Duration scales with distance so all lines travel at the same visual speed.
-                  // Base speed: ~30 SVG-units per second → longer lines take proportionally longer.
-                  // ↑ Lower the divisor (e.g. 20) to slow down; raise it (e.g. 50) to speed up.
-                  const dur = Math.max(4, len / 100);
-                  const delay = i * 0.7; // 400 ms stagger between lines
-
-                  return (
+                {/* ── INDIA MAP ── */}
+                <g id="india-map" clipPath="url(#mapClip)">
+                  {/* soft ground shadow, then stacked layers = extruded thickness */}
+                  <use
+                    href="#land-shape"
+                    y="26"
+                    fill="#000"
+                    opacity="0.55"
+                    filter="url(#landShadow)"
+                  />
+                  {Array.from({ length: 12 }, (_, k) => 12 - k).map((n) => (
+                    <use
+                      key={`depth-${n}`}
+                      href="#land-shape"
+                      y={n * 1.5}
+                      fill={n > 6 ? t.depth[0] : n > 3 ? t.depth[1] : t.depth[2]}
+                    />
+                  ))}
+                  <use href="#land-shape" fill="url(#landTop)" />
+                  {mapData.allPaths.map((d, i) => (
                     <path
-                      key={`intro-${origin.id}`}
+                      key={`border-${i}`}
                       d={d}
                       fill="none"
-                      stroke="#2563eb"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      style={
-                        {
-                          "--line-len": len, // CSS var read by @keyframes lineDraw
-                          strokeDasharray: len,
-                          strokeDashoffset: len, // initial hidden state
-                          animation: `lineDraw ${dur}s cubic-bezier(0.4,0,0.6,1) forwards`,
-                          animationDelay: `${delay}s`,
-                          opacity: 0.75,
-                        } as React.CSSProperties
-                      }
+                      stroke={t.border}
+                      strokeWidth="0.7"
+                      strokeLinejoin="round"
+                      filter="url(#borderGlow)"
+                      opacity={0.75}
                     />
-                  );
-                })}
-              </g>
-            )}
-
-            {/* ── CLUSTER PINS ── */}
-            {clusterData.map((cl) => {
-              const isOpen = hoveredCluster === cl.id;
-              return (
-                <g
-                  key={cl.id}
-                  onMouseEnter={() =>
-                    handleClusterEnter(cl.id, cl.center.x, cl.center.y)
-                  }
-                  onMouseLeave={handleClusterLeave}
-                  style={{ cursor: "pointer" }}
-                >
-                  {/* Pulse ring */}
-                  <circle
-                    cx={cl.center.x}
-                    cy={cl.center.y}
-                    r="9"
+                  ))}
+                  <path
+                    d={mapData.allPaths[0]}
                     fill="none"
-                    stroke="#3b82f6"
-                    strokeWidth="1"
-                    className="cluster-pulse"
-                    opacity={isOpen ? 0 : 1}
+                    stroke={t.accent}
+                    strokeWidth="1.2"
+                    strokeLinejoin="round"
+                    opacity={0.45}
                   />
-                  {/* Badge */}
+                </g>
+
+                {/* ── ONE-TIME INTRO LINES ── */}
+                {linePhase !== "idle" && linePhase !== "done" && (
+                  <g
+                    id="intro-lines"
+                    style={{
+                      opacity: linePhase === "fading" ? 0 : 1,
+                      transition:
+                        linePhase === "fading"
+                          ? "opacity 1.5s ease"
+                          : undefined,
+                    }}
+                  >
+                    {introOrigins.map((origin, i) => {
+                      // Arc starts at client, ends at HQ → stroke-dashoffset reveal
+                      // travels from the client pin toward Vipprow HQ
+                      const d = arcPath(origin.x, origin.y, hq.x, hq.y);
+                      const dx = origin.x - hq.x,
+                        dy = origin.y - hq.y;
+                      const len = Math.round(
+                        Math.sqrt(dx * dx + dy * dy) * 1.35,
+                      );
+
+                      // Duration scales with distance so all lines travel at the same visual speed.
+                      // Base speed: ~30 SVG-units per second → longer lines take proportionally longer.
+                      // ↑ Lower the divisor (e.g. 20) to slow down; raise it (e.g. 50) to speed up.
+                      const dur = Math.max(4, len / 100);
+                      const delay = i * 0.25; // 400 ms stagger between lines
+
+                      return (
+                        <path
+                          key={`intro-${origin.id}`}
+                          d={d}
+                          fill="none"
+                          stroke={t.accent}
+                          strokeWidth="1.4"
+                          strokeLinecap="round"
+                          style={
+                            {
+                              "--line-len": len, // CSS var read by @keyframes lineDraw
+                              strokeDasharray: len,
+                              strokeDashoffset: len, // initial hidden state
+                              animation: `lineDraw ${dur}s cubic-bezier(0.4,0,0.6,1) forwards`,
+                              animationDelay: `${delay}s`,
+                              opacity: 0.75,
+                            } as React.CSSProperties
+                          }
+                        />
+                      );
+                    })}
+                  </g>
+                )}
+
+                {/* ── STANDALONE LOCATION PINS ── */}
+                <g id="standalone-nodes">
+                  {/* Keep DOM order stable: re-ordering nodes on hover restarts
+                  their CSS animations, which made every pin drop in again. */}
+                  {standaloneData.map((city, idx) => {
+                    const isHovered = hoveredStandalone === city.id;
+                    const pinSize = isHovered ? 1.4 : 1.2;
+                    const headY = city.y - 9 * pinSize; // centre of pin's circular head
+                    return (
+                      <g
+                        key={city.id}
+                        style={{ cursor: "pointer" }}
+                        onMouseEnter={(e) =>
+                          handleCityEnter(city.id, e.currentTarget)
+                        }
+                        onMouseLeave={handleCityLeave}
+                      >
+                        <g
+                          className="pin-drop"
+                          style={{ animationDelay: `${idx * 0.06}s` }}
+                        >
+                          {/* Blinking ring around pin head */}
+                          <circle
+                            cx={city.x}
+                            cy={headY}
+                            r="10"
+                            fill="none"
+                            stroke="#f8f8f8ff"
+                            strokeWidth="2"
+                            className="pin-ring"
+                            style={{ animationDelay: `${idx * 0.25}s` }}
+                          />
+                          {/* Second offset blink for layered effect */}
+                          <circle
+                            cx={city.x}
+                            cy={headY}
+                            r="10"
+                            fill="none"
+                            stroke="#fbfbfbff"
+                            strokeWidth="1"
+                            className="pin-ring"
+                            style={{ animationDelay: `${idx * 0.25 + 0.8}s` }}
+                          />
+
+                          {/* Glow behind pin when hovered */}
+                          {isHovered && (
+                            <LocationPin
+                              cx={city.x}
+                              cy={city.y}
+                              size={1.65}
+                              fill="#c61b1b"
+                              stroke="none"
+                              opacity={0.22}
+                              filter="url(#pinGlow)"
+                            />
+                          )}
+                          {/* Main pin */}
+                          <LocationPin
+                            cx={city.x}
+                            cy={city.y}
+                            size={pinSize}
+                            fill="#c61b1b"
+                            stroke="#fff"
+                            strokeWidth={isHovered ? 1.2 : 0.9}
+                          />
+                          {/* White dot inside head */}
+                          <circle
+                            cx={city.x}
+                            cy={headY}
+                            r={1.8 * pinSize}
+                            fill="#fff"
+                            opacity={0.9}
+                            style={{ pointerEvents: "none" }}
+                          />
+                        </g>
+                      </g>
+                    );
+                  })}
+
+                  {/* Hovered pin redrawn on top (static, no pointer events) so it
+                  isn't covered by neighbours, without reordering the pins */}
+                  {(() => {
+                    const c = standaloneData.find(
+                      (s) => s.id === hoveredStandalone,
+                    );
+                    if (!c) return null;
+                    return (
+                      <g style={{ pointerEvents: "none" }}>
+                        <LocationPin
+                          cx={c.x}
+                          cy={c.y}
+                          size={1.4}
+                          fill="#c61b1b"
+                          stroke="#fff"
+                          strokeWidth={1.2}
+                        />
+                        <circle
+                          cx={c.x}
+                          cy={c.y - 9 * 1.4}
+                          r={1.8 * 1.4}
+                          fill="#fff"
+                          opacity={0.9}
+                        />
+                      </g>
+                    );
+                  })()}
+                </g>
+
+                {/* ── HQ PIN ── */}
+                <g
+                  style={{ cursor: "pointer" }}
+                  onMouseEnter={() => setHoveredStandalone("hq")}
+                  onMouseLeave={() => setHoveredStandalone(null)}
+                >
+                  {/* Pulse rings */}
                   <circle
-                    cx={cl.center.x}
-                    cy={cl.center.y}
-                    r={isOpen ? 10 : 8}
-                    fill={isOpen ? "#2563eb" : "#1d4ed8"}
-                    stroke="#fff"
+                    cx={hq.x}
+                    cy={hq.y}
+                    r="8"
+                    fill="none"
+                    stroke={t.hq}
                     strokeWidth="1.5"
-                    filter={isOpen ? "url(#pinGlow)" : undefined}
-                    style={{ transition: "r 0.2s ease" }}
+                    className="hq-pulse"
                   />
-                  {/* Count */}
+                  <circle
+                    cx={hq.x}
+                    cy={hq.y}
+                    r="8"
+                    fill="none"
+                    stroke={t.hq}
+                    strokeWidth="1"
+                    className="hq-pulse"
+                    style={{ animationDelay: "0.9s" }}
+                  />
+
+                  {hoveredStandalone === "hq" && (
+                    <LocationPin
+                      cx={hq.x}
+                      cy={hq.y}
+                      size={1.6}
+                      fill={t.hq}
+                      stroke="none"
+                      opacity={0.3}
+                      filter="url(#hqGlow)"
+                    />
+                  )}
+
+                  {/* HQ pin */}
+                  <LocationPin
+                    cx={hq.x}
+                    cy={hq.y}
+                    size={hoveredStandalone === "hq" ? 1.45 : 1.25}
+                    fill={hoveredStandalone === "hq" ? t.hqHover : t.hq}
+                    stroke="#fff"
+                    strokeWidth={1.5}
+                  />
+
+                  {/* Blinking ring on HQ pin head */}
+                  {(() => {
+                    const s = hoveredStandalone === "hq" ? 1.45 : 1.25;
+                    const hy = hq.y - 9 * s;
+                    return (
+                      <>
+                        <circle
+                          cx={hq.x}
+                          cy={hy}
+                          r="3"
+                          fill="none"
+                          stroke={t.hqHover}
+                          strokeWidth="1"
+                          className="pin-ring"
+                        />
+                        <circle
+                          cx={hq.x}
+                          cy={hy}
+                          r="3"
+                          fill="none"
+                          stroke={t.hqHover}
+                          strokeWidth="0.7"
+                          className="pin-ring"
+                          style={{ animationDelay: "0.8s" }}
+                        />
+                        {/* White dot */}
+                        <circle
+                          cx={hq.x}
+                          cy={hy}
+                          r={2.2 * s}
+                          fill="#fff"
+                          opacity={0.95}
+                          style={{ pointerEvents: "none" }}
+                        />
+                      </>
+                    );
+                  })()}
+
+                  {/* Label */}
                   <text
-                    x={cl.center.x}
-                    y={cl.center.y + 4}
+                    x={hq.x}
+                    y={hq.y - 9 * 1.25 - 19}
                     textAnchor="middle"
-                    fill="#fff"
-                    fontSize="9"
-                    fontWeight="700"
-                    fontFamily="ui-sans-serif, sans-serif"
+                    fill={t.hqHover}
+                    fontSize="11"
+                    fontWeight="800"
+                    fontFamily="ui-monospace, monospace"
+                    letterSpacing="0.08em"
                     style={{ pointerEvents: "none" }}
                   >
-                    {cl.cities.length}
-                  </text>
-                  {/* Label above */}
-                  <text
-                    x={cl.center.x}
-                    y={cl.center.y - 16}
-                    textAnchor="middle"
-                    fill={isOpen ? "#ffffff" : "#e0f2fe"}
-                    fontSize="10"
-                    fontWeight={isOpen ? "700" : "600"}
-                    fontFamily="ui-monospace, monospace"
-                    style={{
-                      pointerEvents: "none",
-                      transition: "fill 0.15s ease",
-                    }}
-                  >
-                    {cl.label}
+                    VIPPROW
                   </text>
                 </g>
-              );
-            })}
+              </svg>
+            </div>
+          </div>
 
-            {/* ── STANDALONE LOCATION PINS ── */}
-            <g id="standalone-nodes">
-              {standaloneData.map((city, idx) => {
-                const isHovered = hoveredStandalone === city.id;
-                const pinSize = isHovered ? 1.4 : 1.2;
-                const headY = city.y - 9 * pinSize; // centre of pin's circular head
-                return (
-                  <g
-                    key={city.id}
-                    style={{ cursor: "pointer" }}
-                    onMouseEnter={() => setHoveredStandalone(city.id)}
-                    onMouseLeave={() => setHoveredStandalone(null)}
-                  >
-                    <g
-                      className="pin-drop"
-                      style={{ animationDelay: `${idx * 0.06}s` }}
-                    >
-                      {/* Blinking ring around pin head */}
-                      <circle
-                        cx={city.x}
-                        cy={headY}
-                        r="10"
-                        fill="none"
-                        stroke="#f8f8f8ff"
-                        strokeWidth="2"
-                        className="pin-ring"
-                        style={{ animationDelay: `${idx * 0.25}s` }}
-                      />
-                      {/* Second offset blink for layered effect */}
-                      <circle
-                        cx={city.x}
-                        cy={headY}
-                        r="10"
-                        fill="none"
-                        stroke="#fbfbfbff"
-                        strokeWidth="1"
-                        className="pin-ring"
-                        style={{ animationDelay: `${idx * 0.25 + 0.8}s` }}
-                      />
-
-                      {/* Glow behind pin when hovered */}
-                      {isHovered && (
-                        <LocationPin
-                          cx={city.x}
-                          cy={city.y}
-                          size={1.65}
-                          fill="#c61b1b"
-                          stroke="none"
-                          opacity={0.22}
-                          filter="url(#pinGlow)"
-                        />
-                      )}
-                      {/* Main pin */}
-                      <LocationPin
-                        cx={city.x}
-                        cy={city.y}
-                        size={pinSize}
-                        fill="#c61b1b"
-                        stroke="#fff"
-                        strokeWidth={isHovered ? 1.2 : 0.9}
-                      />
-                      {/* White dot inside head */}
-                      <circle
-                        cx={city.x}
-                        cy={headY}
-                        r={1.8 * pinSize}
-                        fill="#fff"
-                        opacity={0.9}
-                        style={{ pointerEvents: "none" }}
-                      />
-                    </g>
-
-                    {/* Label */}
-                    <text
-                      x={city.x + 9}
-                      y={city.y - 5}
-                      fill={isHovered ? "#ffffff" : "#e2e8f0"}
-                      fontSize={isHovered ? "16" : "14"}
-                      fontWeight={isHovered ? "700" : "500"}
-                      fontFamily="ui-monospace, monospace"
-                      style={{
-                        pointerEvents: "none",
-                        transition: "all 0.15s ease",
-                      }}
-                    >
-                      {city.name}
-                    </text>
-                  </g>
-                );
-              })}
-            </g>
-
-            {/* ── HQ PIN ── */}
-            <g
-              style={{ cursor: "pointer" }}
-              onMouseEnter={() => setHoveredStandalone("hq")}
-              onMouseLeave={() => setHoveredStandalone(null)}
+          {/* ── CITY NAME TOOLTIP (hover only) ── */}
+          {hoveredStandalone && hoveredStandalone !== "hq" && cardPos && (
+            <div
+              className="absolute pointer-events-none z-50"
+              style={{
+                left: cardPos.x,
+                top: cardPos.y,
+                transform: "translate(-50%, -100%)",
+              }}
             >
-              {/* Pulse rings */}
-              <circle
-                cx={hq.x}
-                cy={hq.y}
-                r="8"
-                fill="none"
-                stroke="#3b82f6"
-                strokeWidth="1.5"
-                className="hq-pulse"
-              />
-              <circle
-                cx={hq.x}
-                cy={hq.y}
-                r="8"
-                fill="none"
-                stroke="#3b82f6"
-                strokeWidth="1"
-                className="hq-pulse"
-                style={{ animationDelay: "0.9s" }}
-              />
-
-              {hoveredStandalone === "hq" && (
-                <LocationPin
-                  cx={hq.x}
-                  cy={hq.y}
-                  size={1.6}
-                  fill="#3b82f6"
-                  stroke="none"
-                  opacity={0.3}
-                  filter="url(#hqGlow)"
-                />
-              )}
-
-              {/* HQ pin */}
-              <LocationPin
-                cx={hq.x}
-                cy={hq.y}
-                size={hoveredStandalone === "hq" ? 1.45 : 1.25}
-                fill={hoveredStandalone === "hq" ? "#60a5fa" : "#3b82f6"}
-                stroke="#fff"
-                strokeWidth={1.5}
-              />
-
-              {/* Blinking ring on HQ pin head */}
-              {(() => {
-                const s = hoveredStandalone === "hq" ? 1.45 : 1.25;
-                const hy = hq.y - 9 * s;
-                return (
-                  <>
-                    <circle
-                      cx={hq.x}
-                      cy={hy}
-                      r="3"
-                      fill="none"
-                      stroke="#60a5fa"
-                      strokeWidth="1"
-                      className="pin-ring"
-                    />
-                    <circle
-                      cx={hq.x}
-                      cy={hy}
-                      r="3"
-                      fill="none"
-                      stroke="#60a5fa"
-                      strokeWidth="0.7"
-                      className="pin-ring"
-                      style={{ animationDelay: "0.8s" }}
-                    />
-                    {/* White dot */}
-                    <circle
-                      cx={hq.x}
-                      cy={hy}
-                      r={2.2 * s}
-                      fill="#fff"
-                      opacity={0.95}
-                      style={{ pointerEvents: "none" }}
-                    />
-                  </>
-                );
-              })()}
-
-              {/* Label */}
-              <text
-                x={hq.x}
-                y={hq.y - 9 * 1.25 - 19}
-                textAnchor="middle"
-                fill="#60a5fa"
-                fontSize="11"
-                fontWeight="800"
-                fontFamily="ui-monospace, monospace"
-                letterSpacing="0.08em"
-                style={{ pointerEvents: "none" }}
-              >
-                VIPPROW
-              </text>
-            </g>
-          </svg>
-
-          {/* ── CLUSTER CARD OVERLAY ── */}
-          {hoveredCluster &&
-            cardPos &&
-            (() => {
-              const cl = clusterData.find((c) => c.id === hoveredCluster)!;
-              const flipLeft = cardPos.x + 165 > cardPos.containerWidth;
-              return (
-                <div
-                  className="tooltip-fade pointer-events-none"
-                  style={{
-                    position: "absolute",
-                    top: cardPos.y,
-                    left: flipLeft ? cardPos.x - 165 - 36 : cardPos.x,
-                    zIndex: 50,
-                    minWidth: "155px",
-                    background: "rgba(6,10,24,0.97)",
-                    border: "1px solid rgba(59,130,246,0.55)",
-                    borderRadius: "12px",
-                    padding: "10px 14px",
-                    boxShadow: "0 8px 32px rgba(0,0,0,0.8)",
-                    backdropFilter: "blur(12px)",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: 700,
-                      letterSpacing: "0.13em",
-                      textTransform: "uppercase",
-                      color: "#ffffffff",
-                      marginBottom: "8px",
-                      fontFamily: "ui-monospace, monospace",
-                      borderBottom: "1px solid rgba(59,130,246,0.25)",
-                      paddingBottom: "6px",
-                    }}
-                  >
-                    {cl.label}
-                  </div>
-                  {cl.cities.map((city, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        marginBottom: i < cl.cities.length - 1 ? "6px" : 0,
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: "5px",
-                          height: "5px",
-                          borderRadius: "50%",
-                          background: "#174ad6ff",
-                          flexShrink: 0,
-                          boxShadow: "0 0 5px #22d3ee88",
-                        }}
-                      />
-                      <span
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: 600,
-                          color: "#ffffff",
-                          fontFamily: "ui-monospace, monospace",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {city.name}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              );
-            })()}
-
-          {/* ── STANDALONE TOOLTIP ── */}
-          {hoveredStandalone && hoveredStandalone !== "hq" && (
-            <div className="tooltip-fade absolute bottom-20 sm:bottom-70 right-4 sm:right-17 bg-slate-950/95 border border-slate-700/80 backdrop-blur-sm px-3.5 py-2.5 rounded-xl shadow-2xl pointer-events-none">
-              <span className="block font-mono text-[8px] sm:text-[9px] uppercase tracking-widest text-slate-500 mb-1">
-                Client Hub
-              </span>
-              <span className="flex items-center gap-2 text-[10px] sm:text-sm font-bold text-white">
-                <span className="w-2 h-2 rounded-full shrink-0 bg-blue-400 shadow-[0_0_8px_#22d3ee]" />
+              <div className="tooltip-fade whitespace-nowrap bg-slate-950/95 border border-white/20 backdrop-blur-sm px-2.5 py-1.5 rounded-lg shadow-2xl font-mono text-[10px] sm:text-sm font-bold text-white">
                 {standaloneData.find((s) => s.id === hoveredStandalone)?.name}
-              </span>
-              {/* <span className="block text-[10px] text-emerald-400 mt-1 font-mono">✓ Service pipeline active</span> */}
+              </div>
             </div>
           )}
         </div>

@@ -1,5 +1,5 @@
 import slugify from "slugify";
-import Blog from "../models/blogs/blog.model.js";
+import Blog, { BLOG_DISPLAY_TARGETS } from "../models/blogs/blog.model.js";
 import {
   uploadToCloudinary,
   destroyFromCloudinary,
@@ -17,6 +17,28 @@ const formatErrors = (err) => {
     }
   }
   return errors;
+};
+
+// Normalise displayOn from JSON bodies (array) or multipart forms (repeated
+// field -> string | string[], or a JSON string). Returns undefined if absent,
+// otherwise a de-duplicated array of valid targets.
+const parseDisplayOn = (value) => {
+  if (value === undefined) return undefined;
+  let list = value;
+  if (typeof list === "string") {
+    try {
+      const parsed = JSON.parse(list);
+      list = Array.isArray(parsed) ? parsed : [list];
+    } catch {
+      list = list.split(",");
+    }
+  }
+  if (!Array.isArray(list)) list = [];
+  return [
+    ...new Set(
+      list.map((v) => String(v).trim()).filter((v) => BLOG_DISPLAY_TARGETS.includes(v)),
+    ),
+  ];
 };
 
 /* ============================
@@ -38,6 +60,21 @@ export const getAllActiveBlogs = async (req, res) => {
     // Base Match Query
     // ------------------------------
     const matchQuery = { isActive: true };
+
+    // 🌐 DISPLAY TARGET FILTER (defaults to "website" so existing clients
+    // never receive academy-only posts). Legacy docs without the field are
+    // treated as website posts.
+    const displayOn = BLOG_DISPLAY_TARGETS.includes(req.query.displayOn)
+      ? req.query.displayOn
+      : "website";
+    if (displayOn === "website") {
+      matchQuery.$or = [
+        { displayOn: "website" },
+        { displayOn: { $exists: false } },
+      ];
+    } else {
+      matchQuery.displayOn = displayOn;
+    }
 
     // 🏷 CATEGORY FILTER
     if (categories.length > 0 && categories[0] !== "") {
@@ -173,6 +210,11 @@ export const getAllBlogs = async (req, res) => {
     if (filter === "featured") filterQuery.isFeature = true;
     if (filter === "nonfeatured") filterQuery.isFeature = false;
 
+    // ⭐ Display target filter
+    if (BLOG_DISPLAY_TARGETS.includes(req.query.displayOn)) {
+      filterQuery.displayOn = req.query.displayOn;
+    }
+
     // ⭐ Search filter
     const searchQuery = search
       ? {
@@ -274,6 +316,9 @@ export const createBlog = async (req, res) => {
       seo: req.body.seo,
       isActive,
       isFeature,
+      ...(parseDisplayOn(req.body.displayOn)?.length
+        ? { displayOn: parseDisplayOn(req.body.displayOn) }
+        : {}),
       createdBy: req.user._id,
     });
 
@@ -387,6 +432,9 @@ export const updateBlog = async (req, res) => {
     if (isActive !== undefined) blog.isActive = isActive;
     if (isFeature !== undefined) blog.isFeature = isFeature;
 
+    const displayOn = parseDisplayOn(req.body.displayOn);
+    if (displayOn?.length) blog.displayOn = displayOn;
+
     blog.updatedBy = req.user._id;
     await blog.save();
 
@@ -423,6 +471,9 @@ export const partiallyUpdateBlog = async (req, res) => {
     Object.entries(req.body).forEach(([key, value]) => {
       if (allowed.includes(key)) blog[key] = value;
     });
+
+    const displayOn = parseDisplayOn(req.body.displayOn);
+    if (displayOn?.length) blog.displayOn = displayOn;
 
     if (req.body.title) {
       blog.slug = slugify(req.body.title, { lower: true, strict: true });

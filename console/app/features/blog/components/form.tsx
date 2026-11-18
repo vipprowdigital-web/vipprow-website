@@ -50,6 +50,10 @@ const validate = (values: any) => {
     errors.description = "Description is required.";
   }
 
+  if (!values.displayOn.length) {
+    errors.displayOn = "Select at least one place to display this article.";
+  }
+
   // Category (optional, but if exists, must be valid)
   if (values.category && typeof values.category !== "string") {
     errors.category = "Invalid category selected.";
@@ -93,6 +97,7 @@ export default function BlogForm({
     },
     isActive: true,
     isFeature: false,
+    displayOn: ["website"] as string[],
   });
 
   const [removedImages, setRemovedImages] = useState<string[]>([]);
@@ -146,6 +151,7 @@ export default function BlogForm({
       },
       isActive: b.isActive ?? true,
       isFeature: b.isFeature ?? false,
+      displayOn: b.displayOn?.length ? b.displayOn : ["website"],
     });
 
     thumbHandlers.clearFiles();
@@ -194,6 +200,7 @@ export default function BlogForm({
       formData.append("isActive", String(values.isActive));
       formData.append("isFeature", String(values.isFeature));
       if (values.category) formData.append("category", values.category);
+      values.displayOn.forEach((d) => formData.append("displayOn", d));
 
       // SEO
       formData.append("seo[metaTitle]", values.seo.metaTitle);
@@ -393,6 +400,40 @@ export default function BlogForm({
                     onCheckedChange={(v) => handleChange("isFeature", v)}
                   />
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Display On */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Display On</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {[
+                  { value: "website", label: "Website" },
+                  { value: "academy", label: "Academy Landing Page" },
+                ].map((opt) => (
+                  <div
+                    key={opt.value}
+                    className="flex justify-between p-3 border rounded"
+                  >
+                    {opt.label}
+                    <Switch
+                      checked={values.displayOn.includes(opt.value)}
+                      onCheckedChange={(on) =>
+                        handleChange(
+                          "displayOn",
+                          on
+                            ? [...values.displayOn, opt.value]
+                            : values.displayOn.filter((d) => d !== opt.value)
+                        )
+                      }
+                    />
+                  </div>
+                ))}
+                {errors.displayOn && (
+                  <p className="text-xs text-red-500">{errors.displayOn}</p>
+                )}
               </CardContent>
             </Card>
 

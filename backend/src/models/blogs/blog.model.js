@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 import slugify from "slugify";
 
-const seoSchema = new mongoose.Schema(
+export const BLOG_DISPLAY_TARGETS = ["website", "academy"];
+
+const seoSchema =new mongoose.Schema(
   {
     metaTitle: { type: String, trim: true },
     metaDescription: { type: String, trim: true },
@@ -71,6 +73,13 @@ const blogSchema = new mongoose.Schema(
     },
     description: { type: String, trim: true },
     seo: seoSchema,
+    // Which sites this blog is shown on. A blog can appear on several.
+    displayOn: {
+      type: [String],
+      enum: BLOG_DISPLAY_TARGETS,
+      default: ["website","academy-page"],
+      index: true,
+    },
     isActive: { type: Boolean, default: true, index: true },
     isFeature: { type: Boolean, default: false, index: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

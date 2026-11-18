@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const IMG = "/assets/images/zentovix";
 const ZX_URL = "https://zentovix.vipprow.com";
-const TRIAL = "Start 7-day trial for ₹99";
+const TRIAL = "Start Your 14-Day Trial for ₹299";
 
 const SOURCES = ["Call", "Walk-in", "Web form"];
 const PIPE = ["Enquiry", "Follow-up", "Counselling", "Admitted"];
@@ -19,31 +19,57 @@ const STAGES = ["New enquiry", "Follow-up", "Counselled", "Admitted"];
 const MOVE = ["Move to follow-up", "Move to counselling", "Mark admitted", "Start over"];
 
 const HOW = [
-  { t: "Enquiry", d: "Walk-in" },
-  { t: "Follow-up", d: "Call Thu, 4 pm" },
-  { t: "Counselling", d: "₹18,000 quoted" },
-  { t: "Admitted", d: "Fee paid" },
+  { t: "New lead", d: "Day 1 · Enquiry received" },
+  { t: "Follow-up", d: "Day 2 · Next call set" },
+  { t: "Counselling", d: "Day 3 · Batch and fee plan" },
+  { t: "Admission + fee paid", d: "Day 4 · ₹12,000 received" },
+  { t: "Batch assigned", d: "Class 11 Science, morning" },
+];
+
+const WHY = [
+  { t: "Never miss a follow-up", d: "Next calls and reminders are tracked for you." },
+  { t: "Convert more enquiries", d: "See every lead's status, from enquiry to admission." },
+  { t: "Track every rupee", d: "Fees, instalments and pending payments in one place." },
+  { t: "Keep batches organised", d: "Courses, students and batch allocation together." },
+];
+
+const INCLUDED = [
+  "₹299 registration",
+  "14-day access",
+  "All core features",
+  "No automatic renewal",
 ];
 
 const PLANS = [
-  { t: "3 months", p: "₹4,999", m: "About ₹1,666 a month" },
-  { t: "6 months", p: "₹7,999", m: "About ₹1,333 a month" },
-  { t: "12 months", p: "₹12,999", m: "About ₹1,083 a month" },
+  { t: "Starter", p: "₹4,999", cap: "Up to 100 admissions", m: "Leads, admissions, fees, courses, tests and certificates", pop: true },
+  { t: "Growth", p: "₹7,999", cap: "Up to 200 admissions", m: "Everything in Starter, plus advanced follow-ups and deeper reports" },
+  { t: "Scale", p: "₹12,999", cap: "Up to 300 admissions", m: "Everything in Growth, plus multi-batch setup and full institute overview" },
 ];
 
 const FAQ = [
-  { q: "What does the trial cost?", a: "₹99 for 7 days. Then pick a plan." },
   {
-    q: "How do the plans differ?",
-    a: "Only the length: 3, 6 or 12 months. Every feature is included.",
+    q: "What do I get for ₹299?",
+    a: "14 days of access to the core features: leads, admissions, students, batches, fees and LMS tools.",
+  },
+  {
+    q: "Will I be charged automatically after the trial?",
+    a: "No. Choosing a plan is optional. Plans run for 3 months with 100, 200 or 300 admissions.",
+  },
+  {
+    q: "Can I track both leads and fees?",
+    a: "Yes, including instalments, receipts and pending payments.",
+  },
+  {
+    q: "Are the LMS, tests and certificates included?",
+    a: "Yes: courses, study material, tests and certificates.",
+  },
+  {
+    q: "Who can use it?",
+    a: "Coaching centres, schools, academies, beauty institutes and music academies.",
   },
   {
     q: "What happens to my data?",
     a: "After your plan ends you have 14 days to export it. Then it is deleted.",
-  },
-  {
-    q: "Who is it for?",
-    a: "Coaching centres, tuition classes, language, music and dance academies.",
   },
 ];
 
@@ -155,8 +181,10 @@ export default function ZentovixPage() {
         <div className="zx-in zx-hero-grid">
           <div>
             <Image className="zx-logo" src={`${IMG}/logo-dark.png`} alt="Zentovix" width={900} height={589} priority />
-            <h1 className="zx-display">Fill every seat in your academy</h1>
-            <p className="zx-hero-copy">Track every lead, follow-up and fee, from first call to first class.</p>
+            <h1 className="zx-display">Manage your academy in single click</h1>
+            <p className="zx-hero-copy">
+              Manage leads, admissions, students, batches and fees in one platform, built for coaching centres, schools and academies.
+            </p>
             <div className="zx-hero-cta">
               <a href={ZX_URL} target="_blank" rel="noopener noreferrer" className="zx-btn zx-btn--orange">
                 {TRIAL} <Arrow />
@@ -181,12 +209,12 @@ export default function ZentovixPage() {
                 <span className="zx-avatar">RM</span>
                 <div>
                   <strong>Riya Mehta</strong>
-                  <span>IELTS evening batch</span>
+                  <span>Class 11 Science</span>
                 </div>
               </div>
               <div className="zx-lead-foot">
-                <span>Admitted · Fee paid</span>
-                <b>₹18,000</b>
+                <span>Batch assigned · Fee paid</span>
+                <b>₹12,000</b>
               </div>
             </div>
             <ol className="zx-pipe" aria-label="Admission pipeline">
@@ -263,7 +291,7 @@ export default function ZentovixPage() {
       <section className="zx-white zx-sec" id="how" aria-labelledby="how-h">
         <div className="zx-in">
           <h2 id="how-h" className="zx-display zx-how-title" data-reveal>
-            From first call to first class
+            From new enquiry to paid admission
           </h2>
           <ol className="zx-stairs">
             {HOW.map((h) => (
@@ -276,11 +304,28 @@ export default function ZentovixPage() {
         </div>
       </section>
 
+      {/* ---------- why ---------- */}
+      <section className="zx-sec" id="why" aria-labelledby="why-h">
+        <div className="zx-in">
+          <h2 id="why-h" className="zx-display zx-h2" data-reveal>
+            Built around your institute&apos;s real day
+          </h2>
+          <ul className="zx-why">
+            {WHY.map((w) => (
+              <li key={w.t} data-reveal>
+                <h3>{w.t}</h3>
+                <p>{w.d}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       {/* ---------- features ---------- */}
       <section className="zx-dark zx-sec" id="features" aria-labelledby="feat-h">
         <div className="zx-in">
           <h2 id="feat-h" className="zx-display zx-h2" data-reveal>
-            Everything the admission desk does
+            Leads, fees, batches and LMS in one place
           </h2>
           <div className="zx-feat">
             <figure className="zx-tile zx-tile--wide" data-reveal>
@@ -308,13 +353,20 @@ export default function ZentovixPage() {
       {/* ---------- stats ---------- */}
       <section className="zx-sec" aria-labelledby="stat-h">
         <div className="zx-in zx-stat">
-          <p className="zx-big" data-reveal>
-            7 days
-            <span>for ₹99</span>
-          </p>
+          <div data-reveal>
+            <p className="zx-big">
+              14 days
+              <span>for ₹299</span>
+            </p>
+            <ul className="zx-incl">
+              {INCLUDED.map((i) => (
+                <li key={i}>{i}</li>
+              ))}
+            </ul>
+          </div>
           <div className="zx-chart" data-reveal>
             <h2 id="stat-h" className="zx-display">
-              Know which month fills your seats
+              Clear reports for better decisions
             </h2>
             <Image src={`${IMG}/ss-3.png`} alt="Chart of daily revenue and admissions" width={710} height={321} sizes="(max-width: 960px) 100vw, 50vw" />
           </div>
@@ -325,31 +377,42 @@ export default function ZentovixPage() {
       <section className="zx-white zx-sec" id="pricing" aria-labelledby="price-h">
         <div className="zx-in">
           <h2 id="price-h" className="zx-display zx-h2" data-reveal>
-            Pick a plan, or try it first
+            Start small. Grow with clarity.
           </h2>
           <ul className="zx-plans">
             <li className="zx-plan zx-plan--trial" data-reveal>
-              <h3>7-day trial</h3>
+              <h3>14-day trial</h3>
               <p className="zx-price">
-                ₹99<small>registration</small>
+                ₹299<small>registration</small>
               </p>
-              <span />
+              <p className="zx-plan-note">All core features, no automatic renewal</p>
               <a href={ZX_URL} target="_blank" rel="noopener noreferrer" className="zx-btn zx-btn--ink">
                 Start trial <Arrow />
               </a>
             </li>
             {PLANS.map((p) => (
               <li className="zx-plan" key={p.t} data-reveal>
-                <h3>{p.t}</h3>
-                <p className="zx-price">{p.p}</p>
-                <p className="zx-plan-note">
-                  {p.m}
-                  <span>All features</span>
+                <h3>
+                  {p.t}
+                  {p.pop && <em className="zx-pop">Most popular</em>}
+                </h3>
+                <p className="zx-price">
+                  {p.p}
+                  <small>3 months · after your trial</small>
                 </p>
-                <span />
+                <p className="zx-plan-note">
+                  {p.cap}
+                  <span>{p.m}</span>
+                </p>
+                <a href={ZX_URL} target="_blank" rel="noopener noreferrer" className="zx-btn zx-btn--ghost">
+                  Start trial <Arrow />
+                </a>
               </li>
             ))}
           </ul>
+          <p className="zx-foot" data-reveal>
+            ₹299 is only the trial registration amount. After 14 days, choose a plan. No automatic renewal.
+          </p>
         </div>
       </section>
 
@@ -357,7 +420,7 @@ export default function ZentovixPage() {
       <section className="zx-sec" id="faq" aria-labelledby="faq-h">
         <div className="zx-in zx-faq-grid">
           <h2 id="faq-h" className="zx-display zx-h2" data-reveal>
-            Questions, answered
+            Questions? Clear answers.
           </h2>
           <div className="zx-faq" data-reveal>
             {faqs.map((f, i) => (
@@ -381,8 +444,11 @@ export default function ZentovixPage() {
       <section className="zx-orange" aria-labelledby="cta-h">
         <div className="zx-in zx-cta">
           <h2 id="cta-h" className="zx-display" data-reveal>
-            Fill your next batch with us
+            Your institute deserves a simpler day
           </h2>
+          <p className="zx-cta-sub" data-reveal>
+            ₹299 registration · 14-day access · All core features · No automatic renewal after the trial
+          </p>
           <div className="zx-cta-row" data-reveal>
             <a href={ZX_URL} target="_blank" rel="noopener noreferrer" className="zx-btn zx-btn--ink">
               {TRIAL} <Arrow />

@@ -89,9 +89,11 @@ export default function Footer() {
         { name: "Articles", href: "/articles" },
         { name: "Careers", href: "/careers" },
         { name: "Contact", href: "/contact" },
-        { name: "Portfolio", href: "/portfolio" },
-        { name: "Beauty Academy Portfolio", href: "/portfolio/beauty-academy" },
-        { name: "Solar Portfolio", href: "/portfolio/solar" },
+      ],
+      portfolio: [
+        { name: "Company Portfolio", href: "/portfolio" },
+        { name: "Beauty Academy", href: "/portfolio/beauty-academy" },
+        { name: "Solar", href: "/portfolio/solar" },
       ],
       // resources: [
       //   { name: "Docs", href: "/docs" },
@@ -109,6 +111,7 @@ export default function Footer() {
   const sections: NavigationSection[] = [
     "product",
     "company",
+    "portfolio",
     ...(legalLinks.length > 0 ? (["legal"] as NavigationSection[]) : []),
   ];
 
@@ -264,33 +267,36 @@ export default function Footer() {
           </div>
 
           {/* Navigation Links */}
-          <div className="grid w-full grid-cols-2 items-start justify-between gap-8 px-5 lg:col-span-3">
-            {sections.map((section) => (
-              <div key={section} className="w-full">
-                <h3 className="border-primary mb-4 -ml-5 border-l-2 pl-5 text-sm font-semibold tracking-wider uppercase">
-                  {section.charAt(0).toUpperCase() + section.slice(1)}
-                </h3>
-                <ul className="space-y-3">
-                  {data().navigation[section].map((item) => (
-                    <li key={item.name}>
-                      {item.href === "#" ? (
-                        <p className="group text-muted-foreground  decoration-blue-600 -ml-5 inline-flex items-center gap-1 underline-offset-8 transition-all duration-500">
-                          {item.name}
-                        </p>
-                      ) : (
-                        <Link
-                          href={item.href}
-                          className="group text-muted-foreground hover:text-blue-500 decoration-blue-600 -ml-5 inline-flex items-center gap-1 underline-offset-8 transition-all duration-500 hover:pl-5 hover:underline"
-                        >
-                          <ArrowDownLeft className="text-primary rotate-225 opacity-30 transition-all duration-500 group-hover:opacity-100 sm:group-hover:rotate-225 md:rotate-0" />
-                          {item.name}
-                        </Link>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+          <div className="grid w-full grid-cols-2 items-start justify-between gap-8 px-5 md:grid-cols-4 lg:col-span-3">
+            {sections.map((section) => {
+              const items = data().navigation[section];
+              return (
+                <div key={section} className="w-full">
+                  <h3 className="border-primary mb-4 -ml-5 border-l-2 pl-5 text-sm font-semibold tracking-wider uppercase">
+                    {section.charAt(0).toUpperCase() + section.slice(1)}
+                  </h3>
+                  <ul className="space-y-3">
+                    {items.map((item) => (
+                      <li key={item.name}>
+                        {item.href === "#" ? (
+                          <p className="group text-muted-foreground  decoration-blue-600 -ml-5 inline-flex items-center gap-1 underline-offset-8 transition-all duration-500">
+                            {item.name}
+                          </p>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            className="group text-muted-foreground hover:text-blue-500 decoration-blue-600 -ml-5 inline-flex items-center gap-1 underline-offset-8 transition-all duration-500 hover:pl-5 hover:underline"
+                          >
+                            <ArrowDownLeft className="text-primary rotate-225 opacity-30 transition-all duration-500 group-hover:opacity-100 sm:group-hover:rotate-225 md:rotate-0" />
+                            {item.name}
+                          </Link>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
             {/* {(["product", "company", "legal"] as const).map((section) => (
               <div key={section} className="w-full">
                 <h3 className="border-primary mb-4 -ml-5 border-l-2 pl-5 text-sm font-semibold tracking-wider uppercase">

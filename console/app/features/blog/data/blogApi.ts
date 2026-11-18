@@ -25,6 +25,7 @@ interface Blog {
         metaDescription?: string;
         metaKeywords?: string[];
     };
+    displayOn?: ("website" | "academy")[];
     isActive?: boolean;
     isFeature?: boolean;
     createdAt?: string;
@@ -62,7 +63,7 @@ export const blogApi = createApi({
         /* ------------------ 🔒 ADMIN ------------------ */
         getBlogs: builder.query<
             { data: Blog[]; pagination: any },
-            { page?: number; limit?: number; search?: string; sortBy?: string; sortOrder?: string; filter?: string }
+            { page?: number; limit?: number; search?: string; sortBy?: string; sortOrder?: string; filter?: string; displayOn?: "website" | "academy" }
         >({
             query: ({
                 page = 1,
@@ -71,10 +72,13 @@ export const blogApi = createApi({
                 sortBy = "createdAt",
                 sortOrder = "desc",
                 filter = "all",
+                displayOn,
             }) =>
                 `blog/admin/all?page=${page}&limit=${limit}&search=${encodeURIComponent(
                     search
-                )}&sortBy=${sortBy}&sortOrder=${sortOrder}&filter=${filter}`,
+                )}&sortBy=${sortBy}&sortOrder=${sortOrder}&filter=${filter}${
+                    displayOn ? `&displayOn=${displayOn}` : ""
+                }`,
             providesTags: ["Blog"],
         }),
 

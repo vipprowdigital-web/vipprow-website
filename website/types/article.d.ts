@@ -26,6 +26,7 @@ export interface Article {
   seo?: ArticleSEO;
   isActive?: boolean;
   isFeature?: boolean;
+  displayOn?: ("website" | "academy")[];
   createdAt?: string;
 
   url?: string;

@@ -10,6 +10,8 @@ export interface ArticleQuery {
   sortOrder?: "asc" | "desc";
   filter?: string;
   categories?: string[];
+  /** Which site's blogs to fetch. Backend defaults to "website". */
+  displayOn?: "website" | "academy";
 }
 
 export interface ArticleResponse {

@@ -408,7 +408,7 @@
 }
 .zx .zx-stairs {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: end;
   gap: 10px;
   margin-top: clamp(32px, 5vw, 72px);
@@ -435,6 +435,9 @@
 }
 .zx-step:nth-child(4) {
   min-height: 470px;
+}
+.zx-step:nth-child(5) {
+  min-height: 560px;
   background: var(--orange);
   color: var(--orange-ink);
 }
@@ -450,7 +453,7 @@
   font-weight: 500;
   color: var(--orange);
 }
-.zx-step:nth-child(4) p {
+.zx-step:nth-child(5) p {
   color: var(--orange-ink);
 }
 @media (max-width: 960px) {
@@ -472,8 +475,79 @@
     width: 88%;
   }
   .zx-step:nth-child(4) {
+    width: 94%;
+  }
+  .zx-step:nth-child(5) {
     width: 100%;
   }
+}
+
+/* ---------- why / included / extras ---------- */
+.zx .zx-why {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: clamp(32px, 4vw, 64px);
+}
+.zx-why li {
+  background: var(--card);
+  border-radius: 24px;
+  padding: clamp(20px, 2.2vw, 32px);
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+.zx-why h3 {
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-size: clamp(1.4rem, 2vw, 2rem);
+}
+.zx-why p {
+  color: var(--on-dark-2);
+}
+@media (max-width: 960px) {
+  .zx .zx-why {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .zx .zx-why {
+    grid-template-columns: 1fr;
+  }
+}
+.zx .zx-incl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+.zx-incl li {
+  background: var(--dark-2);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+.zx-pop {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--orange);
+  color: var(--orange-ink);
+  font: 700 0.75rem/1.4 var(--body);
+  letter-spacing: 0;
+}
+.zx .zx-foot {
+  margin-top: 20px;
+  color: var(--on-dark-2);
+}
+.zx .zx-cta-sub {
+  font-weight: 500;
+  max-width: 48ch;
 }
 
 /* ---------- features ---------- */
