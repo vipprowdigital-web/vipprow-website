@@ -12,6 +12,16 @@ const seoSchema =new mongoose.Schema(
   { _id: false }
 );
 
+// FAQ shown at the end of an article (and as FAQ rich results in Google)
+export const MAX_BLOG_FAQS = 20;
+const faqSchema = new mongoose.Schema(
+  {
+    question: { type: String, required: true, trim: true, maxlength: 300 },
+    answer: { type: String, required: true, trim: true, maxlength: 2000 },
+  },
+  { _id: false }
+);
+
 const blogSchema = new mongoose.Schema(
   {
     title: {
@@ -72,12 +82,20 @@ const blogSchema = new mongoose.Schema(
       maxlength: [500, "Short description must be under 500 characters"],
     },
     description: { type: String, trim: true },
+    faqs: {
+      type: [faqSchema],
+      default: [],
+      validate: {
+        validator: (v) => v.length <= MAX_BLOG_FAQS,
+        message: `An article can have at most ${MAX_BLOG_FAQS} FAQs`,
+      },
+    },
     seo: seoSchema,
     // Which sites this blog is shown on. A blog can appear on several.
     displayOn: {
       type: [String],
       enum: BLOG_DISPLAY_TARGETS,
-      default: ["website","academy-page"],
+      default: ["website", "academy"],
       index: true,
     },
     isActive: { type: Boolean, default: true, index: true },

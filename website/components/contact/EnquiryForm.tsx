@@ -3,6 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Rocket, Loader2, Send } from "lucide-react";
+import {
+  ConsentCheckbox,
+  CONSENT_TEXT,
+  consentFields,
+} from "@/components/legal/Consent";
 
 const INDIAN_STATES = [
   "Andhra Pradesh",
@@ -48,6 +53,7 @@ export default function EnquiryForm() {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [consent, setConsent] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -125,6 +131,7 @@ export default function EnquiryForm() {
         ...form,
         type: "Services",
         services: [form.service],
+        ...consentFields(CONSENT_TEXT.enquiry),
       };
 
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
@@ -354,6 +361,12 @@ export default function EnquiryForm() {
             className="w-full bg-white/[0.04] border border-input rounded-md px-4 py-3 text-sm text-foreground font-sans outline-none placeholder-muted-foreground/30 resize-vertical transition-all duration-200 focus:border-blue-700/50"
           />
         </div>
+
+        <ConsentCheckbox
+          checked={consent}
+          onChange={setConsent}
+          text={CONSENT_TEXT.enquiry}
+        />
 
         {/* Submit button with custom gradient */}
         <motion.button

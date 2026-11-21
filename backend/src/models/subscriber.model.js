@@ -1,5 +1,6 @@
 // backend/src/models/subscriber.model.js
 import mongoose from "mongoose";
+import consentSchema from "./consent.schema.js";
 
 const subscriberSchema = new mongoose.Schema(
   {
@@ -22,6 +23,8 @@ const subscriberSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    // DPDP consent record; withdrawnAt is set when they unsubscribe
+    consent: { type: consentSchema, default: null },
   },
   {
     timestamps: true,

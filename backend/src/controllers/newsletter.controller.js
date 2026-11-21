@@ -5,6 +5,7 @@ import {
   sendNewArticleNotificationEmail,
 } from "../services/email.service.js";
 import Subscriber from "../models/subscriber.model.js";
+import { readConsent, CONSENT_REQUIRED_MESSAGE } from "../utils/consent.js";
 
 // Keep in sync with the Subscriber model's email pattern.
 const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -24,6 +25,13 @@ export const subscribeToNewsletter = async (req, res) => {
       });
     }
 
+    const consent = readConsent(req);
+    if (!consent) {
+      return res
+        .status(400)
+        .json({ success: false, message: CONSENT_REQUIRED_MESSAGE });
+    }
+
     const targetEmail = email.trim().toLowerCase();
 
     // 1. Check current state BEFORE upserting, so we know whether this is
@@ -33,9 +41,13 @@ export const subscribeToNewsletter = async (req, res) => {
 
     // 2. Save or Update the Subscriber in MongoDB
     // If they exist, ensure 'subscribed: true' updates their preference.
+    // Keep the original consent record for an active subscriber; record a
+    // fresh one for new / re-subscribing people (or old rows without one).
+    const update = { subscribed: true, subscribedAt: new Date() };
+    if (!alreadySubscribed || !existing?.consent?.given) update.consent = consent;
     await Subscriber.findOneAndUpdate(
       { email: targetEmail },
-      { $set: { subscribed: true, subscribedAt: new Date() } },
+      { $set: update },
       { upsert: true, new: true },
     );
 
@@ -185,6 +197,8 @@ export const unsubscribeNewsletter = async (req, res) => {
     }
 
     subscriber.subscribed = false;
+    // Unsubscribing withdraws newsletter consent — keep the record, mark when
+    if (subscriber.consent) subscriber.consent.withdrawnAt = new Date();
 
     await subscriber.save();
 

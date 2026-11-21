@@ -14,11 +14,24 @@ export default function WorkFlowSteps() {
 
           <div className="relative mt-12 lg:mt-20">
             <div className="absolute inset-x-0 hidden xl:px-44 top-2 md:block md:px-20 lg:px-28">
-              <img
-                className="w-full"
-                src="https://cdn.rareblocks.xyz/collection/celebration/images/steps/2/curved-dotted-line.svg"
-                alt=""
-              />
+              {/* Dotted curve joining the three steps. Drawn inline: the
+                  original came from an external CDN that no longer resolves. */}
+              <svg
+                className="h-12 w-full"
+                viewBox="0 0 875 48"
+                preserveAspectRatio="none"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M2 29 C 120 50, 330 50, 437 24 S 760 -2, 873 25"
+                  stroke="#71717a"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeDasharray="1 12"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
             </div>
 
             <div className="relative grid grid-cols-1 text-center gap-y-12 md:grid-cols-3 gap-x-12">

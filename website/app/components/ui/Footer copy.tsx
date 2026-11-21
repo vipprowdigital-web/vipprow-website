@@ -109,7 +109,10 @@ export default function Footer() {
             {policies?.map(({ title, _id }) => {
               return (
                 <li key={_id}>
-                  <Link href={`/policy/details/${_id}`} className="hover:text-indigo-600 transition">
+                  <Link
+                    href={`/policy/details/${_id}`}
+                    className="hover:text-indigo-600 transition"
+                  >
                     {title ?? "Untitle"}
                   </Link>
                 </li>
@@ -216,7 +219,8 @@ export default function Footer() {
             </Link>
           </div>
           <p className="mt-3 text-center">
-            © 2025 <Link href="https://prebuiltui.com">Vipprow</Link>
+            &copy; {new Date().getFullYear()}{" "}
+            <Link href="https://prebuiltui.com">Vipprow</Link>
           </p>
         </div>
       </div>

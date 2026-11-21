@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
@@ -26,9 +26,28 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close the mobile menu on a tap/click outside the navbar and the drawer
+  // (the toggle button lives inside the navbar, so it keeps working).
+  const navRef = useRef(null);
+  const drawerRef = useRef(null);
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handlePointerDown = (e) => {
+      if (
+        !navRef.current?.contains(e.target) &&
+        !drawerRef.current?.contains(e.target)
+      ) {
+        setMobileOpen(false);
+      }
+    };
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [mobileOpen]);
+
   return (
     <>
       <motion.nav
+        ref={navRef}
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
@@ -119,6 +138,7 @@ export default function Navbar() {
         {mobileOpen && (
           <motion.div
             key="mobile-menu"
+            ref={drawerRef}
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}

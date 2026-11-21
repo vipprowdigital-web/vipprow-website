@@ -4,6 +4,7 @@ import {
   uploadToCloudinary,
   destroyFromCloudinary,
 } from "../utils/cloudinaryService.js";
+import { readConsent, CONSENT_REQUIRED_MESSAGE } from "../utils/consent.js";
 
 const NAME_MAX = 100;
 const JOB_TITLE_MAX = 150;
@@ -79,6 +80,13 @@ export const submitApplication = async (req, res) => {
         message: `Job title must be at most ${JOB_TITLE_MAX} characters.`,
       });
 
+    // Checked before the resume is uploaded anywhere
+    const consent = readConsent(req);
+    if (!consent) {
+      safeUnlink(tempPath);
+      return res.status(400).json({ message: CONSENT_REQUIRED_MESSAGE });
+    }
+
     if (!tempPath) {
       return res.status(400).json({ message: "Resume file is required." });
     }
@@ -101,6 +109,7 @@ export const submitApplication = async (req, res) => {
         url: resumeUrl,
         cloudinaryId: cloudinaryId,
       },
+      consent,
     });
 
     res.status(201).json({

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { easeInOut, motion, spring } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import {
@@ -201,9 +202,12 @@ export default function AppHero() {
       </div>
 
       <div className="fadein-blur relative z-0 mx-auto mb-10 h-75 w-75 lg:absolute lg:top-1/2 lg:right-1/2 lg:mx-0 lg:mb-0 lg:h-125 lg:w-125 lg:translate-x-1/2 lg:-translate-y-2/3">
-        <img
-          src="https://i.postimg.cc/fLptvwMg/nexus.webp"
-          alt="Nexus Platform 3D Visualization"
+        <Image
+          src="/assets/images/saas/nexus.webp"
+          alt="Software as a service (SaaS)"
+          width={800}
+          height={800}
+          sizes="(min-width: 1024px) 500px, 300px"
           className="h-full w-full object-contain drop-shadow-[0_0_35px_#3358ea85] transition-all duration-1000 hover:scale-110"
         />
         <motion.div
@@ -259,7 +263,7 @@ export default function AppHero() {
               <span className="mr-2 rounded-full bg-purple-500 px-2 py-0.5 text-xs font-semibold text-white">
                 New
               </span>
-              Introducing Nexus Platform
+              SaaS Automation Company
             </motion.div>
 
             <motion.h1
@@ -329,9 +333,9 @@ export default function AppHero() {
               variants={itemVariants}
               className="mb-8 max-w-md px-6 text-center text-lg leading-relaxed text-slate-300/90 lg:text-end"
             >
-              Nexus connects AI tools with Web3 infrastructure, giving
-              developers the power to build beyond limits. One platform. Endless
-              potential.
+              Vipprow connects intelligent automation with business operations,
+              helping teams work faster, smarter, and more efficiently — all
+              from one powerful SaaS platform.
             </motion.p>
             <motion.div
               variants={itemVariants}

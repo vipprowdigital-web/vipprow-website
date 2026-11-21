@@ -1,5 +1,8 @@
 import slugify from "slugify";
-import Blog, { BLOG_DISPLAY_TARGETS } from "../models/blogs/blog.model.js";
+import Blog, {
+  BLOG_DISPLAY_TARGETS,
+  MAX_BLOG_FAQS,
+} from "../models/blogs/blog.model.js";
 import {
   uploadToCloudinary,
   destroyFromCloudinary,
@@ -39,6 +42,30 @@ const parseDisplayOn = (value) => {
       list.map((v) => String(v).trim()).filter((v) => BLOG_DISPLAY_TARGETS.includes(v)),
     ),
   ];
+};
+
+// Normalise FAQs from a JSON body (array) or a multipart form (JSON string).
+// Returns undefined if absent (so an update leaves existing FAQs alone),
+// otherwise a cleaned array: trimmed, empty rows dropped, capped in count
+// and length to match the model.
+const parseFaqs = (value) => {
+  if (value === undefined) return undefined;
+  let list = value;
+  if (typeof list === "string") {
+    try {
+      list = JSON.parse(list);
+    } catch {
+      return [];
+    }
+  }
+  if (!Array.isArray(list)) return [];
+  return list
+    .map((f) => ({
+      question: String(f?.question ?? "").trim().slice(0, 300),
+      answer: String(f?.answer ?? "").trim().slice(0, 2000),
+    }))
+    .filter((f) => f.question && f.answer)
+    .slice(0, MAX_BLOG_FAQS);
 };
 
 /* ============================
@@ -311,6 +338,7 @@ export const createBlog = async (req, res) => {
       category: category || null,
       short_description: req.body.short_description,
       description: req.body.description,
+      faqs: parseFaqs(req.body.faqs) ?? [],
       thumbnail: thumbnailUrl,
       gallery_images,
       seo: req.body.seo,
@@ -429,6 +457,9 @@ export const updateBlog = async (req, res) => {
     blog.description = req.body.description;
     blog.seo = req.body.seo || blog.seo;
 
+    const faqs = parseFaqs(req.body.faqs);
+    if (faqs !== undefined) blog.faqs = faqs;
+
     if (isActive !== undefined) blog.isActive = isActive;
     if (isFeature !== undefined) blog.isFeature = isFeature;
 
@@ -474,6 +505,9 @@ export const partiallyUpdateBlog = async (req, res) => {
 
     const displayOn = parseDisplayOn(req.body.displayOn);
     if (displayOn?.length) blog.displayOn = displayOn;
+
+    const faqs = parseFaqs(req.body.faqs);
+    if (faqs !== undefined) blog.faqs = faqs;
 
     if (req.body.title) {
       blog.slug = slugify(req.body.title, { lower: true, strict: true });

@@ -9,7 +9,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ImageIcon, UploadIcon, XIcon, Loader2 } from "lucide-react";
+import {
+  ImageIcon,
+  UploadIcon,
+  XIcon,
+  Loader2,
+  PlusIcon,
+  Trash2Icon,
+} from "lucide-react";
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { toast } from "sonner";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,9 +31,30 @@ import { useGetCategoriesQuery } from "~/features/category/data/categoryApi";
 import { RichTextEditor } from "~/components/crud/RichTextEditor";
 import { Combobox } from "@/components/crud/Combobox";
 
+// ------------------ FAQ LIMITS (match the backend model) ------------------
+const MAX_FAQS = 20;
+const FAQ_QUESTION_LIMIT = 300;
+const FAQ_ANSWER_LIMIT = 2000;
+
+type Faq = { question: string; answer: string };
+
 // ------------------ VALIDATION ------------------
 const validate = (values: any) => {
   const errors: Record<string, string> = {};
+
+  // FAQs: a row must have both a question and an answer (fully empty rows
+  // are simply dropped on save)
+  const faqs: Faq[] = values.faqs || [];
+  faqs.forEach((f, i) => {
+    const q = f.question.trim();
+    const a = f.answer.trim();
+    if (q && !a) errors[`faq-${i}`] = `FAQ ${i + 1}: answer is required.`;
+    else if (!q && a) errors[`faq-${i}`] = `FAQ ${i + 1}: question is required.`;
+    else if (q.length > FAQ_QUESTION_LIMIT)
+      errors[`faq-${i}`] = `FAQ ${i + 1}: question is too long.`;
+    else if (a.length > FAQ_ANSWER_LIMIT)
+      errors[`faq-${i}`] = `FAQ ${i + 1}: answer is too long.`;
+  });
 
   // Title
   if (!values.title.trim()) {
@@ -95,6 +123,7 @@ export default function BlogForm({
       metaDescription: "",
       metaKeywords: "",
     },
+    faqs: [] as Faq[],
     isActive: true,
     isFeature: false,
     displayOn: ["website"] as string[],
@@ -149,6 +178,10 @@ export default function BlogForm({
           ? b.seo.metaKeywords.join(", ")
           : b.seo?.metaKeywords || "",
       },
+      faqs: (b.faqs || []).map((f) => ({
+        question: f.question || "",
+        answer: f.answer || "",
+      })),
       isActive: b.isActive ?? true,
       isFeature: b.isFeature ?? false,
       displayOn: b.displayOn?.length ? b.displayOn : ["website"],
@@ -162,6 +195,34 @@ export default function BlogForm({
   const handleChange = (name: string, value: any) => {
     setValues((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((p) => ({ ...p, [name]: "" }));
+  };
+
+  // ------------------ FAQ HANDLERS ------------------
+  const clearFaqError = (index: number) => {
+    if (errors[`faq-${index}`]) setErrors((p) => ({ ...p, [`faq-${index}`]: "" }));
+  };
+
+  const addFaq = () =>
+    setValues((p) =>
+      p.faqs.length >= MAX_FAQS
+        ? p
+        : { ...p, faqs: [...p.faqs, { question: "", answer: "" }] }
+    );
+
+  const updateFaq = (index: number, field: keyof Faq, value: string) => {
+    setValues((p) => ({
+      ...p,
+      faqs: p.faqs.map((f, i) => (i === index ? { ...f, [field]: value } : f)),
+    }));
+    clearFaqError(index);
+  };
+
+  const removeFaq = (index: number) => {
+    setValues((p) => ({ ...p, faqs: p.faqs.filter((_, i) => i !== index) }));
+    // Errors are keyed by position, so clear them all after a removal
+    setErrors((p) =>
+      Object.fromEntries(Object.entries(p).filter(([k]) => !k.startsWith("faq-")))
+    );
   };
 
   // ------------------ REMOVE GALLERY IMAGE ------------------
@@ -210,6 +271,12 @@ export default function BlogForm({
         .map((k) => k.trim())
         .filter(Boolean);
       formData.append("seo[metaKeywords]", JSON.stringify(keywordsArr));
+
+      // FAQs (fully empty rows are dropped)
+      const faqs = values.faqs
+        .map((f) => ({ question: f.question.trim(), answer: f.answer.trim() }))
+        .filter((f) => f.question && f.answer);
+      formData.append("faqs", JSON.stringify(faqs));
 
       // Thumbnail
       if (thumbFiles.length > 0) {
@@ -332,6 +399,83 @@ export default function BlogForm({
                   onChange={(v) => handleChange("description", v)}
                   error={errors.description}
                 />
+              </CardContent>
+            </Card>
+
+            {/* FAQs */}
+            <Card>
+              <CardHeader>
+                <CardTitle>FAQs</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Shown at the end of the article on the website. Optional, up
+                  to {MAX_FAQS}.
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {values.faqs.length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    No FAQs added yet.
+                  </p>
+                )}
+
+                {values.faqs.map((faq, i) => (
+                  <div
+                    key={i}
+                    className={`space-y-3 rounded-lg border p-4 ${
+                      errors[`faq-${i}`] ? "border-red-500" : ""
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <Label>FAQ {i + 1}</Label>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Remove FAQ ${i + 1}`}
+                        onClick={() => removeFaq(i)}
+                      >
+                        <Trash2Icon className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    <Input
+                      placeholder="Question"
+                      value={faq.question}
+                      maxLength={FAQ_QUESTION_LIMIT}
+                      onChange={(e) => updateFaq(i, "question", e.target.value)}
+                    />
+
+                    <Textarea
+                      placeholder="Answer"
+                      value={faq.answer}
+                      maxLength={FAQ_ANSWER_LIMIT}
+                      rows={3}
+                      onChange={(e) => updateFaq(i, "answer", e.target.value)}
+                    />
+
+                    <div className="flex justify-between">
+                      {errors[`faq-${i}`] ? (
+                        <p className="text-xs text-red-500">
+                          {errors[`faq-${i}`]}
+                        </p>
+                      ) : (
+                        <span />
+                      )}
+                      <span className="text-xs text-muted-foreground">
+                        {faq.answer.length}/{FAQ_ANSWER_LIMIT}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={addFaq}
+                  disabled={values.faqs.length >= MAX_FAQS}
+                >
+                  <PlusIcon className="h-4 w-4 mr-2" /> Add FAQ
+                </Button>
               </CardContent>
             </Card>
 

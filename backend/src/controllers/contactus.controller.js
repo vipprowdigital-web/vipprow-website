@@ -1,5 +1,6 @@
 import ContactUs from "../models/contactus.model.js";
 import mongoose from "mongoose";
+import { readConsent, CONSENT_REQUIRED_MESSAGE } from "../utils/consent.js";
 
 /* ============================================================
    📌 CREATE ContactUs (Public)
@@ -21,6 +22,13 @@ export const createContactUs = async (req, res) => {
       course,
       qualification,
     } = req.body;
+
+    const consent = readConsent(req);
+    if (!consent) {
+      return res
+        .status(400)
+        .json({ status: "error", message: CONSENT_REQUIRED_MESSAGE });
+    }
 
     // Validate required fields
     if (!type) {
@@ -118,6 +126,7 @@ export const createContactUs = async (req, res) => {
       services: services || null,
       ipAddress: req.ip,
       userAgent: req.headers["user-agent"],
+      consent,
       createdBy: req.user?._id || null,
     });
 

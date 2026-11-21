@@ -4,6 +4,7 @@ import { useArticleById } from "@/app/features/articles/hook/useArticle";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import FaqSection from "@/components/mvpblock-ui/FAQSection";
 
 export default function DetailPage() {
   const { id } = useParams();
@@ -127,6 +128,16 @@ export default function DetailPage() {
           }}
         />
       </div>
+
+      {/* FAQs added to this article in the console (renders nothing if none) */}
+      {item.faqs && item.faqs.length > 0 && (
+        <div className="mt-16">
+          <FaqSection
+            items={item.faqs}
+            description="Quick answers to common questions about this topic."
+          />
+        </div>
+      )}
     </motion.main>
   );
 }

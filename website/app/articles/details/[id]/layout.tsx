@@ -23,6 +23,45 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   });
 }
 
-export default function ArticleDetailsLayout({ children }: { children: React.ReactNode }) {
-  return children;
+// The article's FAQs as FAQPage structured data, so Google can show them as
+// rich results. Rendered on the server (the page itself loads client-side).
+// fetchItem is cached, so this reuses the request made for the metadata.
+export default async function ArticleDetailsLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const item = await fetchItem<Article>(`/blog/${id}`);
+  const faqs = item?.faqs?.filter((f) => f.question && f.answer) ?? [];
+
+  const faqJsonLd =
+    faqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((f) => ({
+            "@type": "Question",
+            name: f.question,
+            acceptedAnswer: { "@type": "Answer", text: f.answer },
+          })),
+        }
+      : null;
+
+  return (
+    <>
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          // "<" escaped so answer text can't close the script tag
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
+      {children}
+    </>
+  );
 }

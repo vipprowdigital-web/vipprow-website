@@ -4,6 +4,11 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import FaqSection from "@/components/mvpblock-ui/FAQSection";
 import {
+  ConsentCheckbox,
+  CONSENT_TEXT,
+  consentFields,
+} from "@/components/legal/Consent";
+import {
   Briefcase,
   Upload,
   Loader2,
@@ -145,6 +150,7 @@ export default function CareersPage() {
   // Form Fields State
   const [form, setForm] = useState({ name: "", jobTitle: "" });
   const [resume, setResume] = useState<File | null>(null);
+  const [consent, setConsent] = useState(false);
 
   // Status Handling
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -216,6 +222,9 @@ export default function CareersPage() {
       dataPayload.append("name", form.name);
       dataPayload.append("jobTitle", form.jobTitle);
       dataPayload.append("resume", resume);
+      const { consentText } = consentFields(CONSENT_TEXT.career);
+      dataPayload.append("consent", "true");
+      dataPayload.append("consentText", consentText);
 
       const result = await handleApplicationSubmit(dataPayload);
 
@@ -226,6 +235,7 @@ export default function CareersPage() {
         }, 3000);
         setForm({ name: "", jobTitle: "" });
         setResume(null);
+        setConsent(false);
       } else {
         setSubmitStatus({ type: "error", message: result.message });
         setTimeout(() => {
@@ -465,6 +475,13 @@ export default function CareersPage() {
                 </span>
               </div>
             </div>
+
+            <ConsentCheckbox
+              checked={consent}
+              onChange={setConsent}
+              className="text-gray-400"
+              text={CONSENT_TEXT.career}
+            />
 
             {/* Submission Interface Trigger */}
             <motion.button

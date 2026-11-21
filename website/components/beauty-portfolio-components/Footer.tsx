@@ -21,19 +21,22 @@ export default function Footer() {
           grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
           gap: 3rem;
           align-items: start;
+          text-align: center;
         }
 
         .footer-bottom-inner {
           display: flex;
+          flex-direction: column;
           align-items: center;
-          justify-content: space-between;
-          gap: 1rem;
-          flex-wrap: wrap;
+          justify-content: center;
+          gap: 0.75rem;
+          text-align: center;
         }
 
         .footer-links {
           display: flex;
           align-items: center;
+          justify-content: center;
           gap: 1rem;
           flex-wrap: wrap;
         }
@@ -49,17 +52,6 @@ export default function Footer() {
           .footer-grid {
             grid-template-columns: 1fr !important;
             gap: 2rem !important;
-            text-align: center !important;
-          }
-
-          .footer-bottom-inner {
-            flex-direction: column;
-            align-items: center !important;
-            text-align: center !important;
-          }
-
-          .footer-links {
-            justify-content: center !important;
           }
         }
       `}</style>
@@ -208,7 +200,8 @@ export default function Footer() {
           <div className="container">
             <div className="footer-bottom-inner">
               <p style={styles.copyright}>
-                © 2025 Vipprow Digital Marketing. All rights reserved.
+                &copy; {new Date().getFullYear()} Vipprow Digital Marketing. All
+                rights reserved.
               </p>
 
               <div className="footer-links">
@@ -256,6 +249,7 @@ const styles: Record<string, React.CSSProperties> = {
   logo: {
     display: "flex",
     alignItems: "baseline",
+    justifyContent: "center",
     gap: "2px",
     margin: "0 0 1.25rem",
   },
@@ -285,6 +279,7 @@ const styles: Record<string, React.CSSProperties> = {
   contactInfo: {
     display: "flex",
     flexDirection: "column",
+    alignItems: "center",
     gap: "0.6rem",
   },
 
@@ -294,6 +289,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: "var(--color-text-muted)",
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
     gap: "0.5rem",
     transition: "color var(--transition-normal)",
     textDecoration: "none",
@@ -315,6 +311,7 @@ const styles: Record<string, React.CSSProperties> = {
     margin: 0,
     display: "flex",
     flexDirection: "column",
+    alignItems: "center",
     gap: "0.6rem",
   },
 

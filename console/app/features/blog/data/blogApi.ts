@@ -18,6 +18,7 @@ interface Blog {
     category?: string | null;
     short_description?: string;
     description?: string;
+    faqs?: { question: string; answer: string }[];
     thumbnail?: string | null;
     gallery_images?: string[];
     seo?: {

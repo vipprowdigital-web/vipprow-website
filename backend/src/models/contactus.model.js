@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import consentSchema from "./consent.schema.js";
 
 const { Schema, model } = mongoose;
 
@@ -101,7 +102,10 @@ const contactUsSchema = new Schema(
     ipAddress: { type: String, trim: true },
     userAgent: { type: String, trim: true },
 
-    // 🎯 Dynamic Fields (Course Inquiry + Franchise Form)
+    // DPDP consent record (what they agreed to, when, from where)
+    consent: { type: consentSchema, default: null },
+
+    // Dynamic Fields (Course Inquiry + Franchise Form)
     meta: {
       type: Map,
       of: Schema.Types.Mixed,

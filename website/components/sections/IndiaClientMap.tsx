@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import mapData from "./india-map-paths.json";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -19,12 +19,7 @@ interface StandaloneCity extends City {
 }
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
-const HQ: City & { isHQ: true } = {
-  name: "Vipprow HQ",
-  lat: 23.1686,
-  lng: 79.9339,
-  isHQ: true,
-};
+const HQ: City = { name: "Vipprow HQ", lat: 23.1686, lng: 79.9339 };
 
 const CLUSTERS: ClusterDef[] = [
   {
@@ -77,6 +72,9 @@ const STANDALONES: StandaloneCity[] = [
   { id: "nagpur", name: "Nagpur", lat: 21.1458, lng: 79.0882 },
 ];
 
+const CITY_COUNT =
+  STANDALONES.length + CLUSTERS.reduce((s, c) => s + c.cities.length, 0);
+
 // ─── PROJECTION ───────────────────────────────────────────────────────────────
 const WIDTH = 700,
   HEIGHT = 780;
@@ -84,6 +82,13 @@ const LNG_MIN = 68.1,
   LNG_MAX = 97.5,
   LAT_MIN = 6.5,
   LAT_MAX = 35.7;
+
+// The SVG viewBox is "-40 -40 760 860"; HTML overlays use percentages of it.
+const VB_X = -40,
+  VB_Y = -40,
+  VB_W = 760,
+  VB_H = 860;
+const VIEWBOX = `${VB_X} ${VB_Y} ${VB_W} ${VB_H}`;
 
 function mercY(d: number) {
   const r = (d * Math.PI) / 180;
@@ -95,23 +100,19 @@ const Y_BOT = mercY(LAT_MIN);
 function project(lat: number, lng: number) {
   const x = ((lng - LNG_MIN) / (LNG_MAX - LNG_MIN)) * WIDTH;
   const y = HEIGHT - ((mercY(lat) - Y_BOT) / (Y_TOP - Y_BOT)) * HEIGHT;
-  return { x, y };
-}
-
-function centroid(cities: City[]) {
-  const avgLat = cities.reduce((s, c) => s + c.lat, 0) / cities.length;
-  const avgLng = cities.reduce((s, c) => s + c.lng, 0) / cities.length;
-  return project(avgLat, avgLng);
+  // Rounded so the server (Node) and browser produce identical strings:
+  // Math.log/Math.tan can differ in the last digit between engines, which
+  // made the pins' style attributes fail hydration.
+  return {
+    x,
+    y,
+    left: `${(((x - VB_X) / VB_W) * 100).toFixed(3)}%`,
+    top: `${(((y - VB_Y) / VB_H) * 100).toFixed(3)}%`,
+  };
 }
 
 // Quadratic bezier arc path string
-function arcPath(
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
-  curvature = 0.22,
-) {
+function arcPath(x1: number, y1: number, x2: number, y2: number, curvature = 0.22) {
   const mx = (x1 + x2) / 2,
     my = (y1 + y2) / 2;
   const dx = x2 - x1,
@@ -119,49 +120,57 @@ function arcPath(
   return `M${x1},${y1} Q${mx - dy * curvature},${my + dx * curvature} ${x2},${y2}`;
 }
 
-// ─── LOCATION PIN SVG ─────────────────────────────────────────────────────────
-function LocationPin({
-  cx,
-  cy,
-  size = 1,
-  fill = "#b61818ff",
-  stroke = "#fff",
-  strokeWidth = 1,
-  opacity = 1,
-  filter,
+// All geometry is static, so compute it once at module load instead of on
+// every render.
+const HQ_POS = project(HQ.lat, HQ.lng);
+
+// One pin per client city (standalones + every city inside a state cluster)
+const CITIES = [
+  ...STANDALONES,
+  ...CLUSTERS.flatMap((cl) =>
+    cl.cities.map((c) => ({ ...c, id: `${cl.id}-${c.name.toLowerCase()}` })),
+  ),
+].map((s) => ({ ...s, ...project(s.lat, s.lng) }));
+
+// Intro lines: client → HQ. Duration scales with distance so every line
+// travels at roughly the same visual speed.
+const INTRO_LINES = CITIES.map((c, i) => {
+  const dx = c.x - HQ_POS.x,
+    dy = c.y - HQ_POS.y;
+  const len = Math.sqrt(dx * dx + dy * dy) * 1.35;
+  return {
+    id: c.id,
+    d: arcPath(c.x, c.y, HQ_POS.x, HQ_POS.y),
+    dur: Math.max(4, len / 100),
+    delay: i * 0.25,
+  };
+});
+
+// ─── PIN ICON ─────────────────────────────────────────────────────────────────
+// Head centre (6,6) r=5, tip at (6,15). Viewbox is padded for the stroke.
+const PIN_VIEWBOX = "-0.6 -0.6 13.2 16.4";
+const PIN_PATH = "M6 15 L2.75 9.75 A5 5 0 1 1 9.25 9.75 Z";
+const PIN_HEAD_TOP = `${(6.6 / 16.4) * 100}%`; // head centre, % from top of icon
+
+function PinIcon({
+  fill,
+  strokeWidth,
+  dotRadius = 1.8,
 }: {
-  cx: number;
-  cy: number;
-  size?: number;
-  fill?: string;
-  stroke?: string;
-  strokeWidth?: number;
-  opacity?: number;
-  filter?: string;
+  fill: string;
+  strokeWidth: number;
+  dotRadius?: number;
 }) {
-  const r = 5 * size;
-  const bodyY = cy - 9 * size;
-  const d = [
-    `M ${cx} ${cy}`,
-    `L ${cx - r * 0.65} ${bodyY + r * 0.75}`,
-    `A ${r} ${r} 0 1 1 ${cx + r * 0.65} ${bodyY + r * 0.75}`,
-    "Z",
-  ].join(" ");
   return (
-    <path
-      d={d}
-      fill={fill}
-      stroke={stroke}
-      strokeWidth={strokeWidth}
-      strokeLinejoin="round"
-      opacity={opacity}
-      filter={filter}
-    />
+    <svg viewBox={PIN_VIEWBOX} className="pin-icon block h-full w-full" aria-hidden="true">
+      <path d={PIN_PATH} fill={fill} stroke="#fff" strokeWidth={strokeWidth} strokeLinejoin="round" />
+      <circle cx="6" cy="6" r={dotRadius} fill="#fff" opacity="0.92" />
+    </svg>
   );
 }
 
-// ─── COMPONENT ───────────────────────────────────────────────────────────────
-// Colour themes. "blue" is the main website; "purple" matches the portfolio page.
+// ─── THEMES ───────────────────────────────────────────────────────────────────
+// "blue" is the main website; "purple" matches the portfolio page.
 export type MapTheme = "blue" | "purple";
 
 const THEMES = {
@@ -177,8 +186,7 @@ const THEMES = {
     glowPool: "bg-blue-600/25",
     legendHq: "bg-blue-500 shadow-[0_0_6px_#3b82f6]",
     legendState: "bg-indigo-500 shadow-[0_0_6px_#6366f1]",
-    statCell:
-      "bg-gray-200/10 border border-slate-400/40 rounded-xl",
+    statCell: "bg-gray-200/10 border border-slate-400/40 rounded-xl",
     statValue: "text-white",
     headingAccent: "",
   },
@@ -203,216 +211,225 @@ const THEMES = {
   },
 } as const;
 
-export default function IndiaClientMap({
-  theme = "blue",
-}: {
-  theme?: MapTheme;
-}) {
-  const t = THEMES[theme];
-  const [mounted, setMounted] = useState(false);
-  const [hoveredStandalone, setHoveredStandalone] = useState<string | null>(
-    null,
+type Theme = (typeof THEMES)[MapTheme];
+
+// ─── STATIC MAP ───────────────────────────────────────────────────────────────
+// Everything expensive (176 state paths, 12 extruded layers, blur filters)
+// lives here. It never re-renders and contains no animations, and it is
+// promoted to its own compositor layer, so the browser rasterises it once
+// instead of on every animation frame.
+const StaticMap = memo(function StaticMap({ t }: { t: Theme }) {
+  return (
+    <svg
+      viewBox={VIEWBOX}
+      className="block w-full"
+      style={{ willChange: "transform" }}
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <defs>
+        <filter id="borderGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <radialGradient id="mapAmbient" cx="45%" cy="50%" r="55%">
+          <stop offset="0%" stopColor={t.ambientA} stopOpacity="0.9" />
+          <stop offset="100%" stopColor={t.ambientB} stopOpacity="0" />
+        </radialGradient>
+        <clipPath id="mapClip">
+          <rect x="-40" y="-40" width="780" height="860" />
+        </clipPath>
+        <linearGradient id="landTop" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={t.land[0]} />
+          <stop offset="55%" stopColor={t.land[1]} />
+          <stop offset="100%" stopColor={t.land[2]} />
+        </linearGradient>
+        <filter id="landShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="14" />
+        </filter>
+        {/* land silhouette, reused for the shadow, extruded layers, top face and borders */}
+        <g id="land-shape">
+          {mapData.allPaths.map((d, i) => (
+            <path key={i} id={i === 0 ? "land-outline" : undefined} d={d} />
+          ))}
+        </g>
+      </defs>
+
+      <rect x="-40" y="-40" width="780" height="860" fill="url(#mapAmbient)" />
+
+      <g clipPath="url(#mapClip)">
+        {/* soft ground shadow, then stacked layers = extruded thickness */}
+        <use href="#land-shape" y="26" fill="#000" opacity="0.55" filter="url(#landShadow)" />
+        {Array.from({ length: 12 }, (_, k) => 12 - k).map((n) => (
+          <use
+            key={n}
+            href="#land-shape"
+            y={n * 1.5}
+            fill={n > 6 ? t.depth[0] : n > 3 ? t.depth[1] : t.depth[2]}
+          />
+        ))}
+        <use href="#land-shape" fill="url(#landTop)" />
+        {/* One filter pass for all borders, instead of one per path */}
+        <use
+          href="#land-shape"
+          fill="none"
+          stroke={t.border}
+          strokeWidth="0.7"
+          strokeLinejoin="round"
+          filter="url(#borderGlow)"
+          opacity="0.75"
+        />
+        <use
+          href="#land-outline"
+          fill="none"
+          stroke={t.accent}
+          strokeWidth="1.2"
+          strokeLinejoin="round"
+          opacity="0.45"
+        />
+      </g>
+    </svg>
   );
-  const [cardPos, setCardPos] = useState<{
-    x: number;
-    y: number;
-    containerWidth: number;
-  } | null>(null);
+});
+
+// ─── COMPONENT ────────────────────────────────────────────────────────────────
+type ActiveCity = { id: string; name: string; x: number; y: number };
+
+const REST_TILT = "perspective(1400px) rotateX(18deg) rotateY(0deg)";
+
+export default function IndiaClientMap({ theme = "blue" }: { theme?: MapTheme }) {
+  const t = THEMES[theme];
+  const [active, setActive] = useState<ActiveCity | null>(null);
 
   // ── intro line animation state ──
-  // "idle"     → waiting for map to enter viewport
-  // "drawing"  → lines are animating in (stroke-dashoffset)
-  // "fading"   → lines are fading out via opacity transition
-  // "done"     → lines are gone permanently
-  const [linePhase, setLinePhase] = useState<
-    "idle" | "drawing" | "fading" | "done"
-  >("idle");
+  // "idle"    → waiting for map to enter viewport
+  // "drawing" → lines are animating in (stroke-dashoffset)
+  // "fading"  → lines are fading out via opacity transition
+  // "done"    → lines are removed from the DOM
+  const [linePhase, setLinePhase] = useState<"idle" | "drawing" | "fading" | "done">("idle");
 
-  const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const containerWidthRef = useRef<number>(0);
   const tiltRef = useRef<HTMLDivElement>(null);
+  const tiltRectRef = useRef<DOMRect | null>(null);
+  const tiltFrameRef = useRef(0);
 
+  // ── Start the intro lines only once the map is on screen ──
   useEffect(() => {
-    const handleSetMounted = () => setMounted(true);
-    handleSetMounted();
-  }, []);
-
-  // ── IntersectionObserver: start animation only when map scrolls into view ──
-  useEffect(() => {
-    if (!mounted) return;
     const el = containerRef.current;
     if (!el) return;
+    const timers: ReturnType<typeof setTimeout>[] = [];
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          // Only ever fire once
-          observer.disconnect();
-
-          // Small delay so the user actually sees the map first
-          const t0 = setTimeout(() => setLinePhase("drawing"), 400);
-
-          // Duration is proportional to distance (len/28, min 4 s).
-          // Furthest city (Tezpur ~380 px straight-line → len ~513 → dur ~18 s).
-          // Last line (highest index) finishes at: index*0.4 + dur ≈ 12*0.4+18 = 22.8 s worst case.
-          // Hold 2 s → fade at 25 s, done at 27 s.
-          const t1 = setTimeout(() => setLinePhase("fading"), 15000);
-          const t2 = setTimeout(() => setLinePhase("done"), 27000);
-
-          timersRef.current = [t0, t1, t2];
-        }
+        if (!entries[0].isIntersecting) return;
+        observer.disconnect();
+        // Give the browser time to finish painting the map and the pin drop
+        // before the lines start, so the two don't compete for frames.
+        timers.push(
+          setTimeout(() => setLinePhase("drawing"), 700),
+          setTimeout(() => setLinePhase("fading"), 15300),
+          setTimeout(() => setLinePhase("done"), 17000),
+        );
       },
-      { threshold: 0.3 }, // fire when 30 % of map is visible
+      { threshold: 0.3 },
     );
-
     observer.observe(el);
-
-    // Cache container width via ResizeObserver — reads layout passively,
-    // never during a hover interaction, so no forced reflow
-    const ro = new ResizeObserver((entries) => {
-      containerWidthRef.current = entries[0].contentRect.width;
-    });
-    ro.observe(el);
-    // Seed the initial value immediately
-    containerWidthRef.current = el.offsetWidth;
 
     return () => {
       observer.disconnect();
-      ro.disconnect();
-      timersRef.current.forEach(clearTimeout);
+      timers.forEach(clearTimeout);
+      cancelAnimationFrame(tiltFrameRef.current);
     };
-  }, [mounted]);
+  }, []);
 
-  if (!mounted) return null;
-
-  // The map is tilted in 3D, which getScreenCTM() can't see, so position the
-  // tooltip from the pin's real on-screen bounding box instead.
-  function handleCityEnter(id: string, group: SVGGElement) {
-    setHoveredStandalone(id);
-    // Defer geometry reads until after paint to avoid forced reflow
-    requestAnimationFrame(() => {
-      const container = containerRef.current;
-      const pin = group.querySelector("path");
-      if (!container || !pin) return;
-      const rc = container.getBoundingClientRect();
-      const rp = pin.getBoundingClientRect();
-      setCardPos({
-        x: rp.left + rp.width / 2 - rc.left,
-        y: rp.top - rc.top - 4,
-        containerWidth: 0,
-      });
+  // ── Tooltip ──
+  // The map is tilted in 3D, so place the tooltip from the pin's real
+  // on-screen box. Read synchronously and set state once, so the name shows
+  // on the same frame as the tap / hover.
+  function showCity(city: (typeof CITIES)[number], pin: HTMLElement) {
+    const container = containerRef.current;
+    const icon = pin.querySelector(".pin-icon") ?? pin;
+    if (!container) return;
+    const rc = container.getBoundingClientRect();
+    const rp = icon.getBoundingClientRect();
+    setActive({
+      id: city.id,
+      name: city.name,
+      x: rp.left + rp.width / 2 - rc.left,
+      y: rp.top - rc.top - 6,
     });
   }
 
-  // Tilt the map toward the cursor (direct style writes: no re-renders)
-  const REST_TILT = "perspective(1400px) rotateX(18deg) rotateY(0deg)";
+  // ── Tilt toward the cursor (direct style writes, one per frame) ──
   function handleTilt(e: React.MouseEvent<HTMLDivElement>) {
-    const el = tiltRef.current;
-    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-      return;
-    const r = e.currentTarget.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transform = `perspective(1400px) rotateX(${18 - py * 10}deg) rotateY(${px * 14}deg)`;
+    const clientX = e.clientX,
+      clientY = e.clientY;
+    const target = e.currentTarget;
+    if (tiltFrameRef.current) return;
+    tiltFrameRef.current = requestAnimationFrame(() => {
+      tiltFrameRef.current = 0;
+      const el = tiltRef.current;
+      if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const r = (tiltRectRef.current ??= target.getBoundingClientRect());
+      const px = (clientX - r.left) / r.width - 0.5;
+      const py = (clientY - r.top) / r.height - 0.5;
+      el.style.transform = `perspective(1400px) rotateX(${18 - py * 10}deg) rotateY(${px * 14}deg)`;
+    });
   }
   function handleTiltReset() {
+    cancelAnimationFrame(tiltFrameRef.current);
+    tiltFrameRef.current = 0;
+    tiltRectRef.current = null;
     if (tiltRef.current) tiltRef.current.style.transform = REST_TILT;
   }
-  function handleCityLeave() {
-    setHoveredStandalone(null);
-    setCardPos(null);
-  }
-
-  const hq = project(HQ.lat, HQ.lng);
-  const clusterData = CLUSTERS.map((cl) => ({
-    ...cl,
-    center: centroid(cl.cities),
-  }));
-  // One pin per client city (standalones + every city inside a state cluster)
-  const standaloneData = [
-    ...STANDALONES,
-    ...CLUSTERS.flatMap((cl) =>
-      cl.cities.map((c) => ({ ...c, id: `${cl.id}-${c.name.toLowerCase()}` })),
-    ),
-  ].map((s) => ({ ...s, ...project(s.lat, s.lng) }));
-
-  // All origin points for the intro lines (standalones + cluster centroids)
-  const introOrigins = standaloneData.map((s) => ({
-    id: s.id,
-    x: s.x,
-    y: s.y,
-  }));
 
   return (
     <div className="relative w-full select-none font-sans px-3 sm:px-10">
       <style
         dangerouslySetInnerHTML={{
           __html: `
-        /* ── pin drop ── */
+        /* All looping animations use transform/opacity only, so they run on
+           the compositor and never trigger a repaint of the map. */
         @keyframes indiaPinDrop {
           0%   { transform: translateY(-14px); opacity: 0; }
           65%  { transform: translateY(3px);   opacity: 1; }
           100% { transform: translateY(0);     opacity: 1; }
         }
-        /* ── pin head blink ring ── */
-        @keyframes pinRingPulse {
-          0%   { r: 3;  opacity: 0.85; }
-          100% { r: 14; opacity: 0;    }
+        @keyframes indiaRing {
+          0%   { transform: translate(-50%, -50%) scale(0.2); opacity: 0.85; }
+          100% { transform: translate(-50%, -50%) scale(1);   opacity: 0; }
         }
-        /* ── cluster badge blink ── */
-        @keyframes clusterPulse {
-          0%   { r: 9;  opacity: 0.7; }
-          100% { r: 26; opacity: 0;   }
-        }
-        /* ── HQ pulse ── */
-        @keyframes hqPulse {
-          0%   { r: 8;  opacity: 0.8; }
-          100% { r: 28; opacity: 0;   }
-        }
-        /* ── intro line draw-in ── */
-        @keyframes lineDraw {
-          from { stroke-dashoffset: var(--line-len); }
-          to   { stroke-dashoffset: 0; }
-        }
-        /* ── tooltip fade ── */
+        @keyframes indiaLineDraw { to { stroke-dashoffset: 0; } }
         @keyframes indiaFadeIn {
-          from { opacity: 0; transform: translateY(4px); }
+          from { opacity: 0; transform: translateY(3px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        @keyframes cityPopIn {
-          from { opacity: 0; transform: scale(0.4); }
-          to   { opacity: 1; transform: scale(1);   }
-        }
-        .pin-drop {
-          animation: indiaPinDrop 0.45s cubic-bezier(0.34,1.4,0.64,1) both;
-          transform-box: fill-box; transform-origin: center bottom;
-        }
-        .pin-ring {
-          animation: pinRingPulse 2s ease-out infinite;
-          transform-box: fill-box; transform-origin: center;
-        }
-        .hq-pulse {
-          animation: hqPulse 2s ease-out infinite;
-          transform-box: fill-box; transform-origin: center;
-        }
-        .cluster-pulse {
-          animation: clusterPulse 2.4s ease-out infinite;
-          transform-box: fill-box; transform-origin: center;
-        }
-        .tooltip-fade { animation: indiaFadeIn 0.18s ease-out both; }
         @keyframes mapFloat {
           0%, 100% { transform: translateY(0); }
           50%      { transform: translateY(-10px); }
         }
+        .pin-drop { animation: indiaPinDrop 0.45s cubic-bezier(0.34,1.4,0.64,1) both; }
+        .pin-ring {
+          position: absolute; left: 50%; border-radius: 9999px;
+          pointer-events: none; opacity: 0;
+          animation: indiaRing 2s ease-out infinite;
+        }
+        .hq-pulse { animation-duration: 2.2s; }
+        .pin-icon { transform-origin: 50% 100%; transition: transform 0.18s ease-out, filter 0.18s ease-out; }
+        .india-pin { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+        .india-pin[data-active="true"] .pin-icon {
+          transform: scale(1.18);
+          filter: drop-shadow(0 0 4px rgba(198, 27, 27, 0.9));
+        }
+        .hq-pin:hover .pin-icon { transform: scale(1.16); }
+        .tooltip-fade { animation: indiaFadeIn 0.12s ease-out both; }
         .map-float { animation: mapFloat 7s ease-in-out infinite; }
         @media (prefers-reduced-motion: reduce) {
-          .map-float { animation: none; }
-        }
-        .city-pop {
-          animation: cityPopIn 0.22s cubic-bezier(0.34,1.56,0.64,1) both;
-          transform-box: fill-box; transform-origin: center;
+          .map-float, .pin-ring { animation: none; }
+          .pin-drop { animation-duration: 0.01s; }
         }
       `,
         }}
@@ -422,7 +439,6 @@ export default function IndiaClientMap({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
         {/* ── LEFT: title + description ── */}
         <div className="flex flex-col justify-center gap-6 px-2 lg:px-0 order-1">
-          {/* heading */}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
             Serving Clients{" "}
             {t.headingAccent ? (
@@ -432,7 +448,6 @@ export default function IndiaClientMap({
             )}
           </h2>
 
-          {/* description */}
           <p className="text-neutral-400 leading-tight text-sm sm:text-base max-w-md">
             Vipprow helps businesses across India grow through Digital
             Marketing, Performance Marketing, Business Automation, Website
@@ -440,12 +455,7 @@ export default function IndiaClientMap({
             We combine innovative technology with data-driven strategies to
             generate quality leads, strengthen brands, and streamline business
             operations. With clients across{" "}
-            <span className="text-white font-medium">
-              {STANDALONES.length +
-                CLUSTERS.reduce((s, c) => s + c.cities.length, 0) +
-                1}{" "}
-              cities
-            </span>{" "}
+            <span className="text-white font-medium">{CITY_COUNT + 1} cities</span>{" "}
             and <span className="text-white font-medium">11 states</span>,
             Vipprow serves as a trusted technology and growth partner,
             delivering scalable solutions that drive measurable business
@@ -455,20 +465,14 @@ export default function IndiaClientMap({
           {/* stat chips */}
           <div className="flex flex-wrap gap-3">
             {[
-              {
-                value: `${STANDALONES.length + CLUSTERS.reduce((s, c) => s + c.cities.length, 0)}+`,
-                label: "Client Cities",
-              },
+              { value: `${CITY_COUNT}+`, label: "Client Cities" },
               { value: "11", label: "States Covered" },
-              // { value: "1",   label: "Jabalpur" },
             ].map(({ value, label }) => (
               <div
                 key={label}
                 className={`flex flex-col items-center px-6 sm:px-10 sm:w-60 py-2.5 min-w-20 ${t.statCell}`}
               >
-                <span className={`text-xl sm:text-2xl font-bold ${t.statValue}`}>
-                  {value}
-                </span>
+                <span className={`text-xl sm:text-2xl font-bold ${t.statValue}`}>{value}</span>
                 <span className="text-xs text-slate-500 mt-0.5 font-mono tracking-wide whitespace-nowrap">
                   {label}
                 </span>
@@ -499,6 +503,10 @@ export default function IndiaClientMap({
           className="relative w-full order-2 flex justify-center"
           onMouseMove={handleTilt}
           onMouseLeave={handleTiltReset}
+          // Tap anywhere off a pin closes the city name (touch screens)
+          onClick={(e) => {
+            if (!(e.target as Element).closest("[data-pin]")) setActive(null);
+          }}
         >
           {/* glow pool under the map */}
           <div
@@ -508,7 +516,7 @@ export default function IndiaClientMap({
           <div className="map-float w-full">
             <div
               ref={tiltRef}
-              className="w-full"
+              className="relative w-full"
               style={{
                 transform: REST_TILT,
                 transformOrigin: "50% 60%",
@@ -516,428 +524,131 @@ export default function IndiaClientMap({
                 willChange: "transform",
               }}
             >
-              <svg
-                ref={svgRef}
-                viewBox="-40 -40 760 860"
-                className="w-full"
-                style={{ display: "block" }}
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <defs>
-                  <filter
-                    id="borderGlow"
-                    x="-20%"
-                    y="-20%"
-                    width="140%"
-                    height="140%"
-                  >
-                    <feGaussianBlur
-                      in="SourceGraphic"
-                      stdDeviation="1.5"
-                      result="blur"
-                    />
-                    <feMerge>
-                      <feMergeNode in="blur" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
-                  <filter
-                    id="pinGlow"
-                    x="-50%"
-                    y="-50%"
-                    width="200%"
-                    height="200%"
-                  >
-                    <feGaussianBlur
-                      in="SourceGraphic"
-                      stdDeviation="2.5"
-                      result="blur"
-                    />
-                    <feMerge>
-                      <feMergeNode in="blur" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
-                  <filter
-                    id="hqGlow"
-                    x="-60%"
-                    y="-60%"
-                    width="220%"
-                    height="220%"
-                  >
-                    <feGaussianBlur
-                      in="SourceGraphic"
-                      stdDeviation="4"
-                      result="blur"
-                    />
-                    <feMerge>
-                      <feMergeNode in="blur" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
-                  <radialGradient id="mapAmbient" cx="45%" cy="50%" r="55%">
-                    <stop offset="0%" stopColor={t.ambientA} stopOpacity="0.9" />
-                    <stop offset="100%" stopColor={t.ambientB} stopOpacity="0" />
-                  </radialGradient>
-                  <clipPath id="mapClip">
-                    <rect x="-40" y="-40" width="780" height="860" />
-                  </clipPath>
-                  <linearGradient id="landTop" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor={t.land[0]} />
-                    <stop offset="55%" stopColor={t.land[1]} />
-                    <stop offset="100%" stopColor={t.land[2]} />
-                  </linearGradient>
-                  <filter
-                    id="landShadow"
-                    x="-20%"
-                    y="-20%"
-                    width="140%"
-                    height="140%"
-                  >
-                    <feGaussianBlur stdDeviation="14" />
-                  </filter>
-                  {/* land silhouette, reused for the extruded layers + top face */}
-                  <g id="land-shape">
-                    {mapData.allPaths.map((d, i) => (
-                      <path key={`shape-${i}`} d={d} />
-                    ))}
-                  </g>
-                </defs>
+              <StaticMap t={t} />
 
-                <rect
-                  x="-40"
-                  y="-40"
-                  width="780"
-                  height="860"
-                  fill="url(#mapAmbient)"
-                />
-
-                {/* ── INDIA MAP ── */}
-                <g id="india-map" clipPath="url(#mapClip)">
-                  {/* soft ground shadow, then stacked layers = extruded thickness */}
-                  <use
-                    href="#land-shape"
-                    y="26"
-                    fill="#000"
-                    opacity="0.55"
-                    filter="url(#landShadow)"
-                  />
-                  {Array.from({ length: 12 }, (_, k) => 12 - k).map((n) => (
-                    <use
-                      key={`depth-${n}`}
-                      href="#land-shape"
-                      y={n * 1.5}
-                      fill={n > 6 ? t.depth[0] : n > 3 ? t.depth[1] : t.depth[2]}
-                    />
-                  ))}
-                  <use href="#land-shape" fill="url(#landTop)" />
-                  {mapData.allPaths.map((d, i) => (
+              {/* ── ONE-TIME INTRO LINES (own light layer, removed when done) ── */}
+              {(linePhase === "drawing" || linePhase === "fading") && (
+                <svg
+                  viewBox={VIEWBOX}
+                  className="pointer-events-none absolute inset-0 h-full w-full"
+                  aria-hidden="true"
+                  style={{
+                    willChange: "opacity",
+                    opacity: linePhase === "fading" ? 0 : 1,
+                    transition: "opacity 1.5s ease",
+                  }}
+                >
+                  {INTRO_LINES.map((l) => (
                     <path
-                      key={`border-${i}`}
-                      d={d}
+                      key={l.id}
+                      d={l.d}
+                      pathLength={1}
                       fill="none"
-                      stroke={t.border}
-                      strokeWidth="0.7"
-                      strokeLinejoin="round"
-                      filter="url(#borderGlow)"
-                      opacity={0.75}
+                      stroke={t.accent}
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                      opacity="0.75"
+                      style={{
+                        strokeDasharray: 1,
+                        strokeDashoffset: 1,
+                        animation: `indiaLineDraw ${l.dur}s cubic-bezier(0.4,0,0.6,1) ${l.delay}s forwards`,
+                      }}
                     />
                   ))}
-                  <path
-                    d={mapData.allPaths[0]}
-                    fill="none"
-                    stroke={t.accent}
-                    strokeWidth="1.2"
-                    strokeLinejoin="round"
-                    opacity={0.45}
-                  />
-                </g>
+                </svg>
+              )}
 
-                {/* ── ONE-TIME INTRO LINES ── */}
-                {linePhase !== "idle" && linePhase !== "done" && (
-                  <g
-                    id="intro-lines"
-                    style={{
-                      opacity: linePhase === "fading" ? 0 : 1,
-                      transition:
-                        linePhase === "fading"
-                          ? "opacity 1.5s ease"
-                          : undefined,
-                    }}
-                  >
-                    {introOrigins.map((origin, i) => {
-                      // Arc starts at client, ends at HQ → stroke-dashoffset reveal
-                      // travels from the client pin toward Vipprow HQ
-                      const d = arcPath(origin.x, origin.y, hq.x, hq.y);
-                      const dx = origin.x - hq.x,
-                        dy = origin.y - hq.y;
-                      const len = Math.round(
-                        Math.sqrt(dx * dx + dy * dy) * 1.35,
-                      );
-
-                      // Duration scales with distance so all lines travel at the same visual speed.
-                      // Base speed: ~30 SVG-units per second → longer lines take proportionally longer.
-                      // ↑ Lower the divisor (e.g. 20) to slow down; raise it (e.g. 50) to speed up.
-                      const dur = Math.max(4, len / 100);
-                      const delay = i * 0.25; // 400 ms stagger between lines
-
-                      return (
-                        <path
-                          key={`intro-${origin.id}`}
-                          d={d}
-                          fill="none"
-                          stroke={t.accent}
-                          strokeWidth="1.4"
-                          strokeLinecap="round"
-                          style={
-                            {
-                              "--line-len": len, // CSS var read by @keyframes lineDraw
-                              strokeDasharray: len,
-                              strokeDashoffset: len, // initial hidden state
-                              animation: `lineDraw ${dur}s cubic-bezier(0.4,0,0.6,1) forwards`,
-                              animationDelay: `${delay}s`,
-                              opacity: 0.75,
-                            } as React.CSSProperties
-                          }
-                        />
-                      );
-                    })}
-                  </g>
-                )}
-
-                {/* ── STANDALONE LOCATION PINS ── */}
-                <g id="standalone-nodes">
-                  {/* Keep DOM order stable: re-ordering nodes on hover restarts
-                  their CSS animations, which made every pin drop in again. */}
-                  {standaloneData.map((city, idx) => {
-                    const isHovered = hoveredStandalone === city.id;
-                    const pinSize = isHovered ? 1.4 : 1.2;
-                    const headY = city.y - 9 * pinSize; // centre of pin's circular head
-                    return (
-                      <g
-                        key={city.id}
-                        style={{ cursor: "pointer" }}
-                        onMouseEnter={(e) =>
-                          handleCityEnter(city.id, e.currentTarget)
-                        }
-                        onMouseLeave={handleCityLeave}
+              {/* ── PINS (HTML, so pulses run on the GPU and tap targets can be big) ── */}
+              <div className="absolute inset-0">
+                {CITIES.map((city, idx) => {
+                  const isActive = active?.id === city.id;
+                  return (
+                    <button
+                      key={city.id}
+                      type="button"
+                      data-pin
+                      data-active={isActive}
+                      aria-label={city.name}
+                      className="india-pin absolute flex h-10 w-8 -translate-x-1/2 -translate-y-full cursor-pointer items-end justify-center outline-none sm:h-8 sm:w-7"
+                      style={{ left: city.left, top: city.top, zIndex: isActive ? 20 : 1 }}
+                      onPointerEnter={(e) => {
+                        if (e.pointerType === "mouse") showCity(city, e.currentTarget);
+                      }}
+                      onPointerLeave={(e) => {
+                        if (e.pointerType === "mouse") setActive(null);
+                      }}
+                      onClick={(e) => showCity(city, e.currentTarget)}
+                      onFocus={(e) => showCity(city, e.currentTarget)}
+                      onBlur={() => setActive(null)}
+                    >
+                      <span
+                        className="pin-drop relative block h-[18px] w-[14px] sm:h-[18px] sm:w-[14px]"
+                        style={{ animationDelay: `${idx * 0.06}s` }}
                       >
-                        <g
-                          className="pin-drop"
-                          style={{ animationDelay: `${idx * 0.06}s` }}
-                        >
-                          {/* Blinking ring around pin head */}
-                          <circle
-                            cx={city.x}
-                            cy={headY}
-                            r="10"
-                            fill="none"
-                            stroke="#f8f8f8ff"
-                            strokeWidth="2"
-                            className="pin-ring"
-                            style={{ animationDelay: `${idx * 0.25}s` }}
-                          />
-                          {/* Second offset blink for layered effect */}
-                          <circle
-                            cx={city.x}
-                            cy={headY}
-                            r="10"
-                            fill="none"
-                            stroke="#fbfbfbff"
-                            strokeWidth="1"
-                            className="pin-ring"
-                            style={{ animationDelay: `${idx * 0.25 + 0.8}s` }}
-                          />
-
-                          {/* Glow behind pin when hovered */}
-                          {isHovered && (
-                            <LocationPin
-                              cx={city.x}
-                              cy={city.y}
-                              size={1.65}
-                              fill="#c61b1b"
-                              stroke="none"
-                              opacity={0.22}
-                              filter="url(#pinGlow)"
-                            />
-                          )}
-                          {/* Main pin */}
-                          <LocationPin
-                            cx={city.x}
-                            cy={city.y}
-                            size={pinSize}
-                            fill="#c61b1b"
-                            stroke="#fff"
-                            strokeWidth={isHovered ? 1.2 : 0.9}
-                          />
-                          {/* White dot inside head */}
-                          <circle
-                            cx={city.x}
-                            cy={headY}
-                            r={1.8 * pinSize}
-                            fill="#fff"
-                            opacity={0.9}
-                            style={{ pointerEvents: "none" }}
-                          />
-                        </g>
-                      </g>
-                    );
-                  })}
-
-                  {/* Hovered pin redrawn on top (static, no pointer events) so it
-                  isn't covered by neighbours, without reordering the pins */}
-                  {(() => {
-                    const c = standaloneData.find(
-                      (s) => s.id === hoveredStandalone,
-                    );
-                    if (!c) return null;
-                    return (
-                      <g style={{ pointerEvents: "none" }}>
-                        <LocationPin
-                          cx={c.x}
-                          cy={c.y}
-                          size={1.4}
-                          fill="#c61b1b"
-                          stroke="#fff"
-                          strokeWidth={1.2}
+                        <span
+                          className="pin-ring h-6 w-6 border-2 border-white/90"
+                          style={{ top: PIN_HEAD_TOP, animationDelay: `${idx * 0.25}s` }}
                         />
-                        <circle
-                          cx={c.x}
-                          cy={c.y - 9 * 1.4}
-                          r={1.8 * 1.4}
-                          fill="#fff"
-                          opacity={0.9}
+                        <span
+                          className="pin-ring h-6 w-6 border border-white/90"
+                          style={{ top: PIN_HEAD_TOP, animationDelay: `${idx * 0.25 + 0.8}s` }}
                         />
-                      </g>
-                    );
-                  })()}
-                </g>
+                        <PinIcon fill="#c61b1b" strokeWidth={0.9} />
+                      </span>
+                    </button>
+                  );
+                })}
 
                 {/* ── HQ PIN ── */}
-                <g
-                  style={{ cursor: "pointer" }}
-                  onMouseEnter={() => setHoveredStandalone("hq")}
-                  onMouseLeave={() => setHoveredStandalone(null)}
+                <div
+                  className="absolute"
+                  style={{ left: HQ_POS.left, top: HQ_POS.top, zIndex: 15 }}
                 >
-                  {/* Pulse rings */}
-                  <circle
-                    cx={hq.x}
-                    cy={hq.y}
-                    r="8"
-                    fill="none"
-                    stroke={t.hq}
-                    strokeWidth="1.5"
-                    className="hq-pulse"
+                  <span
+                    className="pin-ring hq-pulse top-0 h-10 w-10 border-[1.5px] sm:h-12 sm:w-12"
+                    style={{ borderColor: t.hq }}
                   />
-                  <circle
-                    cx={hq.x}
-                    cy={hq.y}
-                    r="8"
-                    fill="none"
-                    stroke={t.hq}
-                    strokeWidth="1"
-                    className="hq-pulse"
-                    style={{ animationDelay: "0.9s" }}
+                  <span
+                    className="pin-ring hq-pulse top-0 h-10 w-10 border sm:h-12 sm:w-12"
+                    style={{ borderColor: t.hq, animationDelay: "0.9s" }}
                   />
-
-                  {hoveredStandalone === "hq" && (
-                    <LocationPin
-                      cx={hq.x}
-                      cy={hq.y}
-                      size={1.6}
-                      fill={t.hq}
-                      stroke="none"
-                      opacity={0.3}
-                      filter="url(#hqGlow)"
-                    />
-                  )}
-
-                  {/* HQ pin */}
-                  <LocationPin
-                    cx={hq.x}
-                    cy={hq.y}
-                    size={hoveredStandalone === "hq" ? 1.45 : 1.25}
-                    fill={hoveredStandalone === "hq" ? t.hqHover : t.hq}
-                    stroke="#fff"
-                    strokeWidth={1.5}
-                  />
-
-                  {/* Blinking ring on HQ pin head */}
-                  {(() => {
-                    const s = hoveredStandalone === "hq" ? 1.45 : 1.25;
-                    const hy = hq.y - 9 * s;
-                    return (
-                      <>
-                        <circle
-                          cx={hq.x}
-                          cy={hy}
-                          r="3"
-                          fill="none"
-                          stroke={t.hqHover}
-                          strokeWidth="1"
-                          className="pin-ring"
-                        />
-                        <circle
-                          cx={hq.x}
-                          cy={hy}
-                          r="3"
-                          fill="none"
-                          stroke={t.hqHover}
-                          strokeWidth="0.7"
-                          className="pin-ring"
-                          style={{ animationDelay: "0.8s" }}
-                        />
-                        {/* White dot */}
-                        <circle
-                          cx={hq.x}
-                          cy={hy}
-                          r={2.2 * s}
-                          fill="#fff"
-                          opacity={0.95}
-                          style={{ pointerEvents: "none" }}
-                        />
-                      </>
-                    );
-                  })()}
-
-                  {/* Label */}
-                  <text
-                    x={hq.x}
-                    y={hq.y - 9 * 1.25 - 19}
-                    textAnchor="middle"
-                    fill={t.hqHover}
-                    fontSize="11"
-                    fontWeight="800"
-                    fontFamily="ui-monospace, monospace"
-                    letterSpacing="0.08em"
-                    style={{ pointerEvents: "none" }}
-                  >
-                    VIPPROW
-                  </text>
-                </g>
-              </svg>
+                  <div className="hq-pin absolute bottom-0 left-0 flex -translate-x-1/2 cursor-pointer flex-col items-center">
+                    <span
+                      className="mb-1 font-mono text-[9px] font-extrabold tracking-[0.08em] sm:text-[10px]"
+                      style={{ color: t.hqHover }}
+                    >
+                      VIPPROW
+                    </span>
+                    <span className="relative block h-5 w-4">
+                      <span
+                        className="pin-ring h-5 w-5 border"
+                        style={{ top: PIN_HEAD_TOP, borderColor: t.hqHover }}
+                      />
+                      <span
+                        className="pin-ring h-5 w-5 border"
+                        style={{ top: PIN_HEAD_TOP, borderColor: t.hqHover, animationDelay: "0.8s" }}
+                      />
+                      <PinIcon fill={t.hq} strokeWidth={1.3} dotRadius={2.2} />
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* ── CITY NAME TOOLTIP (hover only) ── */}
-          {hoveredStandalone && hoveredStandalone !== "hq" && cardPos && (
+          {/* ── CITY NAME TOOLTIP ── */}
+          {active && (
             <div
-              className="absolute pointer-events-none z-50"
-              style={{
-                left: cardPos.x,
-                top: cardPos.y,
-                transform: "translate(-50%, -100%)",
-              }}
+              className="pointer-events-none absolute z-50"
+              style={{ left: active.x, top: active.y, transform: "translate(-50%, -100%)" }}
             >
-              <div className="tooltip-fade whitespace-nowrap bg-slate-950/95 border border-white/20 backdrop-blur-sm px-2.5 py-1.5 rounded-lg shadow-2xl font-mono text-[10px] sm:text-sm font-bold text-white">
-                {standaloneData.find((s) => s.id === hoveredStandalone)?.name}
+              <div className="tooltip-fade whitespace-nowrap bg-slate-950/95 border border-white/20 px-2.5 py-1.5 rounded-lg shadow-2xl font-mono text-xs sm:text-sm font-bold text-white">
+                {active.name}
               </div>
             </div>
           )}
         </div>
-        {/* end map column */}
       </div>
-      {/* end grid */}
     </div>
   );
 }

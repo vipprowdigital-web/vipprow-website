@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { MessageCircle, Send, Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ChatBubble } from "../ui/ChatBubble";
+import { PrivacyPolicyLink } from "@/components/legal/Consent";
 
 const SESSION_STORAGE_KEY = "vipprow_chat_session_id";
 const GREETING =
@@ -201,7 +202,8 @@ export default function ChatWidget() {
             {/* Messages */}
             <div
               ref={scrollRef}
-              className="flex-1 space-y-3 overflow-y-auto px-4 py-4"
+              // Scrollable, but the scrollbar itself is hidden (all browsers)
+              className="flex-1 space-y-3 overflow-y-auto px-4 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {messages.map((m) => (
                 <ChatBubble
@@ -212,7 +214,7 @@ export default function ChatWidget() {
               ))}
 
               {isPending && (
-                <div className="mr-auto flex items-center gap-1 rounded-2xl bg-neutral-800 px-4 py-3">
+                <div className="mr-auto flex w-fit items-center gap-1 rounded-2xl bg-neutral-800 px-4 py-3">
                   <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-neutral-400 [animation-delay:-0.2s]" />
                   <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-neutral-400" />
                   <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-neutral-400 [animation-delay:0.2s]" />
@@ -228,7 +230,7 @@ export default function ChatWidget() {
                 onKeyDown={handleKeyDown}
                 placeholder="Type your message…"
                 rows={1}
-                className="max-h-24 flex-1 resize-none rounded-xl bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/40 outline-none ring-1 ring-white/10 focus:ring-blue-500/50"
+                className="max-h-24 flex-1 resize-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden rounded-xl bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/40 outline-none ring-1 ring-white/10 focus:ring-blue-500/50"
               />
               <button
                 type="button"
@@ -240,6 +242,13 @@ export default function ChatWidget() {
                 <Send className="h-4 w-4" />
               </button>
             </div>
+
+            {/* DPDP notice: tell visitors this is AI and that details are kept */}
+            <p className="px-3 pb-2.5 text-center text-[10px] leading-snug text-white/40">
+              AI assistant · details you share are saved so our team can
+              contact you ·{" "}
+              <PrivacyPolicyLink className="text-white/60" />
+            </p>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import consentSchema from "./consent.schema.js";
 
 const ApplicantSchema = new mongoose.Schema(
   {
@@ -24,6 +25,8 @@ const ApplicantSchema = new mongoose.Schema(
         required: [true, "Cloudinary public ID is required"],
       },
     },
+    // DPDP consent record (what they agreed to, when, from where)
+    consent: { type: consentSchema, default: null },
   },
   {
     timestamps: true,

@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Send, Loader2, Rocket, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
+import {
+  ConsentCheckbox,
+  CONSENT_TEXT,
+  consentFields,
+} from "@/components/legal/Consent";
 
 // const SERVICES = [
 //   "CRM Automation",
@@ -52,6 +57,7 @@ export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [services, setServices] = useState([]);
+  const [consent, setConsent] = useState(false);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -103,6 +109,7 @@ export function ContactForm() {
         ...form,
         type: "Services",
         services: [form.service],
+        ...consentFields(CONSENT_TEXT.enquiry),
       };
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/contact`,
@@ -383,6 +390,15 @@ export function ContactForm() {
           {...focusHandlers}
         />
       </div>
+
+      <ConsentCheckbox
+        checked={consent}
+        onChange={setConsent}
+        accentColor="#8B5CF6"
+        className="text-white/50"
+        linkClassName="text-violet-300"
+        text={CONSENT_TEXT.enquiry}
+      />
 
       <motion.button
         type="submit"

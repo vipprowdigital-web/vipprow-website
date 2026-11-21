@@ -18,7 +18,7 @@ const projects = [
     ],
     color: "#5B21B6",
     instagram: "https://www.instagram.com/bellezadehradun/",
-    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147627/belleza_logo_mobile_f3rypj.jpg", // 👈 apni logo image ka path yahan daalein
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147627/belleza_logo_mobile_f3rypj.jpg",
   },
   // {
   //   id: 2,
@@ -35,7 +35,7 @@ const projects = [
   //   ],
   //   color: "#5B21B6",
   //   instagram: "https://www.instagram.com/gauramakeupacademy_",
-  //   logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147657/GAURA_tzjcdd.png", // 👈 apni logo image ka path yahan daalein
+  //   logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147657/GAURA_tzjcdd.png",
   // },
   // {
   //   id: 3,
@@ -52,7 +52,7 @@ const projects = [
   //   ],
   //   color: "#5B21B6",
   //   instagram: " https://www.instagram.com/thebigtreebeautyacademy",
-  //   logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147636/big_tree_logo_bxhlaz.png", // 👈 apni logo image ka path yahan daalein
+  //   logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147636/big_tree_logo_bxhlaz.png",
   // },
   {
     id: 4,
@@ -69,7 +69,7 @@ const projects = [
     ],
     color: "#5B21B6",
     instagram: "https://www.instagram.com/tipsalon__/",
-    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147981/Logo_1_kauuqo.jpg", // 👈 apni logo image ka path yahan daalein
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147981/Logo_1_kauuqo.jpg",
   },
   {
     id: 5,
@@ -86,7 +86,7 @@ const projects = [
     ],
     color: "#5B21B6",
     instagram: "https://www.instagram.com/allure_makeup.studio/",
-    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147668/allure_v3utoe.jpg", // 👈 apni logo image ka path yahan daalein
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147668/allure_v3utoe.jpg",
   },
   {
     id: 6,
@@ -102,8 +102,8 @@ const projects = [
       "Reels Captions",
     ],
     color: "#5B21B6",
-    instagram: "https://www.instagram.com/uk_londonbeautyschoolrudrapur/",
-    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147646/london-beuaty-school.jpg_mawryu.png", // 👈 apni logo image ka path yahan daalein
+    instagram: "https://www.instagram.com/uk_londonbeautyschool/",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147646/london-beuaty-school.jpg_mawryu.png",
   },
 
   {
@@ -120,8 +120,8 @@ const projects = [
       "Reels Captions",
     ],
     color: "#5B21B6",
-    instagram: "https://www.instagram.com/uk_londonbeautyschoolrudrapur/",
-    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147620/Athenian_LOGO_lrqeka.jpg", // 👈 apni logo image ka path yahan daalein
+    instagram: "",
+    logo: "https://res.cloudinary.com/dl6fjer3y/image/upload/v1785147620/Athenian_LOGO_lrqeka.jpg",
   },
   {
     id: 8,

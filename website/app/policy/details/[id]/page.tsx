@@ -59,36 +59,53 @@ export default function DetailPage() {
 
       <div className="mt-12 rounded-2xl border border-white/10 bg-white/[0.02] p-4 md:p-8">
         <div
+          // Content is HTML from the console's rich-text editor: every
+          // paragraph is a <p>, list items wrap a <p>, and section titles are
+          // usually a <p> containing only <strong>. Spacing is set per element
+          // (not space-y on the wrapper) so lines in a paragraph stay tight.
           className="
-            space-y-6 font-heading
-            text-sm leading-7 text-white/80
+            font-heading
+            text-sm sm:text-[15px] leading-relaxed text-white/80
 
+            [&>*:first-child]:mt-0
+
+            [&_p]:my-3
+
+            [&_p:has(>strong:only-child)]:mt-8
+            [&_p:has(>strong:only-child)]:mb-2
+            [&_p:has(>strong:only-child)]:text-base
+            [&_p:has(>strong:only-child)]:text-white
+
+            [&_h1]:mt-8 [&_h1]:mb-3
             [&_h1]:text-xl
             [&_h1]:font-semibold
             [&_h1]:text-white
 
+            [&_h2]:mt-8 [&_h2]:mb-2
             [&_h2]:text-lg
             [&_h2]:font-semibold
             [&_h2]:text-white
-            [&_h2]:pt-6
 
-            [&_h3]:text-md
+            [&_h3]:mt-6 [&_h3]:mb-2
+            [&_h3]:text-base
             [&_h3]:font-semibold
             [&_h3]:text-white
-            [&_h3]:pt-4
 
-            [&_p]:text-white/80
-
+            [&_ul]:my-3
             [&_ul]:list-disc
             [&_ul]:pl-6
 
+            [&_ol]:my-3
             [&_ol]:list-decimal
             [&_ol]:pl-6
 
-            [&_li]:my-1
+            [&_li]:my-1.5
             [&_li]:text-white/75
+            [&_li>p]:my-0
 
             [&_a]:text-blue-400
+            [&_a]:underline
+            [&_a]:underline-offset-2
             hover:[&_a]:text-blue-300
 
             [&_strong]:text-white

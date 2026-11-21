@@ -69,19 +69,29 @@ const defaultData = [
 
 export default function FaqSection({
   page,
+  items,
+  description = "Find quick answers to common questions about our services and features.",
   hideWhenEmpty = false,
 }: {
   page?: string;
+  /**
+   * FAQs passed in directly (e.g. an article's own FAQs). When given, the
+   * page FAQs aren't fetched, and nothing renders if the list is empty.
+   */
+  items?: { question: string; answer: string }[];
+  description?: string;
   /** Pages without default questions render nothing until FAQs are added in the console */
   hideWhenEmpty?: boolean;
 }) {
   const [openItems, setOpenItems] = useState<string[]>([]);
 
   // FAQs added from the console for this page; fall back to the default set
-  const { data: apiData } = usePublicFaqs(page);
-  const data = apiData?.data?.length
-    ? apiData.data.map((f) => ({ id: f._id, question: f.question, answer: f.answer }))
-    : defaultData;
+  const { data: apiData } = usePublicFaqs(items ? undefined : page);
+  const data = items
+    ? items.map((f, i) => ({ id: `item-${i}`, question: f.question, answer: f.answer }))
+    : apiData?.data?.length
+      ? apiData.data.map((f) => ({ id: f._id, question: f.question, answer: f.answer }))
+      : defaultData;
 
   const handleValueChange = (value: string[]) => {
     setOpenItems(value);
@@ -110,7 +120,8 @@ export default function FaqSection({
     },
   };
 
-  if (hideWhenEmpty && !apiData?.data?.length) return null;
+  if (items && items.length === 0) return null;
+  if (!items && hideWhenEmpty && !apiData?.data?.length) return null;
 
   return (
     <section className="relative flex w-full flex-col items-center justify-center py-5">
@@ -123,11 +134,7 @@ export default function FaqSection({
           transition={{ duration: 0.6 }}
           className="mb-12 text-center"
         >
-          <PrimaryHeading
-            heading=" Frequently Asked Questions"
-            des=" Find quick answers to common questions about our services and
-            features."
-          />
+          <PrimaryHeading heading="Frequently Asked Questions" des={description} />
         </motion.div>
 
         {/* FAQ Accordion */}
@@ -248,7 +255,7 @@ export default function FaqSection({
             </p>
             <button
               className="from-blue-600 to-blue-600/60 relative z-1 cursor-pointer overflow-hidden rounded-md bg-linear-to-tl px-8 py-3 font-medium text-white transition-all duration-700 before:absolute before:top-0 before:-left-full before:h-full before:w-full before:rotate-45 before:bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)] before:transition-all before:duration-700 hover:scale-110 hover:px-12 hover:shadow-[0_0_20px_hsl(var(--blue-600)/0.4)] hover:before:left-full"
-              onClick={() => router.push("contact")}
+              onClick={() => router.push("/contact")}
             >
               Get in Touch
             </button>

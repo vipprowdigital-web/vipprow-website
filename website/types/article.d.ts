@@ -6,6 +6,11 @@ export interface ArticleSEO {
   metaKeywords?: string;
 }
 
+export interface ArticleFaq {
+  question: string;
+  answer: string;
+}
+
 export interface ArticleCategory {
   _id: string;
   name: string;
@@ -23,6 +28,7 @@ export interface Article {
   read_time?: string;
   short_description?: string | null;
   description?: string | null;
+  faqs?: ArticleFaq[];
   seo?: ArticleSEO;
   isActive?: boolean;
   isFeature?: boolean;

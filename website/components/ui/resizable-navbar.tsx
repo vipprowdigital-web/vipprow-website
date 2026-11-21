@@ -10,7 +10,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 type NavbarButtonCommon = {
   children: React.ReactNode;
@@ -286,10 +286,26 @@ export const MobileNavMenu = ({
   isOpen,
   onClose,
 }: MobileNavMenuProps) => {
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close when the user taps/clicks anywhere outside the mobile navbar.
+  // The menu's parent is the MobileNav bar, so taps on the toggle button
+  // and the menu itself are ignored (the toggle handles its own click).
+  useEffect(() => {
+    if (!isOpen) return;
+    const handlePointerDown = (e: PointerEvent) => {
+      const nav = menuRef.current?.parentElement;
+      if (nav && !nav.contains(e.target as Node)) onClose();
+    };
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [isOpen, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          ref={menuRef}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

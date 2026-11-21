@@ -12,11 +12,17 @@ import { AppConfig } from "@/types/app-config";
 import { usePublicPolicies } from "@/app/features/policy/hook/usePolicy";
 import toast from "react-hot-toast";
 import axios from "axios";
+import {
+  ConsentCheckbox,
+  CONSENT_TEXT,
+  consentFields,
+} from "@/components/legal/Consent";
 
 export default function Footer() {
   // const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState("");
+  const [consent, setConsent] = useState(false);
 
   const appConfig = useSelector(
     (state: RootState) => state.appConfig.data as AppConfig | null,
@@ -128,6 +134,7 @@ export default function Footer() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
       const { data } = await axios.post(`${apiUrl}/newsletter/subscribe`, {
         email,
+        ...consentFields(CONSENT_TEXT.newsletter),
       });
 
       if (data.success === false) {
@@ -137,6 +144,7 @@ export default function Footer() {
 
       toast.success(data.message || "Subscribed successfully!");
       setEmail("");
+      setConsent(false);
     } catch (error: unknown) {
       console.error("Subscription error:", error);
 
@@ -260,6 +268,11 @@ export default function Footer() {
               <p className="text-muted-foreground text-xs">
                 Get the latest updates, tutorials, and exclusive offers.
               </p>
+              <ConsentCheckbox
+                checked={consent}
+                onChange={setConsent}
+                text={CONSENT_TEXT.newsletter}
+              />
             </form>
             <h1 className="font-heading from-muted-foreground/95 bg-linear-to-b bg-clip-text text-3xl font-extrabold text-transparent lg:text-6xl">
               Grow with us.

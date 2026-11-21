@@ -248,11 +248,12 @@ export default function SaasHeroSection() {
           }}
         >
           <Image
-            src="https://i.postimg.cc/fLptvwMg/nexus.webp"
+            src="/assets/images/saas/nexus.webp"
             alt=""
             aria-hidden="true"
-            width={1000}
-            height={500}
+            width={800}
+            height={800}
+            sizes="(min-width: 1024px) 500px, 300px"
             className="h-full w-full object-contain drop-shadow-[0_0_35px_#3358ea85] transition-all duration-1000 hover:scale-110"
           />
         </motion.div>

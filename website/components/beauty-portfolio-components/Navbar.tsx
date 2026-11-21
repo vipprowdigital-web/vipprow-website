@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,6 +12,18 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close the mobile menu on a tap/click outside the navbar (the menu and
+  // the hamburger button are inside the <nav>, so they keep working).
+  const navRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handlePointerDown = (e: PointerEvent) => {
+      if (!navRef.current?.contains(e.target as Node)) setMenuOpen(false);
+    };
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [menuOpen]);
 
   const navLinks = [
     { label: "Home", href: "/" },
@@ -36,7 +48,7 @@ export default function Navbar() {
         }
       `}</style>
 
-      <nav style={scrolled || menuOpen ? styles.navScrolled : styles.nav}>
+      <nav ref={navRef} style={scrolled || menuOpen ? styles.navScrolled : styles.nav}>
         <div style={styles.container}>
           {/* Logo */}
           <Link

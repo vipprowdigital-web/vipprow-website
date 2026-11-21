@@ -10,6 +10,12 @@ const reviews = [
     img: "/assets/images/logo/products/Cro.png",
   },
   {
+    name: "Zentovix",
+    username: "@zentovix",
+    body: "Zentovix",
+    img: "/assets/images/logo/products/Zentovix.png",
+  },
+  {
     name: "Jill",
     username: "@jill",
     body: "I don't know what to say. I'm speechless. This is amazing.",
