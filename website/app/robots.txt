@@ -1,0 +1,6 @@
+# Allow search engines and compliant AI crawlers
+User-agent: *
+Allow: /
+
+# XML sitemap
+Sitemap: https://vipprow.com/sitemap.xml
