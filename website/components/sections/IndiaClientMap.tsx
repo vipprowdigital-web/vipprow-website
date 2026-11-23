@@ -70,10 +70,53 @@ const STANDALONES: StandaloneCity[] = [
   { id: "varanasi", name: "Varanasi", lat: 25.3176, lng: 82.9739 },
   { id: "patna", name: "Patna", lat: 25.5941, lng: 85.1376 },
   { id: "nagpur", name: "Nagpur", lat: 21.1458, lng: 79.0882 },
+
+  // Additional pins (all within the same 11 states)
+  // Maharashtra
+  { id: "nashik", name: "Nashik", lat: 19.9975, lng: 73.7898 },
+  { id: "aurangabad", name: "Chhatrapati Sambhajinagar", lat: 19.8762, lng: 75.3433 },
+  { id: "kolhapur", name: "Kolhapur", lat: 16.705, lng: 74.2433 },
+  { id: "solapur", name: "Solapur", lat: 17.6599, lng: 75.9064 },
+  // Gujarat
+  { id: "ahmedabad", name: "Ahmedabad", lat: 23.0225, lng: 72.5714 },
+  { id: "vadodara", name: "Vadodara", lat: 22.3072, lng: 73.1812 },
+  { id: "rajkot", name: "Rajkot", lat: 22.3039, lng: 70.8022 },
+  // Rajasthan
+  { id: "udaipur", name: "Udaipur", lat: 24.5854, lng: 73.7125 },
+  { id: "jodhpur", name: "Jodhpur", lat: 26.2389, lng: 73.0243 },
+  { id: "kota", name: "Kota", lat: 25.2138, lng: 75.8648 },
+  { id: "bikaner", name: "Bikaner", lat: 28.0229, lng: 73.3119 },
+  { id: "ajmer", name: "Ajmer", lat: 26.4499, lng: 74.6399 },
+  // Karnataka
+  { id: "mysuru", name: "Mysuru", lat: 12.2958, lng: 76.6394 },
+  { id: "hubballi", name: "Hubballi", lat: 15.3647, lng: 75.124 },
+  { id: "mangaluru", name: "Mangaluru", lat: 12.9141, lng: 74.856 },
+  // Telangana
+  { id: "warangal", name: "Warangal", lat: 17.9689, lng: 79.5941 },
+  // Assam
+  { id: "guwahati", name: "Guwahati", lat: 26.1445, lng: 91.7362 },
+  { id: "dibrugarh", name: "Dibrugarh", lat: 27.4728, lng: 94.912 },
+  { id: "silchar", name: "Silchar", lat: 24.8333, lng: 92.7789 },
+  // Bihar
+  { id: "gaya", name: "Gaya", lat: 24.7914, lng: 85.0002 },
+  { id: "bhagalpur", name: "Bhagalpur", lat: 25.2425, lng: 86.9842 },
+  // Chhattisgarh
+  { id: "bilaspur", name: "Bilaspur", lat: 22.0797, lng: 82.1409 },
+  { id: "jagdalpur", name: "Jagdalpur", lat: 19.0748, lng: 82.008 },
+  // Madhya Pradesh
+  { id: "gwalior", name: "Gwalior", lat: 26.2183, lng: 78.1828 },
+  { id: "sagar", name: "Sagar", lat: 23.8388, lng: 78.7378 },
+  { id: "rewa", name: "Rewa", lat: 24.5362, lng: 81.3037 },
+  // Uttar Pradesh
+  { id: "lucknow", name: "Lucknow", lat: 26.8467, lng: 80.9462 },
+  { id: "kanpur", name: "Kanpur", lat: 26.4499, lng: 80.3319 },
+  { id: "agra", name: "Agra", lat: 27.1767, lng: 78.0081 },
+  { id: "gorakhpur", name: "Gorakhpur", lat: 26.7606, lng: 83.3732 },
 ];
 
-const CITY_COUNT =
-  STANDALONES.length + CLUSTERS.reduce((s, c) => s + c.cities.length, 0);
+// Total client cities shown in the text and stat chip. The map only pins a
+// selection of them, so this is set by hand rather than counted from pins.
+const CITY_COUNT_LABEL = "115+";
 
 // ─── PROJECTION ───────────────────────────────────────────────────────────────
 const WIDTH = 700,
@@ -142,7 +185,9 @@ const INTRO_LINES = CITIES.map((c, i) => {
     id: c.id,
     d: arcPath(c.x, c.y, HQ_POS.x, HQ_POS.y),
     dur: Math.max(4, len / 100),
-    delay: i * 0.25,
+    // Spread the starts over ~6s however many pins there are, so every
+    // line finishes drawing before the lines fade out at ~15s
+    delay: (i * 6) / CITIES.length,
   };
 });
 
@@ -455,7 +500,7 @@ export default function IndiaClientMap({ theme = "blue" }: { theme?: MapTheme })
             We combine innovative technology with data-driven strategies to
             generate quality leads, strengthen brands, and streamline business
             operations. With clients across{" "}
-            <span className="text-white font-medium">{CITY_COUNT + 1} cities</span>{" "}
+            <span className="text-white font-medium">{CITY_COUNT_LABEL} cities</span>{" "}
             and <span className="text-white font-medium">11 states</span>,
             Vipprow serves as a trusted technology and growth partner,
             delivering scalable solutions that drive measurable business
@@ -465,7 +510,7 @@ export default function IndiaClientMap({ theme = "blue" }: { theme?: MapTheme })
           {/* stat chips */}
           <div className="flex flex-wrap gap-3">
             {[
-              { value: `${CITY_COUNT}+`, label: "Client Cities" },
+              { value: CITY_COUNT_LABEL, label: "Client Cities" },
               { value: "11", label: "States Covered" },
             ].map(({ value, label }) => (
               <div

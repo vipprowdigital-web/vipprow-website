@@ -61,7 +61,7 @@ const COMPANY_FACTS = `ABOUT VIPPROW (verified facts — use these exactly):
 - Vipprow is a digital marketing, software development and business automation company.
 - Office address: Bethel House, near Naveen Vidhya Mandir School, Napier Town, Jabalpur, Madhya Pradesh 482001, India.
 - Founded in 2025 by Reva Prasad Tiwari (Vipin), who has worked in the digital industry since 2016.
-- Vipprow has worked with 50+ clients across 27 cities and 11 states in India.
+- Vipprow has worked with 50+ clients across 115+ cities and 11 states in India.
 - Main service areas: Digital Marketing (including SEO, social media marketing, performance marketing / paid ads, content marketing, graphic design, lead generation), Software Development (website development, mobile app development, custom software, CRM), and Business Automation (AI automation, WhatsApp automation, CRM automation).
 - Vipprow's own products:
   - Croissix AI (https://croissix.com): AI tool for Google Business Profile — automates reviews, posts, photos and analytics.
