@@ -29,6 +29,21 @@ const CLIENTS = [
     sector: "Beauty",
     init: "UK",
   },
+  {
+    name: "Lakme Academy Powered by Aptech",
+    sector: "Beauty",
+    init: "LK",
+  },
+  {
+    name: "VLCC School of Beauty",
+    sector: "Beauty",
+    init: "VL",
+  },
+  {
+    name: "Orane International School of Beauty & Wellness",
+    sector: "Beauty",
+    init: "OR",
+  },
 ];
 
 export default function Clients() {
@@ -59,7 +74,7 @@ export default function Clients() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
+          {/* <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" /> */}
           Trusted across India
         </motion.div>
       </div>
@@ -89,10 +104,12 @@ export default function Clients() {
               {c.init}
             </div>
             <div>
-              <p className="text-md font-medium text-white/72 leading-snug">
+              <p className="text-md font-medium text-white leading-snug">
                 {c.name}
               </p>
-              <p className="text-md text-white/28 mt-0.5">{c.sector}</p>
+              <p className="text-md font-semibold text-white/60 mt-0.5">
+                {c.sector}
+              </p>
             </div>
           </motion.div>
         ))}
