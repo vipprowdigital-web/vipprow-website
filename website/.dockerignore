@@ -1,0 +1,17 @@
+# Keep the Docker build context small: these are rebuilt inside the image,
+# and sending them made every deploy upload hundreds of MB for nothing.
+node_modules
+.next
+out
+.git
+.gitignore
+.vscode
+*.log
+npm-debug.log*
+tsconfig.tsbuildinfo
+Dockerfile
+.dockerignore
+README.md
+
+# NOTE: .env is deliberately NOT ignored. NEXT_PUBLIC_* values are baked
+# into the site at build time, so the build needs the server's .env.
