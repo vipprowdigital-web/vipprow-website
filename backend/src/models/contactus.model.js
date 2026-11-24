@@ -138,6 +138,9 @@ const contactUsSchema = new Schema(
         message: { type: String, trim: true, maxlength: 2000 },
         respondedBy: { type: Schema.Types.ObjectId, ref: "User" },
         respondedAt: { type: Date, default: Date.now },
+        // Where the reply was emailed, and the email provider's id for it
+        emailedTo: { type: String, trim: true, default: null },
+        emailId: { type: String, default: null },
       },
     ],
   },

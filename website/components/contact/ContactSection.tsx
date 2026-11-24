@@ -11,6 +11,8 @@ export default function ContactSection() {
   const appConfig = useSelector(
     (state: RootState) => state.appConfig.data as AppConfig | null,
   );
+  const addresses =
+    appConfig?.companyAddress?.filter((a) => a?.address?.trim()) ?? [];
 
   return (
     <section className="relative py-20 px-4 sm:px-6">
@@ -56,11 +58,23 @@ export default function ContactSection() {
               <InfoItem icon={<Phone />} title="Phone" value="9669933660" />
             </div>
 
-            <InfoItem
-              icon={<MapPin />}
-              title="Location"
-              value={`${appConfig?.companyAddress[0]?.address}`}
-            />
+            {/* Every address added under App Configuration in the console */}
+            {addresses.length > 0 && (
+              <div className="space-y-4">
+                <p className="text-xs font-semibold tracking-wide text-neutral-500 uppercase">
+                  {addresses.length > 1 ? "Our Offices" : "Our Office"}
+                </p>
+                {addresses.map((a, i) => (
+                  <InfoItem
+                    key={`${a.address}-${i}`}
+                    icon={<MapPin />}
+                    title="Location"
+                    value={a.address}
+                    href={a.googleMapLocation || undefined}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -86,21 +100,35 @@ function InfoItem({
   icon,
   title,
   value,
+  href,
 }: {
   icon: React.ReactNode;
   title: string;
   value: string;
+  /** Optional link, e.g. the address's Google Maps location */
+  href?: string;
 }) {
   return (
     <div className="flex items-center gap-4">
-      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
         {icon}
       </div>
       <div>
         <p className="text-sm font-medium text-neutral-500">{title}</p>
-        <p className="text-base font-semibold text-neutral-900 dark:text-white">
-          {value}
-        </p>
+        {href ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-base font-semibold text-neutral-900 underline-offset-4 hover:underline dark:text-white"
+          >
+            {value}
+          </a>
+        ) : (
+          <p className="text-base font-semibold text-neutral-900 dark:text-white">
+            {value}
+          </p>
+        )}
       </div>
     </div>
   );

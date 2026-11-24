@@ -66,7 +66,6 @@ const allowedOrigins = [
   process.env.ADMIN_FRONTEND_URL, // Admin production site
   process.env.REACT_NATIVE_FRONTEND_URL, // React Native local
   process.env.VIPPROW_LANDING_PAGE_URL,
-  "http://192.168.1.12:3000",
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:5173",

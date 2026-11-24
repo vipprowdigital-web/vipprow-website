@@ -636,7 +636,7 @@ export default function Footer() {
                   </li>
 
                   <li className="text-[0.8rem] text-white/50">
-                    Jabalpur, India
+                    Jabalpur &amp; Mumbai, India
                   </li>
                 </ul>
               </div>
@@ -724,7 +724,7 @@ export default function Footer() {
                     </a>
                   </li>
                   <li className="text-[0.78rem] text-white/50 hover:text-white transition-colors duration-200">
-                    Jabalpur, India
+                    Jabalpur &amp; Mumbai, India
                   </li>
                 </ul>
               </div>

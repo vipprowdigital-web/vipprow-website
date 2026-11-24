@@ -88,6 +88,7 @@ export default function ContactForm({
   });
 
   const [responseMessage, setResponseMessage] = useState("");
+  const [isSendingReply, setIsSendingReply] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -119,16 +120,27 @@ export default function ContactForm({
       return;
     }
 
-    await toast.promise(
-      respondToContact({ id, data: { message: responseMessage } }).unwrap(),
-      {
-        loading: "Sending reply...",
-        success: "Reply sent successfully",
-        error: "Failed to send reply",
-      }
-    );
-
-    setResponseMessage("");
+    // The backend emails the reply to the person, then saves it
+    setIsSendingReply(true);
+    const toastId = toast.loading(`Emailing reply to ${values.email}...`);
+    try {
+      const res = await respondToContact({
+        id,
+        data: { message: responseMessage },
+      }).unwrap();
+      toast.success(res?.message || `Reply emailed to ${values.email}`, {
+        id: toastId,
+      });
+      setResponseMessage("");
+      setValues((p) => ({ ...p, status: "answered" }));
+    } catch (err: any) {
+      // Keep the typed reply so it can be retried
+      toast.error(err?.data?.message || "Failed to send reply.", {
+        id: toastId,
+      });
+    } finally {
+      setIsSendingReply(false);
+    }
   };
 
   /* SUBMIT FORM */
@@ -324,22 +336,31 @@ export default function ContactForm({
               <Card>
                 <CardHeader>
                   <CardTitle>Send Response</CardTitle>
-                  <CardDescription>Reply to the user</CardDescription>
+                  <CardDescription className="[overflow-wrap:anywhere]">
+                    Your reply is emailed to {values.email || "the sender"}.
+                    Their reply comes back to vipprowcontact@gmail.com.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <Textarea
                     rows={4}
+                    maxLength={2000}
                     placeholder="Type your reply..."
                     value={responseMessage}
                     onChange={(e) => setResponseMessage(e.target.value)}
                   />
                   <Button
+                    type="button"
                     className="w-full"
                     onClick={handleSendReply}
-                    disabled={!responseMessage.trim()}
+                    disabled={!responseMessage.trim() || isSendingReply}
                   >
-                    <Reply className="mr-2 h-4 w-4" />
-                    Send Reply
+                    {isSendingReply ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Reply className="mr-2 h-4 w-4" />
+                    )}
+                    Send Reply by Email
                   </Button>
                 </CardContent>
               </Card>
@@ -358,16 +379,21 @@ export default function ContactForm({
                         <div key={i} className="flex gap-3">
                           <Avatar className="h-9 w-9">
                             <AvatarFallback>
-                              {r?.respondedBy?.slice(0, 2) || "AD"}
+                              {(r?.respondedBy?.name || "Admin")
+                                .slice(0, 2)
+                                .toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
 
                           <div className="space-y-1">
                             <p className="text-sm font-medium">
-                              {r?.respondedBy || "Admin"}
+                              {r?.respondedBy?.name || "Admin"}
                             </p>
                             <p className="text-muted-foreground text-xs">
                               {new Date(r.respondedAt).toLocaleString("en-IN")}
+                              {r?.emailedTo
+                                ? ` · Emailed to ${r.emailedTo}`
+                                : " · Not emailed (saved before email replies)"}
                             </p>
 
                             <p className="text-sm">{r.message}</p>

@@ -1,6 +1,7 @@
 import ContactUs from "../models/contactus.model.js";
 import mongoose from "mongoose";
 import { readConsent, CONSENT_REQUIRED_MESSAGE } from "../utils/consent.js";
+import { sendContactReplyEmail } from "../services/email.service.js";
 
 /* ============================================================
    📌 CREATE ContactUs (Public)
@@ -158,6 +159,8 @@ export const getAllContactUs = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
+      // services are stored as ids; include each service's title for the console
+      .populate("services", "title")
       .lean();
 
     return res.status(200).json({
@@ -184,7 +187,11 @@ export const getAllContactUs = async (req, res) => {
 ============================================================ */
 export const getContactUsById = async (req, res) => {
   try {
-    const contact = await ContactUs.findById(req.params.id).lean();
+    const contact = await ContactUs.findById(req.params.id)
+      .populate("services", "title")
+      // Show who replied by name in the console's reply history
+      .populate("replies.respondedBy", "name")
+      .lean();
 
     if (!contact) {
       return res.status(404).json({
@@ -272,12 +279,19 @@ export const partiallyUpdateContactUs = async (req, res) => {
 ============================================================ */
 export const respondToContactUs = async (req, res) => {
   try {
-    const { message } = req.body;
+    const message =
+      typeof req.body?.message === "string" ? req.body.message.trim() : "";
 
-    if (!message?.trim()) {
+    if (!message) {
       return res.status(400).json({
         status: "error",
         message: "Response message cannot be empty.",
+      });
+    }
+    if (message.length > 2000) {
+      return res.status(400).json({
+        status: "error",
+        message: "Response cannot exceed 2000 characters.",
       });
     }
 
@@ -287,16 +301,43 @@ export const respondToContactUs = async (req, res) => {
         .status(404)
         .json({ status: "error", message: "Contact not found." });
     }
+    if (!contact.email) {
+      return res.status(400).json({
+        status: "error",
+        message: "This enquiry has no email address to reply to.",
+      });
+    }
 
+    // Email the reply first. Only record it (and mark the enquiry answered)
+    // once the person has actually been sent it, so a failed send can be
+    // retried instead of silently showing as answered.
+    const sent = await sendContactReplyEmail({
+      to: contact.email,
+      name: contact.name,
+      replyMessage: message,
+      originalMessage: contact.message,
+    });
+
+    if (!sent.success) {
+      return res.status(502).json({
+        status: "error",
+        message: `The reply could not be emailed to ${contact.email}. Please try again.`,
+      });
+    }
+
+    const now = new Date();
     contact.response = {
       message,
       respondedBy: req.user._id,
-      respondedAt: new Date(),
+      respondedAt: now,
     };
 
     contact.replies.push({
       message,
       respondedBy: req.user._id,
+      respondedAt: now,
+      emailedTo: contact.email,
+      emailId: sent.id ?? null,
     });
 
     contact.status = "answered";
@@ -305,7 +346,7 @@ export const respondToContactUs = async (req, res) => {
 
     return res.status(200).json({
       status: "success",
-      message: "Response added successfully.",
+      message: `Reply emailed to ${contact.email}.`,
       data: contact,
     });
   } catch (error) {

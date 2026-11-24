@@ -4,6 +4,13 @@ import { Resend } from "resend";
 
 const FROM_EMAIL = "Vipprow <noreply@mail.croissix.com>";
 
+// White Vipprow logo for the dark email background. Served as PNG (the
+// original is SVG, which Gmail and many email apps don't display);
+// Cloudinary converts it from the same upload. 400px wide, shown at 200px
+// so it stays sharp on high-resolution screens.
+const VIPPROW_LOGO_URL =
+  "https://res.cloudinary.com/dl6fjer3y/image/upload/w_400/v1786168844/vipprow_logo_htqdtq.png";
+
 /**
  * Sends a newsletter confirmation email to a newly subscribed user.
  * @param {Object} params
@@ -130,6 +137,128 @@ export async function sendLeadNotificationEmail({
     console.error("Email service error (lead notification):", err.message);
     return { success: false, error: err.message };
   }
+}
+
+/**
+ * Emails the console team's reply to someone who sent an enquiry from the
+ * website. Replies from the person go to the team's inbox (Reply-To), not
+ * to the no-reply sender address.
+ * @param {Object} params
+ * @param {string} params.to            the enquirer's email
+ * @param {string} [params.name]        the enquirer's name
+ * @param {string} params.replyMessage  the team's reply (plain text)
+ * @param {string} [params.originalMessage] what they originally wrote
+ */
+export async function sendContactReplyEmail({
+  to,
+  name,
+  replyMessage,
+  originalMessage,
+}) {
+  const replyTo = process.env.CONTACT_REPLY_TO || "vipprowcontact@gmail.com";
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      replyTo,
+      subject: "Re: Your enquiry to Vipprow",
+      html: buildContactReplyTemplate({ name, replyMessage, originalMessage, replyTo }),
+      text: [
+        `Hi ${name || "there"},`,
+        "",
+        replyMessage,
+        "",
+        "— Team Vipprow",
+        `You can reply to this email or write to ${replyTo}.`,
+        ...(originalMessage ? ["", "Your original message:", originalMessage] : []),
+      ].join("\n"),
+    });
+
+    if (error) {
+      console.error("Resend error (contact reply):", error);
+      return { success: false, error: error.message || String(error) };
+    }
+
+    console.log("✅ Contact reply email sent:", data?.id);
+    return { success: true, id: data?.id };
+  } catch (err) {
+    console.error("Email service error (contact reply):", err.message);
+    return { success: false, error: err.message };
+  }
+}
+
+// ─── HTML TEMPLATE: CONTACT REPLY ─────────────────────────────────────────────
+function buildContactReplyTemplate({ name, replyMessage, originalMessage, replyTo }) {
+  // Plain text in, so escape it and keep the line breaks the team typed
+  const asHtml = (text) => escapeHtml(text).replace(/\r?\n/g, "<br />");
+  // The website form's message can be rich text; show it as plain text
+  const original = String(originalMessage ?? "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reply from Vipprow</title>
+</head>
+<body style="margin:0; padding:0; background-color:#252525; font-family: 'Poppins', 'Inter', Helvetica, Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#252525; padding: 40px 0;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #353535; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+          <tr>
+            <td style="padding: 32px 40px 8px 40px;">
+              <a href="https://vipprow.com" style="text-decoration:none;">
+                <img
+                  src="${VIPPROW_LOGO_URL}"
+                  width="200"
+                  height="36"
+                  alt="VIPPROW"
+                  style="display:block; border:0; outline:none; width:200px; height:auto; color:#ffffff; font-size:18px; font-weight:700; letter-spacing:1.5px;"
+                />
+              </a>
+              <p style="margin: 24px 0 0 0; color:#ffffff; font-size:15px;">Hi ${escapeHtml(name || "there")},</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 40px 8px 40px;">
+              <p style="margin:0; color:#e5e5e5; font-size:15px; line-height:1.7;">${asHtml(replyMessage)}</p>
+              <p style="margin: 24px 0 0 0; color:#e5e5e5; font-size:15px;">— Team Vipprow</p>
+            </td>
+          </tr>
+          ${
+            original
+              ? `<tr>
+            <td style="padding: 24px 40px 8px 40px;">
+              <div style="border-left:3px solid rgba(255,255,255,0.15); padding: 4px 0 4px 14px;">
+                <div style="color:#858585; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:4px;">Your message</div>
+                <div style="color:#b5b5b5; font-size:13px; line-height:1.6;">${escapeHtml(original)}</div>
+              </div>
+            </td>
+          </tr>`
+              : ""
+          }
+          <tr>
+            <td style="padding: 24px 40px 32px 40px;">
+              <p style="margin:0; color:#858585; font-size:12px; line-height:1.6;">
+                You can reply directly to this email, or write to us at
+                <a href="mailto:${escapeHtml(replyTo)}" style="color:#60a5fa;">${escapeHtml(replyTo)}</a>.
+                <br />Vipprow · <a href="https://vipprow.com" style="color:#60a5fa;">vipprow.com</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
 }
 
 // ─── HTML TEMPLATE: SUBSCRIPTION CONFIRMATION ─────────────────────────────────

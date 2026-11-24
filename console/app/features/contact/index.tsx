@@ -71,14 +71,18 @@ export default function ContactPage() {
   ------------------------------------------------ */
   const handleToggleStatus = async (item: any) => {
     try {
+      // "in_progress" is the not-answered status the backend accepts
+      // ("pending" isn't a valid status)
       await updateContact({
         id: item._id,
-        data: { status: item.status === "answered" ? "pending" : "answered" },
+        data: {
+          status: item.status === "answered" ? "in_progress" : "answered",
+        },
       }).unwrap();
 
       toast.success(
         `Status updated to ${
-          item.status === "answered" ? "Pending" : "Answered"
+          item.status === "answered" ? "In progress" : "Answered"
         }`,
       );
     } catch {
@@ -90,20 +94,27 @@ export default function ContactPage() {
      📨 SEND ADMIN RESPONSE
   ------------------------------------------------ */
   const handleSendResponse = async (item: any) => {
-    const message = prompt(`Enter your response to ${item.email}:`);
+    const message = prompt(
+      `Your reply will be emailed to ${item.email}.\n\nType your reply:`,
+    );
 
-    if (!message) return;
+    if (!message?.trim()) return;
 
+    // The backend emails the reply to the person, then saves it
+    const toastId = toast.loading(`Emailing reply to ${item.email}...`);
     try {
-      await toast.promise(
-        respondToContact({ id: item._id, data: { message } }).unwrap(),
-        {
-          loading: "Sending response...",
-          success: "Message responded successfully!",
-          error: "Failed to send reply.",
-        },
-      );
-    } catch (_) {}
+      const res = await respondToContact({
+        id: item._id,
+        data: { message },
+      }).unwrap();
+      toast.success(res?.message || `Reply emailed to ${item.email}`, {
+        id: toastId,
+      });
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to send reply.", {
+        id: toastId,
+      });
+    }
   };
 
   /* -----------------------------------------------
@@ -193,38 +204,11 @@ export default function ContactPage() {
       header: "Services",
       cell: ({ row }) => {
         const services = row.original.services || [];
-        return services.length > 0
-          ? services.map((s: any) => s.title).join(", ")
-          : "-";
-      },
-    },
-
-    {
-      accessorKey: "course",
-      header: "Course",
-      cell: ({ row }) => {
-        if (row.original.type !== "Enrollment") return "-";
-        const courseLabels: Record<string, string> = {
-          "digital-marketing": "Digital Marketing",
-          "performance-marketing": "Performance Marketing",
-        };
-        return courseLabels[row.original.course] ?? "-";
-      },
-    },
-
-    {
-      accessorKey: "qualification",
-      header: "Qualification",
-      cell: ({ row }) => {
-        if (row.original.type !== "Enrollment") return "-";
-        const qualLabels: Record<string, string> = {
-          "high-school": "High School",
-          undergraduate: "Undergraduate",
-          graduate: "Graduate",
-          working: "Working Professional",
-          other: "Other",
-        };
-        return qualLabels[row.original.qualification] ?? "-";
+        // Titles come from the backend; a service deleted since has none
+        const titles = services
+          .map((s: any) => s?.title)
+          .filter(Boolean);
+        return titles.length > 0 ? titles.join(", ") : "-";
       },
     },
 
