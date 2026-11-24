@@ -84,6 +84,7 @@ jobs:
             echo "::warning::COOLIFY_WEBHOOK / COOLIFY_TOKEN not set — image built and pushed, but not deployed."
             exit 0
           fi
-          curl --fail-with-body --show-error --silent --max-time 60 \
+          # Coolify's deploy webhook only accepts POST now
+          curl -X POST --fail-with-body --show-error --silent --max-time 60 \
             -H "Authorization: Bearer $COOLIFY_TOKEN" \
             "$COOLIFY_WEBHOOK"
